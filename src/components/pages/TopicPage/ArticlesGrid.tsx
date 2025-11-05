@@ -56,7 +56,6 @@ export default function ArticlesGrid({
             // Use overrides from articles.json if provided, otherwise use topic data
             const title = item.title || subtopic.title;
             const description = item.description || subtopic.description;
-            const icon = item.icon || subtopic.icon;
 
             return (
               <Card
@@ -64,7 +63,6 @@ export default function ArticlesGrid({
                 title={title}
                 description={description}
                 href={`/${region}/products/${productId}/topics/${topicId}/${subtopic.id}`}
-                icon={icon}
                 type="Topic"
               />
             );
