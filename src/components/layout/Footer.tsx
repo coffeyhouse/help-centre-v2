@@ -11,6 +11,7 @@
 
 import { Link } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
+import Icon from '../common/Icon';
 
 export default function Footer() {
   const { region } = useRegion();
@@ -121,19 +122,19 @@ export default function Footer() {
         <div className="flex items-center gap-4 mb-8 pb-8 border-b border-white/10">
           <span className="text-sm text-gray-400">Follow us:</span>
           <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
-            📷
+            <Icon name="instagram" className="w-5 h-5" />
           </a>
           <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
-            📘
+            <Icon name="facebook" className="w-5 h-5" />
           </a>
           <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="LinkedIn">
-            💼
+            <Icon name="linkedin" className="w-5 h-5" />
           </a>
           <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
-            🐦
+            <Icon name="twitter" className="w-5 h-5" />
           </a>
           <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="YouTube">
-            📹
+            <Icon name="youtube" className="w-5 h-5" />
           </a>
         </div>
 

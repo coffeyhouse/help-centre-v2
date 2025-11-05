@@ -12,8 +12,9 @@
 
 import { Link } from 'react-router-dom';
 import type { CardProps } from '../../types';
+import Icon from './Icon';
 
-export default function Card({ title, description, icon, onClick, href }: CardProps) {
+export default function Card({ title, description, type, icon, onClick, href }: CardProps) {
   const baseClasses = 'card card-hover cursor-pointer';
 
   const content = (
@@ -21,7 +22,16 @@ export default function Card({ title, description, icon, onClick, href }: CardPr
       {/* Icon */}
       {icon && (
         <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-4">
-          <span className="text-2xl">{getIconDisplay(icon)}</span>
+          <Icon name={icon} className="w-7 h-7 text-gray-700" />
+        </div>
+      )}
+
+      {/* Type Badge */}
+      {type && (
+        <div className="mb-2">
+          <span className="inline-block px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-blue-100 text-blue-800">
+            {type}
+          </span>
         </div>
       )}
 
@@ -80,34 +90,4 @@ export default function Card({ title, description, icon, onClick, href }: CardPr
 
   // Otherwise, render as div (non-interactive)
   return <div className={baseClasses.replace('cursor-pointer', '')}>{content}</div>;
-}
-
-/**
- * Convert icon string to display element
- * For MVP, we use simple emoji/text placeholders
- */
-function getIconDisplay(icon: string): string {
-  const iconMap: Record<string, string> = {
-    download: '⬇️',
-    lock: '🔒',
-    star: '⭐',
-    document: '📄',
-    bank: '🏦',
-    remote: '🖥️',
-    calendar: '📅',
-    play: '▶️',
-    checklist: '✅',
-    community: '💬',
-    graduation: '🎓',
-    phone: '📞',
-    question: '❓',
-    'icon-a': '📊',
-    'icon-b': '☁️',
-    'icon-c': '💰',
-    'icon-d': '📈',
-    'icon-e': '📋',
-    'icon-f': '💳',
-  };
-
-  return iconMap[icon] || '📌';
 }

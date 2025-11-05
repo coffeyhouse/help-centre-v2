@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
 import RegionSelector from './RegionSelector';
+import Icon from '../common/Icon';
 
 export default function Header() {
   const { region, regionConfig } = useRegion();
@@ -27,9 +28,7 @@ export default function Header() {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link to={`/${region}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="text-2xl font-bold">
-              📚
-            </div>
+            <Icon name="book" className="w-8 h-8" />
             <span className="text-xl font-semibold hidden sm:inline">
               Help Centre
             </span>
@@ -43,7 +42,7 @@ export default function Header() {
                 to={link.path}
                 className="text-sm hover:text-gray-300 transition-colors flex items-center gap-1"
               >
-                {link.icon && <span>{getIconDisplay(link.icon)}</span>}
+                {link.icon && <Icon name={link.icon} className="w-4 h-4" />}
                 {link.label}
               </Link>
             ))}
@@ -84,7 +83,7 @@ export default function Header() {
                 className="block py-2 px-4 hover:bg-white/10 rounded transition-colors"
               >
                 <span className="flex items-center gap-2">
-                  {link.icon && <span>{getIconDisplay(link.icon)}</span>}
+                  {link.icon && <Icon name={link.icon} className="w-5 h-5" />}
                   {link.label}
                 </span>
               </Link>
@@ -94,17 +93,4 @@ export default function Header() {
       </div>
     </header>
   );
-}
-
-/**
- * Convert icon string to display element
- */
-function getIconDisplay(icon: string): string {
-  const iconMap: Record<string, string> = {
-    home: '🏠',
-    products: '📦',
-    contact: '📞',
-  };
-
-  return iconMap[icon] || '';
 }

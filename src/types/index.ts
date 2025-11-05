@@ -42,10 +42,13 @@ export type PersonaId = 'customer' | 'accountant' | 'partner' | 'developer';
 
 // ==================== Product Types ====================
 
+export type ProductType = 'cloud' | 'desktop';
+
 export interface Product {
   id: string;
   name: string;
   description: string;
+  type: ProductType;
   personas: PersonaId[];
   icon: string;
 }
@@ -143,6 +146,7 @@ export interface BreadcrumbItem {
 export interface CardProps {
   title: string;
   description?: string;
+  type?: string;
   icon?: string;
   onClick?: () => void;
   href?: string;

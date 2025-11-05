@@ -10,6 +10,7 @@
  */
 
 import Button from '../../common/Button';
+import Icon from '../../common/Icon';
 import type { ContactMethod } from '../../../types';
 
 interface ContactMethodsProps {
@@ -32,7 +33,9 @@ export default function ContactMethods({ methods }: ContactMethodsProps) {
               className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-8 border border-gray-200"
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">{getIconDisplay(method.icon)}</div>
+                <div className="flex-shrink-0">
+                  <Icon name={method.icon} className="w-10 h-10 text-green-600" />
+                </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold mb-2">{method.title}</h3>
                   {method.description && (
@@ -55,7 +58,9 @@ export default function ContactMethods({ methods }: ContactMethodsProps) {
               className="bg-white rounded-lg p-8 border border-gray-200"
             >
               <div className="flex items-start gap-4">
-                <div className="text-4xl">{getIconDisplay(method.icon)}</div>
+                <div className="flex-shrink-0">
+                  <Icon name={method.icon} className="w-10 h-10 text-gray-700" />
+                </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold mb-2">{method.title}</h3>
                   {method.description && (
@@ -89,18 +94,4 @@ export default function ContactMethods({ methods }: ContactMethodsProps) {
       })}
     </div>
   );
-}
-
-/**
- * Convert icon string to display element
- */
-function getIconDisplay(icon: string): string {
-  const iconMap: Record<string, string> = {
-    community: '💬',
-    phone: '📞',
-    email: '📧',
-    chat: '💭',
-  };
-
-  return iconMap[icon] || '📌';
 }

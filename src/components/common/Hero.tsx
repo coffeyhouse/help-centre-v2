@@ -11,6 +11,7 @@
 
 import { useState } from 'react';
 import type { HeroProps } from '../../types';
+import Icon from './Icon';
 
 export default function Hero({
   title,
@@ -85,7 +86,7 @@ export default function Hero({
           {/* Right column - Illustration placeholder */}
           <div className="hidden md:flex items-center justify-center">
             <div className="w-64 h-64 bg-gray-800 rounded-lg flex items-center justify-center">
-              <span className="text-6xl">📚</span>
+              <Icon name="book" className="w-32 h-32 text-gray-400" />
             </div>
           </div>
         </div>
