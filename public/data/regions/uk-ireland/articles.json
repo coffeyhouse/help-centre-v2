@@ -1,7 +1,7 @@
 {
   "articles": {
     "product-a": {
-      "install-software-product-a": [
+      "install-software": [
         {
           "id": "whats-new",
           "title": "What's new?",
@@ -33,7 +33,7 @@
           "description": "Not going as expected? Check these common queries."
         }
       ],
-      "manage-vat-product-a": [
+      "manage-vat": [
         {
           "id": "vat-setup",
           "title": "Set up VAT",
@@ -79,7 +79,7 @@
           "description": "Generate VAT reports and reconcile your accounts."
         }
       ],
-      "banking-product-a": [
+      "banking": [
         {
           "id": "bank-connection",
           "title": "Connect your bank account",
@@ -96,7 +96,7 @@
           "description": "Automatically import transactions from your bank."
         }
       ],
-      "remote-access-product-a": [
+      "remote-access": [
         {
           "id": "remote-setup",
           "title": "Set up Remote Data Access",
@@ -108,7 +108,7 @@
           "description": "Common issues and solutions for remote access."
         }
       ],
-      "year-end-product-a": [
+      "year-end": [
         {
           "id": "year-end-checklist",
           "title": "Year end checklist",
@@ -125,7 +125,7 @@
           "description": "Set up your accounts for the new financial year."
         }
       ],
-      "getting-started-product-a": [
+      "getting-started": [
         {
           "id": "quick-start",
           "title": "Quick start guide",
@@ -144,7 +144,7 @@
       ]
     },
     "product-b": {
-      "manage-vat-product-b": [
+      "manage-vat": [
         {
           "id": "vat-setup",
           "title": "Set up VAT",
@@ -168,7 +168,7 @@
           "countries": ["ie"]
         }
       ],
-      "banking-product-b": [
+      "banking": [
         {
           "id": "bank-connection",
           "title": "Connect your bank account",
@@ -185,7 +185,7 @@
           "description": "Automatically import transactions from your bank."
         }
       ],
-      "year-end-product-b": [
+      "year-end": [
         {
           "id": "year-end-checklist",
           "title": "Year end checklist",
@@ -202,7 +202,7 @@
           "description": "Set up your accounts for the new financial year."
         }
       ],
-      "getting-started-product-b": [
+      "getting-started": [
         {
           "id": "quick-start",
           "title": "Quick start guide",
@@ -221,7 +221,7 @@
       ]
     },
     "product-c": {
-      "install-software-product-c": [
+      "install-software": [
         {
           "id": "whats-new",
           "title": "What's new?",
@@ -243,7 +243,7 @@
           "description": "Upgrade to the latest version and get the most from your software."
         }
       ],
-      "getting-started-product-c": [
+      "getting-started": [
         {
           "id": "quick-start",
           "title": "Quick start guide",
@@ -262,7 +262,7 @@
       ]
     },
     "product-d": {
-      "manage-vat-product-d": [
+      "manage-vat": [
         {
           "id": "vat-setup",
           "title": "Set up VAT",
@@ -274,7 +274,7 @@
           "description": "How to submit your VAT return online."
         }
       ],
-      "getting-started-product-d": [
+      "getting-started": [
         {
           "id": "quick-start",
           "title": "Quick start guide",
@@ -293,7 +293,7 @@
       ]
     },
     "product-e": {
-      "getting-started-product-e": [
+      "getting-started": [
         {
           "id": "quick-start",
           "title": "Quick start guide",
@@ -312,7 +312,7 @@
       ]
     },
     "product-f": {
-      "getting-started-product-f": [
+      "getting-started": [
         {
           "id": "quick-start",
           "title": "Quick start guide",
