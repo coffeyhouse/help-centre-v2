@@ -72,12 +72,13 @@ export interface ReleaseNote {
   features?: string[];
   improvements?: string[];
   fixes?: string[];
-  productIds?: string[]; // If specified, only show for these products
   countries?: string[];
 }
 
 export interface ReleaseNotesData {
-  releaseNotes: ReleaseNote[];
+  releaseNotes: {
+    [productId: string]: ReleaseNote[];
+  };
 }
 
 // ==================== Hot Topics ====================

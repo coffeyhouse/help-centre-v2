@@ -28,10 +28,11 @@ const ReleaseNotesPage: React.FC = () => {
     return productsData?.products.find(p => p.id === productId);
   }, [productsData, productId]);
 
-  // Get all release notes (no additional filtering needed as loadReleaseNotes handles it)
+  // Get release notes for the current product
   const filteredReleaseNotes = useMemo(() => {
-    return releaseNotesData?.releaseNotes || [];
-  }, [releaseNotesData]);
+    if (!releaseNotesData?.releaseNotes || !productId) return [];
+    return releaseNotesData.releaseNotes[productId] || [];
+  }, [releaseNotesData, productId]);
 
   // Format date to readable format
   const formatDate = (dateString: string): string => {

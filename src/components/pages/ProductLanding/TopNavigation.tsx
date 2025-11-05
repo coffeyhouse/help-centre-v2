@@ -23,11 +23,13 @@ export default function TopNavigation({ productId }: TopNavigationProps) {
 
   // Load release notes to check if this product has any
   const { data: releaseNotesData } = useData<ReleaseNotesData>(
-    () => productId ? loadReleaseNotes(region, productId) : Promise.resolve({ releaseNotes: [] }),
+    () => productId ? loadReleaseNotes(region, productId) : Promise.resolve({ releaseNotes: {} }),
     [region, productId]
   );
 
-  const hasReleaseNotes = releaseNotesData && releaseNotesData.releaseNotes.length > 0;
+  const hasReleaseNotes = releaseNotesData && productId &&
+    releaseNotesData.releaseNotes[productId] &&
+    releaseNotesData.releaseNotes[productId].length > 0;
 
   const links = [
     { label: 'Hot topics', path: `/${region}` },

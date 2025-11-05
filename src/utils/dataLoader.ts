@@ -168,20 +168,37 @@ export async function loadReleaseNotes(countryCode: string, productId?: string):
   const regionId = await getRegionForCountry(countryCode);
   const data = await fetchJSON<ReleaseNotesData>(`${BASE_DATA_PATH}/regions/${regionId}/release-notes.json`);
 
-  let filteredNotes = filterByCountry(data.releaseNotes, countryCode);
-
-  // If productId is specified, filter to only show notes for that product
+  // If productId is specified, return only that product's release notes
   if (productId) {
-    filteredNotes = filteredNotes.filter(
-      (note) => !note.productIds || note.productIds.includes(productId)
-    );
+    const productNotes = data.releaseNotes[productId] || [];
+    const filteredNotes = filterByCountry(productNotes, countryCode);
+
+    // Sort by date in descending order (newest first)
+    filteredNotes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return {
+      releaseNotes: {
+        [productId]: filteredNotes,
+      },
+    };
   }
 
-  // Sort by date in descending order (newest first)
-  filteredNotes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  // Otherwise return all release notes, filtered by country
+  const filteredReleaseNotes: { [productId: string]: typeof data.releaseNotes[string] } = {};
+
+  for (const [pid, notes] of Object.entries(data.releaseNotes)) {
+    const filtered = filterByCountry(notes, countryCode);
+
+    // Sort by date in descending order (newest first)
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    if (filtered.length > 0) {
+      filteredReleaseNotes[pid] = filtered;
+    }
+  }
 
   return {
-    releaseNotes: filteredNotes,
+    releaseNotes: filteredReleaseNotes,
   };
 }
 
