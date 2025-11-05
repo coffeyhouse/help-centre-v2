@@ -52,7 +52,7 @@ export default function Hero({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={searchPlaceholder}
-                    className="w-full px-4 py-3 pr-12 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
+                    className="w-full border border-gray-700 p-4 rounded-md bg-gray-900 px-4 py-3 pr-12 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
                   />
                   <button
                     type="submit"

@@ -13,6 +13,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRegion } from '../../hooks/useRegion';
 import { loadRegions } from '../../utils/dataLoader';
 import type { Region } from '../../types';
+import * as Flags from 'country-flag-icons/react/3x2';
 
 export default function RegionSelector() {
   const { region, changeRegion } = useRegion();
@@ -58,6 +59,13 @@ export default function RegionSelector() {
 
   const currentRegion = regions.find((r) => r.code === region);
 
+  // Get flag component for a country code
+  const getFlag = (countryCode: string) => {
+    const code = countryCode.toUpperCase();
+    const FlagComponent = Flags[code as keyof typeof Flags];
+    return FlagComponent ? <FlagComponent className="w-5 h-4 rounded-sm" /> : null;
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Current region button */}
@@ -67,6 +75,7 @@ export default function RegionSelector() {
         aria-label="Select region"
         aria-expanded={isOpen}
       >
+        {getFlag(currentRegion?.code || 'GB')}
         <span className="text-sm font-medium">
           {currentRegion?.code.toUpperCase() || 'GB'}
         </span>
@@ -87,7 +96,7 @@ export default function RegionSelector() {
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg py-1 z-50">
+        <div className="absolute right-0 mt-2 w-56 bg-white text-black rounded-md shadow-lg py-1 z-50">
           {regions.map((r) => (
             <button
               key={r.code}
@@ -96,8 +105,9 @@ export default function RegionSelector() {
                 r.code === region ? 'bg-gray-50 font-medium' : ''
               }`}
             >
-              <div className="flex items-center justify-between">
-                <span>{r.name}</span>
+              <div className="flex items-center gap-3">
+                {getFlag(r.code)}
+                <span className="flex-1">{r.name}</span>
                 {r.code === region && (
                   <svg
                     className="w-4 h-4 text-green-600"

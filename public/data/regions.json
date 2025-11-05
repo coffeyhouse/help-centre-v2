@@ -6,6 +6,7 @@
     "currency": "GBP",
     "currencySymbol": "£",
     "dateFormat": "DD/MM/YYYY",
+    "region": "uk-ireland",
     "default": true
   },
   {
@@ -15,6 +16,7 @@
     "currency": "EUR",
     "currencySymbol": "€",
     "dateFormat": "DD/MM/YYYY",
+    "region": "uk-ireland",
     "default": false
   }
 ]
