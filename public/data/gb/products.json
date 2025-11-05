@@ -4,6 +4,7 @@
       "id": "product-a",
       "name": "Product A",
       "description": "Desktop accounting software",
+      "type": "desktop",
       "personas": ["customer", "accountant"],
       "icon": "icon-a"
     },
@@ -11,6 +12,7 @@
       "id": "product-b",
       "name": "Product B",
       "description": "Cloud-based accounting",
+      "type": "cloud",
       "personas": ["customer", "accountant"],
       "icon": "icon-b"
     },
@@ -18,6 +20,7 @@
       "id": "product-c",
       "name": "Product C",
       "description": "Payroll software",
+      "type": "cloud",
       "personas": ["customer"],
       "icon": "icon-c"
     },
@@ -25,6 +28,7 @@
       "id": "product-d",
       "name": "Product D",
       "description": "Tax management",
+      "type": "desktop",
       "personas": ["accountant"],
       "icon": "icon-d"
     },
@@ -32,6 +36,7 @@
       "id": "product-e",
       "name": "Product E",
       "description": "Invoice management",
+      "type": "cloud",
       "personas": ["customer", "accountant"],
       "icon": "icon-e"
     },
@@ -39,6 +44,7 @@
       "id": "product-f",
       "name": "Product F",
       "description": "Expense tracking",
+      "type": "desktop",
       "personas": ["customer"],
       "icon": "icon-f"
     }

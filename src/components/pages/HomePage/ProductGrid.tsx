@@ -43,7 +43,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
           <Card
             key={product.id}
             title={product.name}
-            description={product.description}
+            type={product.type}
             icon={product.icon}
             href={`/${region}/products/${product.id}`}
           />

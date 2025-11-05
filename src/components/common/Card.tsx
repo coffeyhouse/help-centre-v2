@@ -13,7 +13,7 @@
 import { Link } from 'react-router-dom';
 import type { CardProps } from '../../types';
 
-export default function Card({ title, description, icon, onClick, href }: CardProps) {
+export default function Card({ title, description, type, icon, onClick, href }: CardProps) {
   const baseClasses = 'card card-hover cursor-pointer';
 
   const content = (
@@ -22,6 +22,15 @@ export default function Card({ title, description, icon, onClick, href }: CardPr
       {icon && (
         <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-4">
           <span className="text-2xl">{getIconDisplay(icon)}</span>
+        </div>
+      )}
+
+      {/* Type Badge */}
+      {type && (
+        <div className="mb-2">
+          <span className="inline-block px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-blue-100 text-blue-800">
+            {type}
+          </span>
         </div>
       )}
 
