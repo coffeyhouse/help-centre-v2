@@ -42,6 +42,7 @@ help-centre-v2/
 │   │   │   ├── Breadcrumb.tsx
 │   │   │   ├── Footer.tsx
 │   │   │   ├── Header.tsx
+│   │   │   ├── Layout.tsx
 │   │   │   └── RegionSelector.tsx
 │   │   └── pages/           # Page-specific components
 │   │       ├── ContactPage/
@@ -413,7 +414,20 @@ Display important notifications, service updates, and incident information to us
    }
    ```
 
-3. **Page-specific** - Target specific routes
+3. **Topic-specific** - Target specific topics within products (most granular)
+   ```json
+   {
+     "scope": {
+       "type": "topic",
+       "productIds": ["product-a"],
+       "topicIds": ["banking", "invoicing"]
+     }
+   }
+   ```
+   This banner will only display on the specified topic pages within the specified products.
+   Example: Only shows on `/gb/products/product-a/topics/banking`
+
+4. **Page-specific** - Target specific routes using patterns
    ```json
    {
      "scope": {
@@ -430,7 +444,7 @@ When multiple active banners match the current context, the system displays the 
 - `info`
 - `resolved` (lowest priority)
 
-**Configuration Example:**
+**Configuration Examples:**
 
 Edit `public/data/regions/uk-ireland/incidents.json`:
 
@@ -451,16 +465,42 @@ Edit `public/data/regions/uk-ireland/incidents.json`:
       },
       "active": true,
       "countries": ["gb", "ie"]
+    },
+    {
+      "id": "banking-topic-issue",
+      "state": "caution",
+      "title": "Known Issue: Bank Feed Sync",
+      "message": "We're aware of an issue with bank feed synchronization in this section.",
+      "link": {
+        "text": "View workaround",
+        "url": "https://status.example.com"
+      },
+      "scope": {
+        "type": "topic",
+        "productIds": ["product-a"],
+        "topicIds": ["banking"]
+      },
+      "active": true
     }
   ]
 }
 ```
 
+**Architecture:**
+
+The incident banner system uses a Layout component pattern to access route parameters:
+- `Layout.tsx` wraps all routes using React Router's `<Outlet />` pattern
+- `BannerManager` lives inside the route structure, giving it access to `useParams()`
+- Captures `productId`, `topicId`, and `subtopicId` from the URL for precise targeting
+- Automatically matches active banners against current route context
+
 **Features:**
 - Dismissible by users (per session)
 - Optional links (internal or external)
 - Country-level filtering
+- Granular targeting (global → product → topic)
 - Color-coded styling with icons
+- Priority-based display when multiple banners match
 - Responsive design
 - Accessible (ARIA labels, semantic HTML)
 
