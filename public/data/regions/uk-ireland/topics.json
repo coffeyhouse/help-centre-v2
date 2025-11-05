@@ -22,6 +22,24 @@
       "productId": "product-a"
     },
     {
+      "id": "bank-feeds",
+      "title": "Bank feeds",
+      "description": "Automatically import transactions from your bank.",
+      "icon": "sync",
+      "productId": "product-a",
+      "parentTopicId": "banking",
+      "showOnProductLanding": false
+    },
+    {
+      "id": "bank-reconciliation",
+      "title": "Bank reconciliation",
+      "description": "Match your bank transactions with your accounts.",
+      "icon": "check",
+      "productId": "product-a",
+      "parentTopicId": "banking",
+      "showOnProductLanding": false
+    },
+    {
       "id": "remote-access",
       "title": "Run your accounts remotely",
       "description": "Don't be tied to the office, work flexibly with Remote Data Access.",

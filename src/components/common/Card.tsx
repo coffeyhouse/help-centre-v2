@@ -15,10 +15,10 @@ import type { CardProps } from '../../types';
 import Icon from './Icon';
 
 export default function Card({ title, description, type, icon, onClick, href }: CardProps) {
-  const baseClasses = 'card card-hover cursor-pointer';
+  const baseClasses = 'card card-hover cursor-pointer flex items-center min-h-[120px]';
 
   const content = (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 w-full">
       {/* Left side: Content */}
       <div className="flex-1">
         {/* Icon */}

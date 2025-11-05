@@ -19,7 +19,11 @@ import ArticlesGrid from '../components/pages/TopicPage/ArticlesGrid';
 import type { ProductsData, TopicsData, ArticlesData } from '../types';
 
 export default function TopicPage() {
-  const { productId, topicId } = useParams<{ productId: string; topicId: string }>();
+  const { productId, topicId, subtopicId } = useParams<{
+    productId: string;
+    topicId: string;
+    subtopicId?: string;
+  }>();
   const { region, loading: regionLoading, error: regionError } = useRegion();
 
   // Load products data to get product name
@@ -67,23 +71,29 @@ export default function TopicPage() {
     );
   }
 
-  // Find the current product and topic
+  // Find the current product and topics
   const product = productsData?.products.find((p) => p.id === productId);
-  const topic = topicsData?.supportHubs.find((t) => t.id === topicId && t.productId === productId);
+
+  // Determine which topic we're viewing (parent or subtopic)
+  const currentTopicId = subtopicId || topicId;
+  const parentTopic = topicsData?.supportHubs.find((t) => t.id === topicId && t.productId === productId);
+  const currentTopic = subtopicId
+    ? topicsData?.supportHubs.find((t) => t.id === subtopicId && t.productId === productId)
+    : parentTopic;
 
   // Get names for display with fallbacks
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
-  const topicName = topic?.title || topicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
+  const topicName = currentTopic?.title || currentTopicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
 
-  // Get all articles for this product and topic (structure: articles[productId][topicId])
-  const allArticles = articlesData?.articles[productId || '']?.[topicId || ''] || [];
+  // Get all items (articles and subtopics) for the current topic
+  const items = articlesData?.articles[productId || '']?.[currentTopicId || ''] || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <Hero
         title={topicName}
-        subtitle={topic?.description || 'Find articles and guides for this topic'}
+        subtitle={currentTopic?.description || 'Find articles and guides for this topic'}
         searchBar={true}
         searchPlaceholder="Search for answers..."
       />
@@ -95,16 +105,30 @@ export default function TopicPage() {
           items={[
             { label: productName, path: `/${region}/products/${productId}` },
             { label: 'Support hubs', path: `/${region}/products/${productId}` },
-            { label: topicName, current: true },
+            ...(subtopicId && parentTopic
+              ? [
+                  {
+                    label: parentTopic.title,
+                    path: `/${region}/products/${productId}/topics/${topicId}`,
+                  },
+                  { label: topicName, current: true },
+                ]
+              : [{ label: topicName, current: true }]),
           ]}
         />
 
         {/* Tab Navigation */}
         <TabNavigation />
 
-        {/* Articles Grid */}
-        {topicId && (
-          <ArticlesGrid articles={allArticles} topicId={topicId} />
+        {/* Articles/Subtopics Grid */}
+        {currentTopicId && (
+          <ArticlesGrid
+            items={items}
+            topicsData={topicsData}
+            topicId={topicId}
+            region={region}
+            productId={productId}
+          />
         )}
       </div>
     </div>

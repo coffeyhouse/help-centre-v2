@@ -43,6 +43,7 @@ function App() {
                 <Route path="/:region" element={<HomePage />} />
                 <Route path="/:region/products/:productId" element={<ProductLanding />} />
                 <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
+                <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
                 <Route path="/:region/contact" element={<ContactPage />} />
 
                 {/* 404 - Redirect to default region */}

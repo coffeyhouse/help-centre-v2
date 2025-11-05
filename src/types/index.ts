@@ -90,6 +90,8 @@ export interface SupportHub {
   description: string;
   icon: string;
   productId: string;
+  parentTopicId?: string; // For subtopics, references the parent topic ID
+  showOnProductLanding?: boolean; // Controls visibility on product landing page
   countries?: string[];
 }
 
@@ -99,6 +101,16 @@ export interface TopicsData {
 
 // ==================== Article Types ====================
 
+export interface ArticleItem {
+  id: string;
+  type?: 'article' | 'subtopic'; // Default: 'article'
+  title?: string; // For articles, or override for subtopics
+  description?: string; // For articles, or override for subtopics
+  icon?: string; // For subtopic overrides
+  countries?: string[];
+}
+
+// Deprecated: keeping for backwards compatibility
 export interface Article {
   id: string;
   title: string;
@@ -109,7 +121,7 @@ export interface Article {
 export interface ArticlesData {
   articles: {
     [productId: string]: {
-      [topicId: string]: Article[];
+      [topicId: string]: ArticleItem[];
     };
   };
 }

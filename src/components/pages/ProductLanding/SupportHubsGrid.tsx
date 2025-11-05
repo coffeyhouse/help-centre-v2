@@ -25,10 +25,19 @@ export default function SupportHubsGrid({ supportHubs, productId }: SupportHubsG
   const { region } = useRegion();
 
   // Filter support hubs by current product
+  // Exclude subtopics unless they have showOnProductLanding: true
   const filteredHubs = useMemo(() => {
-    return supportHubs.filter((hub) =>
-      hub.productId === productId
-    );
+    return supportHubs.filter((hub) => {
+      if (hub.productId !== productId) return false;
+
+      // If it's a subtopic (has parentTopicId), only show if showOnProductLanding is true
+      if (hub.parentTopicId) {
+        return hub.showOnProductLanding === true;
+      }
+
+      // Top-level topics are always shown
+      return true;
+    });
   }, [supportHubs, productId]);
 
   // Show first 6 hubs
