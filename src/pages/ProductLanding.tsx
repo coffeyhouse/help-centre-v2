@@ -11,10 +11,34 @@
 
 import { useParams } from 'react-router-dom';
 import { useRegion } from '../hooks/useRegion';
+import { useData } from '../hooks/useData';
+import { loadProducts, loadTopics } from '../utils/dataLoader';
+import Breadcrumb from '../components/layout/Breadcrumb';
+import TopNavigation from '../components/pages/ProductLanding/TopNavigation';
+import Hero from '../components/common/Hero';
+import SupportHubsGrid from '../components/pages/ProductLanding/SupportHubsGrid';
+import type { ProductsData, TopicsData } from '../types';
 
 export default function ProductLanding() {
   const { productId } = useParams<{ productId: string }>();
-  const { region, regionConfig, loading, error } = useRegion();
+  const { region, loading: regionLoading, error: regionError } = useRegion();
+
+  // Load products data to get product name
+  const {
+    data: productsData,
+    loading: productsLoading,
+    error: productsError,
+  } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  // Load topics/support hubs data
+  const {
+    data: topicsData,
+    loading: topicsLoading,
+    error: topicsError,
+  } = useData<TopicsData>(() => loadTopics(region), [region]);
+
+  const loading = regionLoading || productsLoading || topicsLoading;
+  const error = regionError || productsError || topicsError;
 
   if (loading) {
     return (
@@ -37,45 +61,41 @@ export default function ProductLanding() {
     );
   }
 
+  // Find the current product
+  const product = productsData?.products.find((p) => p.id === productId);
+
+  // Get product name for display
+  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-black text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {productId ? productId.replace(/-/g, ' ').toUpperCase() : 'Product'} Help
-          </h1>
-          <p className="text-lg text-gray-300">
-            You need help. We have answers.
-          </p>
-        </div>
-      </div>
+      {/* Top Navigation */}
+      <TopNavigation />
 
-      {/* Content */}
-      <div className="container-custom py-12">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold mb-4">ProductLanding - Placeholder</h2>
-          <p className="text-gray-600 mb-4">
-            This is a placeholder for the ProductLanding component.
-          </p>
-          <div className="space-y-2 text-sm">
-            <p><strong>Current Region:</strong> {region}</p>
-            <p><strong>Region Display Name:</strong> {regionConfig?.displayName}</p>
-            <p><strong>Product ID:</strong> {productId}</p>
-            <p><strong>URL Path:</strong> /{region}/products/{productId}</p>
-          </div>
-          <div className="mt-6 p-4 bg-blue-50 rounded">
-            <p className="text-sm text-blue-900">
-              <strong>Phase 4:</strong> Routing is now working! This page will be implemented in Phase 8 with:
-            </p>
-            <ul className="list-disc list-inside text-sm text-blue-800 mt-2">
-              <li>Breadcrumb navigation</li>
-              <li>Top navigation bar</li>
-              <li>Support hubs grid (filtered by product)</li>
-              <li>Search functionality</li>
-            </ul>
-          </div>
-        </div>
+      {/* Hero Section */}
+      <Hero
+        title={`${productName} Help`}
+        subtitle="You need help. We have answers."
+        searchBar={true}
+        searchPlaceholder="Search for answers..."
+      />
+
+      {/* Main Content */}
+      <div className="container-custom py-8">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: productName, current: true },
+          ]}
+        />
+
+        {/* Support Hubs Grid */}
+        {topicsData && productId && (
+          <SupportHubsGrid
+            supportHubs={topicsData.supportHubs}
+            productId={productId}
+          />
+        )}
       </div>
     </div>
   );
