@@ -26,6 +26,14 @@ import {
   ClipboardDocumentListIcon,
   CreditCardIcon,
   EnvelopeIcon,
+  HomeIcon,
+  CubeIcon,
+  BookOpenIcon,
+  CameraIcon,
+  BriefcaseIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
+  VideoCameraIcon,
+  Square3Stack3DIcon,
 } from '@heroicons/react/24/outline';
 
 interface IconProps {
@@ -53,6 +61,18 @@ export default function Icon({ name, className = 'w-6 h-6' }: IconProps) {
     question: QuestionMarkCircleIcon,
     email: EnvelopeIcon,
     chat: ChatBubbleLeftRightIcon,
+    // Navigation icons
+    home: HomeIcon,
+    products: CubeIcon,
+    contact: PhoneIcon,
+    // Brand/Logo icons
+    book: BookOpenIcon,
+    // Social media icons
+    instagram: CameraIcon,
+    facebook: Square3Stack3DIcon,
+    linkedin: BriefcaseIcon,
+    twitter: ChatBubbleOvalLeftEllipsisIcon,
+    youtube: VideoCameraIcon,
     // Product icons
     'icon-a': ChartBarIcon,
     'icon-b': CloudIcon,
