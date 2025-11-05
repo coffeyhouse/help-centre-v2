@@ -6,10 +6,12 @@
  * - Region configuration data
  * - Function to change regions
  * - Automatic loading of region-specific data
+ * - Synchronization with URL parameters
  */
 
 import { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { loadRegionConfig } from '../utils/dataLoader';
 import type { RegionContextValue, RegionConfig } from '../types';
 
@@ -25,7 +27,7 @@ interface RegionProviderProps {
  * RegionProvider component
  *
  * Wraps the application and provides region state and configuration
- * to all child components via Context API
+ * to all child components via Context API. Syncs with URL parameters.
  *
  * @example
  * ```tsx
@@ -35,18 +37,24 @@ interface RegionProviderProps {
  * ```
  */
 export function RegionProvider({ children, initialRegion = 'gb' }: RegionProviderProps) {
-  // Get initial region from localStorage or use default
-  const [region, setRegion] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      const savedRegion = localStorage.getItem('selectedRegion');
-      return savedRegion || initialRegion;
-    }
-    return initialRegion;
-  });
+  const params = useParams<{ region: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  // Get region from URL params or use default
+  const urlRegion = params.region || initialRegion;
+
+  const [region, setRegion] = useState<string>(urlRegion);
   const [regionConfig, setRegionConfig] = useState<RegionConfig | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync region state with URL parameters
+  useEffect(() => {
+    if (urlRegion && urlRegion !== region) {
+      setRegion(urlRegion);
+    }
+  }, [urlRegion]);
 
   // Load region configuration when region changes
   useEffect(() => {
@@ -95,13 +103,25 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
   /**
    * Change the current region
    * This will trigger a reload of region-specific configuration and data
+   * and update the URL to reflect the new region
    *
    * @param newRegion - The new region code to switch to (e.g., 'gb', 'ie')
    */
   const changeRegion = (newRegion: string) => {
     if (newRegion !== region) {
       setRegion(newRegion);
-      // In Phase 4, this will also update the URL
+
+      // Update URL to reflect new region while maintaining the current path structure
+      const pathParts = location.pathname.split('/').filter(Boolean);
+
+      // If we're on a region-based route, replace the region
+      if (pathParts.length > 0 && ['gb', 'ie'].includes(pathParts[0])) {
+        pathParts[0] = newRegion;
+        navigate(`/${pathParts.join('/')}`);
+      } else {
+        // Navigate to homepage of new region
+        navigate(`/${newRegion}`);
+      }
     }
   };
 
