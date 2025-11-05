@@ -9,6 +9,26 @@
       "buttonStyle": "primary"
     },
     {
+      "id": "live-chat",
+      "type": "action",
+      "title": "Live Chat",
+      "description": "Chat with our support team in real-time for instant help.",
+      "icon": "chat",
+      "buttonLabel": "Start chat",
+      "buttonStyle": "primary",
+      "productIds": ["product-b", "product-c", "product-e"]
+    },
+    {
+      "id": "product-a-specialist",
+      "type": "action",
+      "title": "Product A Specialist Team",
+      "description": "Speak to our dedicated Product A experts for advanced support.",
+      "icon": "support",
+      "buttonLabel": "Contact specialists",
+      "buttonStyle": "outline",
+      "productIds": ["product-a"]
+    },
+    {
       "id": "phone-gb",
       "type": "action",
       "title": "Telephone",
