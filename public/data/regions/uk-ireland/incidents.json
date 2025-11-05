@@ -52,9 +52,9 @@
       "message": "Our support team is now available with extended hours to better serve you.",
       "scope": {
         "type": "page",
-        "pagePatterns": ["/contact"]
+        "pagePatterns": ["/:region/contact"]
       },
-      "active": false,
+      "active": true,
       "countries": ["gb"]
     },
     {
