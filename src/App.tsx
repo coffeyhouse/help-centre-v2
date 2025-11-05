@@ -15,6 +15,7 @@ import { PersonaProvider } from './context/PersonaContext';
 // Layout imports
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Page imports
 import HomePage from './pages/HomePage';
@@ -25,6 +26,7 @@ import ContactPage from './pages/ContactPage';
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <RegionProvider>
         <PersonaProvider>
           <div className="min-h-screen flex flex-col">
