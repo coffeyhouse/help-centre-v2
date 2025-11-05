@@ -10,7 +10,8 @@ import type {
   TopicsData,
   ArticlesData,
   ContactData,
-  Article
+  Article,
+  IncidentBannersData
 } from '../types';
 
 const BASE_DATA_PATH = '/data';
@@ -139,6 +140,20 @@ export async function loadContact(countryCode: string): Promise<ContactData> {
 
   return {
     contactMethods: filterByCountry(data.contactMethods, countryCode),
+  };
+}
+
+/**
+ * Load incident banners for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to IncidentBannersData object filtered by country
+ */
+export async function loadIncidentBanners(countryCode: string): Promise<IncidentBannersData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<IncidentBannersData>(`${BASE_DATA_PATH}/regions/${regionId}/incidents.json`);
+
+  return {
+    banners: filterByCountry(data.banners, countryCode),
   };
 }
 

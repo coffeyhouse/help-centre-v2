@@ -147,6 +147,32 @@ export interface ContactData {
   contactMethods: ContactMethod[];
 }
 
+// ==================== Incident Banner Types ====================
+
+export type IncidentBannerState = 'info' | 'caution' | 'resolved' | 'error';
+
+export interface IncidentBanner {
+  id: string;
+  state: IncidentBannerState;
+  title: string;
+  message: string;
+  link?: {
+    text: string;
+    url: string;
+  };
+  scope: {
+    type: 'global' | 'product' | 'page';
+    productIds?: string[]; // For product-specific banners
+    pagePatterns?: string[]; // For page-specific banners (e.g., "/products/:productId", "/contact")
+  };
+  active: boolean;
+  countries?: string[];
+}
+
+export interface IncidentBannersData {
+  banners: IncidentBanner[];
+}
+
 // ==================== Breadcrumb Types ====================
 
 export interface BreadcrumbItem {

@@ -16,6 +16,7 @@ import { PersonaProvider } from './context/PersonaContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import BannerManager from './components/common/BannerManager';
 
 // Page imports
 import HomePage from './pages/HomePage';
@@ -32,6 +33,9 @@ function App() {
           <div className="min-h-screen flex flex-col">
             {/* Header with navigation and region selector */}
             <Header />
+
+            {/* Incident Banners */}
+            <BannerManager />
 
             {/* Main content area */}
             <main className="flex-grow">
