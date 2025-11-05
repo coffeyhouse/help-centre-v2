@@ -1,0 +1,215 @@
+{
+  "releaseNotes": [
+    {
+      "id": "release-product-b-2024-12",
+      "version": "5.2.0",
+      "date": "2024-12-15",
+      "title": "Enhanced Reporting and Mobile Improvements",
+      "description": "This release brings powerful new reporting features and significant mobile app enhancements.",
+      "features": [
+        "Custom report builder with drag-and-drop interface",
+        "Real-time collaboration on financial documents",
+        "Advanced filtering options for transaction history",
+        "Mobile app offline mode for accessing reports"
+      ],
+      "improvements": [
+        "Faster dashboard loading times (40% improvement)",
+        "Enhanced security with two-factor authentication",
+        "Improved search functionality across all modules"
+      ],
+      "fixes": [
+        "Fixed issue with VAT calculations for EU transactions",
+        "Resolved sync issues between desktop and mobile apps",
+        "Corrected currency conversion rounding errors"
+      ],
+      "productIds": ["product-b"]
+    },
+    {
+      "id": "release-product-a-2024-11",
+      "version": "12.5.1",
+      "date": "2024-11-20",
+      "title": "Year-End Tax Preparation Update",
+      "description": "Essential updates for year-end tax preparation and compliance.",
+      "features": [
+        "Automatic tax code updates for 2024/2025 tax year",
+        "Making Tax Digital (MTD) compliance enhancements",
+        "New payroll integration with automatic PAYE submissions"
+      ],
+      "improvements": [
+        "Streamlined bank reconciliation process",
+        "Enhanced backup and restore functionality",
+        "Improved performance for large datasets"
+      ],
+      "fixes": [
+        "Fixed issue with CIS deductions not appearing in reports",
+        "Resolved printing problems with aged debtor reports",
+        "Corrected VAT return calculation edge cases"
+      ],
+      "productIds": ["product-a"]
+    },
+    {
+      "id": "release-product-b-2024-10",
+      "version": "5.1.5",
+      "date": "2024-10-08",
+      "title": "Bank Feed Improvements",
+      "description": "Enhanced bank feed connectivity and transaction matching.",
+      "improvements": [
+        "Support for 15 additional UK banking institutions",
+        "Smarter transaction matching algorithm",
+        "Faster bank feed synchronization"
+      ],
+      "fixes": [
+        "Fixed duplicate transactions appearing from certain banks",
+        "Resolved timeout issues with bank feed connections",
+        "Corrected issue with categorizing refund transactions"
+      ],
+      "productIds": ["product-b"]
+    },
+    {
+      "id": "release-product-c-2024-09",
+      "version": "3.0.0",
+      "date": "2024-09-12",
+      "title": "Major Payroll Platform Redesign",
+      "description": "Complete redesign of the payroll interface with new automation features.",
+      "features": [
+        "Completely redesigned user interface for better usability",
+        "Automatic pension enrollment calculations",
+        "Employee self-service portal",
+        "Integration with HMRC RTI (Real Time Information) system",
+        "Bulk payslip generation and distribution"
+      ],
+      "improvements": [
+        "Simplified payroll run process with step-by-step wizard",
+        "Enhanced reporting with customizable templates",
+        "Mobile-responsive employee portal"
+      ],
+      "productIds": ["product-c"]
+    },
+    {
+      "id": "release-product-a-2024-08",
+      "version": "12.4.0",
+      "date": "2024-08-15",
+      "title": "Audit Trail and Security Enhancement",
+      "description": "Improved audit capabilities and enhanced security features.",
+      "features": [
+        "Comprehensive audit trail for all transactions",
+        "Role-based access control with granular permissions",
+        "Automated backup scheduling with cloud storage integration"
+      ],
+      "improvements": [
+        "Enhanced password security requirements",
+        "Improved session management",
+        "Better error logging for troubleshooting"
+      ],
+      "fixes": [
+        "Fixed issue with user permissions not saving correctly",
+        "Resolved export problems with large data sets"
+      ],
+      "productIds": ["product-a"]
+    },
+    {
+      "id": "release-product-b-2024-07",
+      "version": "5.0.0",
+      "date": "2024-07-01",
+      "title": "Cloud Platform Major Update",
+      "description": "Major platform update with new architecture and features.",
+      "features": [
+        "New multi-currency support for international businesses",
+        "Advanced inventory management module",
+        "Integration marketplace with 50+ third-party apps",
+        "API access for custom integrations",
+        "Automated invoice reminders and payment collection"
+      ],
+      "improvements": [
+        "Complete UI refresh with modern design",
+        "Significantly improved performance and scalability",
+        "Enhanced mobile app with feature parity to desktop",
+        "Better accessibility compliance (WCAG 2.1 Level AA)"
+      ],
+      "fixes": [
+        "Resolved numerous legacy bugs from previous versions",
+        "Fixed data migration issues for upgrading users"
+      ],
+      "productIds": ["product-b"]
+    },
+    {
+      "id": "release-product-c-2024-06",
+      "version": "2.8.2",
+      "date": "2024-06-18",
+      "title": "Summer Payroll Updates",
+      "description": "Seasonal updates and compliance changes.",
+      "improvements": [
+        "Updated tax codes for mid-year changes",
+        "Enhanced reporting for student loan deductions",
+        "Improved handling of statutory payments"
+      ],
+      "fixes": [
+        "Fixed calculation errors for Scottish tax rates",
+        "Resolved issue with holiday pay calculations",
+        "Corrected rounding issues in National Insurance contributions"
+      ],
+      "productIds": ["product-c"]
+    },
+    {
+      "id": "release-product-a-2024-05",
+      "version": "12.3.0",
+      "date": "2024-05-10",
+      "title": "Spring Feature Release",
+      "description": "New features for improved productivity and compliance.",
+      "features": [
+        "Bulk invoice creation from recurring templates",
+        "Enhanced VAT management with automated calculations",
+        "New financial dashboard with key metrics"
+      ],
+      "improvements": [
+        "Faster report generation for year-end accounts",
+        "Better integration with banking systems",
+        "Improved data import/export capabilities"
+      ],
+      "fixes": [
+        "Fixed issue with journal entries not balancing correctly",
+        "Resolved chart of accounts customization problems"
+      ],
+      "productIds": ["product-a"]
+    },
+    {
+      "id": "release-product-b-2024-04",
+      "version": "4.9.5",
+      "date": "2024-04-05",
+      "title": "Tax Year End Update",
+      "description": "Important updates for the new tax year.",
+      "features": [
+        "Automatic tax year rollover functionality",
+        "Enhanced Making Tax Digital for VAT features"
+      ],
+      "improvements": [
+        "Updated tax rates and thresholds for 2024/2025",
+        "Better handling of partial year tax calculations"
+      ],
+      "fixes": [
+        "Fixed VAT return submission errors",
+        "Corrected tax code assignments for new employees"
+      ],
+      "productIds": ["product-b"]
+    },
+    {
+      "id": "release-product-a-2024-03",
+      "version": "12.2.1",
+      "date": "2024-03-08",
+      "title": "Performance and Stability Update",
+      "description": "Focus on improving performance and fixing critical issues.",
+      "improvements": [
+        "Optimized database queries for better performance",
+        "Reduced memory usage for large company files",
+        "Improved startup time"
+      ],
+      "fixes": [
+        "Fixed critical crash when opening certain reports",
+        "Resolved data corruption issue in backup files",
+        "Corrected invoice numbering sequence problems",
+        "Fixed issue with email settings not being saved"
+      ],
+      "productIds": ["product-a"]
+    }
+  ]
+}

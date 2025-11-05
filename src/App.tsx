@@ -24,6 +24,7 @@ import ProductLanding from './pages/ProductLanding';
 import TopicPage from './pages/TopicPage';
 import ContactPage from './pages/ContactPage';
 import SearchResultsPage from './pages/SearchResultsPage';
+import ReleaseNotesPage from './pages/ReleaseNotesPage';
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
                   <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
                   <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
                   <Route path="/:region/contact" element={<ContactPage />} />
+                  <Route path="/:region/release-notes" element={<ReleaseNotesPage />} />
                 </Route>
 
                 {/* 404 - Redirect to default region */}
