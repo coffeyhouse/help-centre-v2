@@ -20,8 +20,8 @@ import type { ProductsData, TopicsData, ArticlesData } from '../types';
 
 export default function TopicPage() {
   const { productId, topicId, subtopicId } = useParams<{
-    productId: string;
-    topicId: string;
+    productId?: string;
+    topicId?: string;
     subtopicId?: string;
   }>();
   const { region, loading: regionLoading, error: regionError } = useRegion();
@@ -126,7 +126,7 @@ export default function TopicPage() {
           <ArticlesGrid
             items={items}
             topicsData={topicsData}
-            topicId={topicId}
+            topicId={topicId!}
             region={region}
             productId={productId}
           />

@@ -10,7 +10,7 @@ import type {
   TopicsData,
   ArticlesData,
   ContactData,
-  Article,
+  ArticleItem,
   IncidentBannersData
 } from '../types';
 
@@ -115,7 +115,7 @@ export async function loadArticles(countryCode: string): Promise<ArticlesData> {
   const data = await fetchJSON<ArticlesData>(`${BASE_DATA_PATH}/regions/${regionId}/articles.json`);
 
   // Filter articles within each product > topic hierarchy
-  const filteredArticles: { [productId: string]: { [topicId: string]: Article[] } } = {};
+  const filteredArticles: { [productId: string]: { [topicId: string]: ArticleItem[] } } = {};
 
   for (const [productId, topics] of Object.entries(data.articles)) {
     filteredArticles[productId] = {};

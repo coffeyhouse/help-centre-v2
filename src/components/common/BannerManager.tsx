@@ -13,7 +13,7 @@ import { useRegion } from '../../hooks/useRegion';
 import { useData } from '../../hooks/useData';
 import { loadIncidentBanners } from '../../utils/dataLoader';
 import IncidentBanner from './IncidentBanner';
-import type { IncidentBanner as IncidentBannerType, IncidentBannerState } from '../../types';
+import type { IncidentBannerState } from '../../types';
 
 export default function BannerManager() {
   const { region } = useRegion();
