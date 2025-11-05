@@ -33,6 +33,15 @@ export default function BannerManager() {
   // Get all active banners
   const activeBanners = incidentsData.banners.filter(banner => banner.active);
 
+  // Debug logging
+  console.log('BannerManager Debug:', {
+    pathname: location.pathname,
+    productId: params.productId,
+    totalBanners: incidentsData.banners.length,
+    activeBanners: activeBanners.length,
+    activeBannerIds: activeBanners.map(b => b.id),
+  });
+
   if (activeBanners.length === 0) {
     return null;
   }
@@ -43,12 +52,21 @@ export default function BannerManager() {
 
     // Global banners apply to all pages
     if (scope.type === 'global') {
+      console.log(`Banner ${banner.id}: Global banner - SHOWING`);
       return true;
     }
 
     // Product-specific banners
     if (scope.type === 'product' && params.productId) {
-      return scope.productIds?.includes(params.productId);
+      const matches = scope.productIds?.includes(params.productId);
+      console.log(`Banner ${banner.id}: Product banner - productId=${params.productId}, targetProducts=${scope.productIds}, matches=${matches}`);
+      return matches;
+    }
+
+    // Product-specific banners but no productId in URL
+    if (scope.type === 'product' && !params.productId) {
+      console.log(`Banner ${banner.id}: Product banner but no productId in URL - HIDING`);
+      return false;
     }
 
     // Page-specific banners
@@ -61,12 +79,17 @@ export default function BannerManager() {
           .replace(/\//g, '\\/'); // Escape forward slashes
 
         const regex = new RegExp(`^${regexPattern}$`);
-        return regex.test(location.pathname);
+        const matches = regex.test(location.pathname);
+        console.log(`Banner ${banner.id}: Page banner - pattern=${pattern}, pathname=${location.pathname}, matches=${matches}`);
+        return matches;
       });
     }
 
+    console.log(`Banner ${banner.id}: No matching scope - HIDING`);
     return false;
   });
+
+  console.log('Relevant banners:', relevantBanners.map(b => b.id));
 
   if (relevantBanners.length === 0) {
     return null;

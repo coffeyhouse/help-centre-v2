@@ -28,7 +28,7 @@
         "type": "product",
         "productIds": ["product-a"]
       },
-      "active": false
+      "active": true
     },
     {
       "id": "product-b-update",
