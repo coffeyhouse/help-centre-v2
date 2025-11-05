@@ -1,0 +1,55 @@
+{
+  "contactTopics": [
+    {
+      "id": "install-software",
+      "title": "Install your software",
+      "icon": "download"
+    },
+    {
+      "id": "manage-vat",
+      "title": "Manage your VAT",
+      "icon": "document"
+    },
+    {
+      "id": "banking",
+      "title": "Working with the bank",
+      "icon": "bank"
+    },
+    {
+      "id": "remote-access",
+      "title": "Run your accounts remotely",
+      "icon": "remote"
+    },
+    {
+      "id": "year-end",
+      "title": "Financial year end",
+      "icon": "calendar"
+    },
+    {
+      "id": "other",
+      "title": "Something else...",
+      "icon": "question"
+    }
+  ],
+  "contactMethods": [
+    {
+      "id": "community",
+      "type": "card",
+      "title": "Tap into the wisdom of our community forums",
+      "icon": "community",
+      "buttonLabel": "Go to Community Hub",
+      "buttonStyle": "primary"
+    },
+    {
+      "id": "phone",
+      "type": "action",
+      "title": "Telephone",
+      "description": "Give us a call and talk to one of our experts on the phone.",
+      "icon": "phone",
+      "buttonLabel": "Call now",
+      "buttonStyle": "outline",
+      "phoneNumber": "+44 (0) 191 294 3000",
+      "hours": "Monday-Friday, 9:00-17:00 GMT"
+    }
+  ]
+}

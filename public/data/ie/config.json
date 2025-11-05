@@ -1,0 +1,34 @@
+{
+  "region": "ie",
+  "displayName": "Ireland",
+  "personas": [
+    {
+      "id": "customer",
+      "label": "I'm a Customer",
+      "default": true
+    },
+    {
+      "id": "accountant",
+      "label": "I'm an Accountant or Bookkeeper",
+      "default": false
+    }
+  ],
+  "navigation": {
+    "main": [
+      {
+        "label": "Help Centre",
+        "path": "/ie",
+        "icon": "home"
+      },
+      {
+        "label": "Products",
+        "path": "/ie/products",
+        "type": "dropdown"
+      },
+      {
+        "label": "Contact us",
+        "path": "/ie/contact"
+      }
+    ]
+  }
+}

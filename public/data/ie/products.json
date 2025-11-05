@@ -1,0 +1,78 @@
+{
+  "products": [
+    {
+      "id": "product-a",
+      "name": "Product A",
+      "description": "Desktop accounting software",
+      "personas": ["customer", "accountant"],
+      "icon": "icon-a"
+    },
+    {
+      "id": "product-b",
+      "name": "Product B",
+      "description": "Cloud-based accounting",
+      "personas": ["customer", "accountant"],
+      "icon": "icon-b"
+    },
+    {
+      "id": "product-c",
+      "name": "Product C",
+      "description": "Payroll software",
+      "personas": ["customer"],
+      "icon": "icon-c"
+    },
+    {
+      "id": "product-d",
+      "name": "Product D",
+      "description": "Tax management",
+      "personas": ["accountant"],
+      "icon": "icon-d"
+    },
+    {
+      "id": "product-e",
+      "name": "Product E",
+      "description": "Invoice management",
+      "personas": ["customer", "accountant"],
+      "icon": "icon-e"
+    },
+    {
+      "id": "product-f",
+      "name": "Product F",
+      "description": "Expense tracking",
+      "personas": ["customer"],
+      "icon": "icon-f"
+    }
+  ],
+  "hotTopics": [
+    {
+      "id": "2fa",
+      "title": "2-factor authentication (2FA)",
+      "icon": "lock"
+    },
+    {
+      "id": "whats-new",
+      "title": "What's new in 2025",
+      "icon": "star"
+    }
+  ],
+  "quickAccessCards": [
+    {
+      "id": "account-mgmt",
+      "title": "Account management and services",
+      "description": "Register your software, access your invoices, and download software updates to stay up to date.",
+      "icon": "checklist"
+    },
+    {
+      "id": "community",
+      "title": "Visit Community Hub",
+      "description": "Community Hub is the place to ask questions, share tips and ideas, get practical advice and all the breaking news.",
+      "icon": "community"
+    },
+    {
+      "id": "training",
+      "title": "Free training",
+      "description": "100% free courses available across all products.",
+      "icon": "graduation"
+    }
+  ]
+}

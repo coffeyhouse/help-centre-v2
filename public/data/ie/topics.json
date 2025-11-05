@@ -1,0 +1,46 @@
+{
+  "supportHubs": [
+    {
+      "id": "install-software",
+      "title": "Install your software",
+      "description": "Everything you need to install your software.",
+      "icon": "download",
+      "productIds": ["product-a", "product-c"]
+    },
+    {
+      "id": "manage-vat",
+      "title": "Manage your VAT",
+      "description": "Record VAT transactions and produce VAT Returns.",
+      "icon": "document",
+      "productIds": ["product-a", "product-b", "product-d"]
+    },
+    {
+      "id": "banking",
+      "title": "Working with the bank",
+      "description": "Record and keep track of money paid and received.",
+      "icon": "bank",
+      "productIds": ["product-a", "product-b"]
+    },
+    {
+      "id": "remote-access",
+      "title": "Run your accounts remotely",
+      "description": "Don't be tied to the office, work flexibly with Remote Data Access.",
+      "icon": "remote",
+      "productIds": ["product-a"]
+    },
+    {
+      "id": "year-end",
+      "title": "Financial year end",
+      "description": "Complete your year end, then get ready for the new year.",
+      "icon": "calendar",
+      "productIds": ["product-a", "product-b"]
+    },
+    {
+      "id": "getting-started",
+      "title": "Getting started",
+      "description": "New to this product? Start here for basics.",
+      "icon": "play",
+      "productIds": ["product-a", "product-b", "product-c", "product-d", "product-e", "product-f"]
+    }
+  ]
+}
