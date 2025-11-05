@@ -10,11 +10,27 @@
  */
 
 import { useRegion } from '../hooks/useRegion';
-import { usePersona } from '../hooks/usePersona';
+import { useData } from '../hooks/useData';
+import { loadProducts } from '../utils/dataLoader';
+import Hero from '../components/common/Hero';
+import PersonaTabs from '../components/pages/HomePage/PersonaTabs';
+import ProductGrid from '../components/pages/HomePage/ProductGrid';
+import HotTopics from '../components/pages/HomePage/HotTopics';
+import QuickAccessCards from '../components/pages/HomePage/QuickAccessCards';
+import type { ProductsData } from '../types';
 
 export default function HomePage() {
-  const { region, regionConfig, loading, error } = useRegion();
-  const { persona } = usePersona();
+  const { region, regionConfig, loading: regionLoading, error: regionError } = useRegion();
+
+  // Load products data for this region
+  const {
+    data: productsData,
+    loading: dataLoading,
+    error: dataError,
+  } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  const loading = regionLoading || dataLoading;
+  const error = regionError || dataError;
 
   if (loading) {
     return (
@@ -40,41 +56,30 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-black text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Welcome to the Help Centre
-          </h1>
-          <p className="text-lg text-gray-300">
-            Region: {regionConfig?.displayName} | Persona: {persona}
-          </p>
-        </div>
-      </div>
+      <Hero
+        title="Welcome to the Help Centre"
+        subtitle={`Find help and support for all our products in ${regionConfig?.displayName || 'your region'}`}
+      />
 
-      {/* Content */}
+      {/* Main Content */}
       <div className="container-custom py-12">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold mb-4">HomePage - Placeholder</h2>
-          <p className="text-gray-600 mb-4">
-            This is a placeholder for the HomePage component.
-          </p>
-          <div className="space-y-2 text-sm">
-            <p><strong>Current Region:</strong> {region}</p>
-            <p><strong>Region Display Name:</strong> {regionConfig?.displayName}</p>
-            <p><strong>Current Persona:</strong> {persona}</p>
-          </div>
-          <div className="mt-6 p-4 bg-blue-50 rounded">
-            <p className="text-sm text-blue-900">
-              <strong>Phase 4:</strong> Routing is now working! This page will be implemented in Phase 7 with:
-            </p>
-            <ul className="list-disc list-inside text-sm text-blue-800 mt-2">
-              <li>Persona tabs</li>
-              <li>Product grid (filtered by persona)</li>
-              <li>Hot topics section</li>
-              <li>Quick access cards</li>
-            </ul>
-          </div>
-        </div>
+        {/* Persona Tabs */}
+        <PersonaTabs />
+
+        {/* Product Grid */}
+        {productsData && (
+          <ProductGrid products={productsData.products} />
+        )}
+
+        {/* Hot Topics */}
+        {productsData && productsData.hotTopics && (
+          <HotTopics hotTopics={productsData.hotTopics} />
+        )}
+
+        {/* Quick Access Cards */}
+        {productsData && productsData.quickAccessCards && (
+          <QuickAccessCards cards={productsData.quickAccessCards} />
+        )}
       </div>
     </div>
   );
