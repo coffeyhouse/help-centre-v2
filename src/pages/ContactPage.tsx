@@ -36,6 +36,19 @@ export default function ContactPage() {
     error: contactError,
   } = useData<ContactData>(() => loadContact(region), [region]);
 
+  // Extract data (must be done before early returns to maintain hook order)
+  const personas = regionConfig?.personas || [];
+  const products = productsData?.products || [];
+  const allContactMethods = contactData?.contactMethods || [];
+
+  // Filter contact methods by selected product
+  // If productIds is not specified, the method applies to all products
+  const filteredContactMethods = useMemo(() => {
+    return allContactMethods.filter((method) =>
+      !method.productIds || method.productIds.includes(selectedProduct)
+    );
+  }, [allContactMethods, selectedProduct]);
+
   const loading = regionLoading || productsLoading || contactLoading;
   const error = regionError || productsError || contactError;
 
@@ -59,18 +72,6 @@ export default function ContactPage() {
       </div>
     );
   }
-
-  const personas = regionConfig?.personas || [];
-  const products = productsData?.products || [];
-  const allContactMethods = contactData?.contactMethods || [];
-
-  // Filter contact methods by selected product
-  // If productIds is not specified, the method applies to all products
-  const filteredContactMethods = useMemo(() => {
-    return allContactMethods.filter((method) =>
-      !method.productIds || method.productIds.includes(selectedProduct)
-    );
-  }, [allContactMethods, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-gray-50">
