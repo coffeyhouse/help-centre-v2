@@ -12,6 +12,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { RegionProvider } from './context/RegionContext';
 import { PersonaProvider } from './context/PersonaContext';
 
+// Layout imports
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+
 // Page imports
 import HomePage from './pages/HomePage';
 import ProductLanding from './pages/ProductLanding';
@@ -24,7 +28,8 @@ function App() {
       <RegionProvider>
         <PersonaProvider>
           <div className="min-h-screen flex flex-col">
-            {/* Header will be added in Phase 6 */}
+            {/* Header with navigation and region selector */}
+            <Header />
 
             {/* Main content area */}
             <main className="flex-grow">
@@ -43,7 +48,8 @@ function App() {
               </Routes>
             </main>
 
-            {/* Footer will be added in Phase 6 */}
+            {/* Footer with links and information */}
+            <Footer />
           </div>
         </PersonaProvider>
       </RegionProvider>
