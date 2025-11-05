@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+/* Custom utilities for Help Centre */
+@layer components {
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:scale-105;
+  }
+
+  /* Link hover effect */
+  .link-hover {
+    @apply transition-colors duration-200 hover:text-gray-600;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply border border-black text-black px-6 py-2 rounded-md hover:bg-gray-50 transition-colors;
+  }
+
+  /* Text button */
+  .btn-text {
+    @apply text-black hover:underline transition-colors;
+  }
+
+  /* Card base styling */
+  .card {
+    @apply bg-white border border-gray-200 rounded-lg p-6 transition-shadow;
+  }
+
+  /* Container with max width */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Base styles */
+@layer base {
+  body {
+    @apply text-gray-900 antialiased;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  h4 {
+    @apply text-xl font-semibold;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+  }
+}
