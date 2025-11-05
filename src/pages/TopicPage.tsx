@@ -81,23 +81,12 @@ export default function TopicPage() {
     ? topicsData?.supportHubs.find((t) => t.id === subtopicId && t.productId === productId)
     : parentTopic;
 
-  // Find subtopics if we're viewing a parent topic (no subtopicId in URL)
-  const subtopics = !subtopicId
-    ? topicsData?.supportHubs.filter(
-        (t) => t.parentTopicId === topicId && t.productId === productId
-      ) || []
-    : [];
-
   // Get names for display with fallbacks
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
   const topicName = currentTopic?.title || currentTopicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
 
-  // Get all articles for the current topic (could be parent topic or subtopic)
-  const allArticles = articlesData?.articles[productId || '']?.[currentTopicId || ''] || [];
-
-  // Determine if we should show subtopics or articles
-  const hasSubtopics = subtopics.length > 0;
-  const showArticles = !hasSubtopics || subtopicId;
+  // Get all items (articles and subtopics) for the current topic
+  const items = articlesData?.articles[productId || '']?.[currentTopicId || ''] || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -134,8 +123,8 @@ export default function TopicPage() {
         {/* Articles/Subtopics Grid */}
         {currentTopicId && (
           <ArticlesGrid
-            articles={showArticles ? allArticles : []}
-            subtopics={hasSubtopics && !subtopicId ? subtopics : []}
+            items={items}
+            topicsData={topicsData}
             topicId={topicId}
             region={region}
             productId={productId}
