@@ -9,6 +9,40 @@
       "buttonStyle": "primary"
     },
     {
+      "id": "priority-support",
+      "type": "action",
+      "title": "Priority Support",
+      "description": "Get faster response times and dedicated support for urgent issues.",
+      "icon": "star",
+      "buttonLabel": "Learn more",
+      "buttonStyle": "primary",
+      "openModal": true,
+      "modalContent": {
+        "title": "Priority Support Information",
+        "sections": [
+          {
+            "heading": "What is Priority Support?",
+            "content": "Priority Support gives you access to our premium support services with faster response times, dedicated account managers, and 24/7 availability for critical issues.",
+            "type": "text"
+          },
+          {
+            "heading": "Benefits Include",
+            "content": "Dedicated account manager\n24/7 support for critical issues\nResponse within 1 hour for urgent tickets\nDirect phone line to senior support staff\nPriority access to product updates and beta features",
+            "type": "list"
+          },
+          {
+            "heading": "Pricing",
+            "content": "Priority Support is available as an add-on to your existing subscription starting at £99/month.\n\nContact our sales team for custom enterprise pricing.",
+            "type": "info"
+          },
+          {
+            "content": "Please note: Priority Support requires an active subscription to one of our products.",
+            "type": "warning"
+          }
+        ]
+      }
+    },
+    {
       "id": "live-chat",
       "type": "action",
       "title": "Live Chat",

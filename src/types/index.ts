@@ -139,12 +139,48 @@ export interface ContactMethod {
   phoneNumber?: string;
   hours?: string;
   url?: string;
+  openModal?: boolean; // If true, clicking opens a modal instead of navigating
+  modalContent?: {
+    title: string;
+    sections: {
+      heading?: string;
+      content: string;
+      type?: 'text' | 'list' | 'warning' | 'info';
+    }[];
+  };
   countries?: string[];
   productIds?: string[];
 }
 
 export interface ContactData {
   contactMethods: ContactMethod[];
+}
+
+// ==================== Incident Banner Types ====================
+
+export type IncidentBannerState = 'info' | 'caution' | 'resolved' | 'error';
+
+export interface IncidentBanner {
+  id: string;
+  state: IncidentBannerState;
+  title: string;
+  message: string;
+  link?: {
+    text: string;
+    url: string;
+  };
+  scope: {
+    type: 'global' | 'product' | 'topic' | 'page';
+    productIds?: string[]; // For product-specific banners
+    topicIds?: string[]; // For topic-specific banners (requires productId match too)
+    pagePatterns?: string[]; // For page-specific banners (e.g., "/products/:productId", "/contact")
+  };
+  active: boolean;
+  countries?: string[];
+}
+
+export interface IncidentBannersData {
+  banners: IncidentBanner[];
 }
 
 // ==================== Breadcrumb Types ====================
