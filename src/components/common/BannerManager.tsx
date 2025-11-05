@@ -8,7 +8,7 @@
  * - Priority order: error > caution > info > resolved
  */
 
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
 import { useData } from '../../hooks/useData';
 import { loadIncidentBanners } from '../../utils/dataLoader';
@@ -18,7 +18,11 @@ import type { IncidentBanner as IncidentBannerType, IncidentBannerState } from '
 export default function BannerManager() {
   const { region } = useRegion();
   const location = useLocation();
-  const params = useParams<{ productId?: string }>();
+
+  // Extract productId from pathname since BannerManager is outside Routes
+  // Matches patterns like: /gb/products/product-a or /gb/products/product-a/topics/...
+  const productIdMatch = location.pathname.match(/\/products\/([^/]+)/);
+  const productId = productIdMatch ? productIdMatch[1] : undefined;
 
   // Load incident banners for current region
   const { data: incidentsData } = useData(
@@ -36,7 +40,7 @@ export default function BannerManager() {
   // Debug logging
   console.log('BannerManager Debug:', {
     pathname: location.pathname,
-    productId: params.productId,
+    productId: productId,
     totalBanners: incidentsData.banners.length,
     activeBanners: activeBanners.length,
     activeBannerIds: activeBanners.map(b => b.id),
@@ -57,14 +61,14 @@ export default function BannerManager() {
     }
 
     // Product-specific banners
-    if (scope.type === 'product' && params.productId) {
-      const matches = scope.productIds?.includes(params.productId);
-      console.log(`Banner ${banner.id}: Product banner - productId=${params.productId}, targetProducts=${scope.productIds}, matches=${matches}`);
+    if (scope.type === 'product' && productId) {
+      const matches = scope.productIds?.includes(productId);
+      console.log(`Banner ${banner.id}: Product banner - productId=${productId}, targetProducts=${scope.productIds}, matches=${matches}`);
       return matches;
     }
 
     // Product-specific banners but no productId in URL
-    if (scope.type === 'product' && !params.productId) {
+    if (scope.type === 'product' && !productId) {
       console.log(`Banner ${banner.id}: Product banner but no productId in URL - HIDING`);
       return false;
     }
