@@ -8,6 +8,7 @@ A modern, multi-region customer support portal built with React, TypeScript, and
 - **Country-Specific Content**: Flexible item-level country filtering for localized information
 - **Persona-Based Navigation**: Tailored content for customers, accountants, partners, and developers
 - **Product-Centric Architecture**: Topics belong to specific products; contact methods can be product-specific
+- **Release Notes Timeline**: Product-specific release notes with automatic navigation integration
 - **Incident Banner System**: Multi-state notification banners for service announcements and incidents
 - **Responsive Design**: Mobile-first design using Tailwind CSS
 - **JSON-Powered Content**: Easy content management without backend changes
@@ -60,6 +61,7 @@ help-centre-v2/
 │   │   ├── ContactPage.tsx
 │   │   ├── HomePage.tsx
 │   │   ├── ProductLanding.tsx
+│   │   ├── ReleaseNotesPage.tsx
 │   │   └── TopicPage.tsx
 │   ├── types/               # TypeScript type definitions
 │   │   └── index.ts
@@ -76,7 +78,8 @@ help-centre-v2/
 │       │       ├── topics.json
 │       │       ├── articles.json
 │       │       ├── contact.json
-│       │       └── incidents.json
+│       │       ├── incidents.json
+│       │       └── release-notes.json
 │       └── countries/       # Country-specific configurations
 │           ├── gb/
 │           │   └── config.json
@@ -152,7 +155,8 @@ public/data/
 │       ├── topics.json             # Support hubs (product-specific)
 │       ├── articles.json           # Help articles by topic
 │       ├── contact.json            # Contact methods
-│       └── incidents.json          # Incident banners and notifications
+│       ├── incidents.json          # Incident banners and notifications
+│       └── release-notes.json      # Product release notes
 └── countries/
     ├── gb/config.json              # UK-specific configuration
     └── ie/config.json              # Ireland-specific configuration
@@ -336,6 +340,7 @@ The application uses country-code-based routing:
 /                                             → Redirects to /gb
 /:countryCode                                 → Home page
 /:countryCode/products/:productId             → Product landing page
+/:countryCode/products/:productId/release-notes → Product release notes
 /:countryCode/products/:productId/topics/:topicId → Topic page
 /:countryCode/contact                         → Contact page
 ```
@@ -503,6 +508,82 @@ The incident banner system uses a Layout component pattern to access route param
 - Priority-based display when multiple banners match
 - Responsive design
 - Accessible (ARIA labels, semantic HTML)
+
+### Release Notes Timeline
+
+Display product update history in a chronological timeline format with automatic navigation integration.
+
+**Features:**
+- Product-specific release notes organized by year
+- Timeline layout with visual indicators (dots and connecting lines)
+- Categorized information: Features, Improvements, Bug Fixes
+- Color-coded icons for each category
+- Automatic navigation link on product pages (only appears if product has release notes)
+- Country-level filtering support
+- Responsive design (mobile and desktop optimized)
+
+**Data Structure:**
+
+Release notes are organized by product in `public/data/regions/{region}/release-notes.json`:
+
+```json
+{
+  "releaseNotes": {
+    "product-a": [
+      {
+        "id": "release-product-a-2024-11",
+        "version": "12.5.1",
+        "date": "2024-11-20",
+        "title": "Year-End Tax Preparation Update",
+        "description": "Essential updates for year-end tax preparation and compliance.",
+        "features": [
+          "Automatic tax code updates for 2024/2025 tax year",
+          "Making Tax Digital (MTD) compliance enhancements"
+        ],
+        "improvements": [
+          "Streamlined bank reconciliation process",
+          "Enhanced backup and restore functionality"
+        ],
+        "fixes": [
+          "Fixed issue with CIS deductions not appearing in reports",
+          "Resolved printing problems with aged debtor reports"
+        ],
+        "countries": ["gb", "ie"]
+      }
+    ],
+    "product-b": [...]
+  }
+}
+```
+
+**Field Descriptions:**
+- `id` (required) - Unique identifier for the release
+- `version` (required) - Version number (e.g., "5.2.0", "12.5.1")
+- `date` (required) - Release date in ISO format (YYYY-MM-DD)
+- `title` (required) - Release title
+- `description` (optional) - Brief description of the release
+- `features` (optional) - Array of new features
+- `improvements` (optional) - Array of improvements and enhancements
+- `fixes` (optional) - Array of bug fixes
+- `countries` (optional) - Array of country codes (e.g., ["gb"], ["ie"]) - omit to show in all countries
+
+**Automatic Navigation:**
+
+The release notes link automatically appears in the product landing page navigation bar if the product has release notes:
+
+- Products with release notes: Navigation shows "Hot topics | **Release notes** | Contact us"
+- Products without release notes: Navigation shows "Hot topics | Contact us"
+
+**Adding Release Notes:**
+
+1. Edit `public/data/regions/{region}/release-notes.json`
+2. Add entries under the appropriate product key
+3. Releases are automatically sorted by date (newest first)
+4. The navigation link appears automatically if releases exist
+
+**Route:**
+- `/:countryCode/products/:productId/release-notes`
+- Example: `/gb/products/product-a/release-notes`
 
 ### Scroll-to-Top
 
