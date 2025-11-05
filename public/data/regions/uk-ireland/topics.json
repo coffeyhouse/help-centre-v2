@@ -1,112 +1,112 @@
 {
   "supportHubs": [
     {
-      "id": "install-software-product-a",
+      "id": "install-software",
       "title": "Install your software",
       "description": "Everything you need to install your software.",
       "icon": "download",
       "productId": "product-a"
     },
     {
-      "id": "manage-vat-product-a",
+      "id": "manage-vat",
       "title": "Manage your VAT",
       "description": "Record VAT transactions and produce VAT Returns.",
       "icon": "document",
       "productId": "product-a"
     },
     {
-      "id": "banking-product-a",
+      "id": "banking",
       "title": "Working with the bank",
       "description": "Record and keep track of money paid and received.",
       "icon": "bank",
       "productId": "product-a"
     },
     {
-      "id": "remote-access-product-a",
+      "id": "remote-access",
       "title": "Run your accounts remotely",
       "description": "Don't be tied to the office, work flexibly with Remote Data Access.",
       "icon": "remote",
       "productId": "product-a"
     },
     {
-      "id": "year-end-product-a",
+      "id": "year-end",
       "title": "Financial year end",
       "description": "Complete your year end, then get ready for the new year.",
       "icon": "calendar",
       "productId": "product-a"
     },
     {
-      "id": "getting-started-product-a",
+      "id": "getting-started",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
       "productId": "product-a"
     },
     {
-      "id": "manage-vat-product-b",
+      "id": "manage-vat",
       "title": "Manage your VAT",
       "description": "Record VAT transactions and produce VAT Returns.",
       "icon": "document",
       "productId": "product-b"
     },
     {
-      "id": "banking-product-b",
+      "id": "banking",
       "title": "Working with the bank",
       "description": "Record and keep track of money paid and received.",
       "icon": "bank",
       "productId": "product-b"
     },
     {
-      "id": "year-end-product-b",
+      "id": "year-end",
       "title": "Financial year end",
       "description": "Complete your year end, then get ready for the new year.",
       "icon": "calendar",
       "productId": "product-b"
     },
     {
-      "id": "getting-started-product-b",
+      "id": "getting-started",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
       "productId": "product-b"
     },
     {
-      "id": "install-software-product-c",
+      "id": "install-software",
       "title": "Install your software",
       "description": "Everything you need to install your software.",
       "icon": "download",
       "productId": "product-c"
     },
     {
-      "id": "getting-started-product-c",
+      "id": "getting-started",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
       "productId": "product-c"
     },
     {
-      "id": "manage-vat-product-d",
+      "id": "manage-vat",
       "title": "Manage your VAT",
       "description": "Record VAT transactions and produce VAT Returns.",
       "icon": "document",
       "productId": "product-d"
     },
     {
-      "id": "getting-started-product-d",
+      "id": "getting-started",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
       "productId": "product-d"
     },
     {
-      "id": "getting-started-product-e",
+      "id": "getting-started",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
       "productId": "product-e"
     },
     {
-      "id": "getting-started-product-f",
+      "id": "getting-started",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
