@@ -9,7 +9,8 @@ import type {
   ProductsData,
   TopicsData,
   ArticlesData,
-  ContactData
+  ContactData,
+  Article
 } from '../types';
 
 const BASE_DATA_PATH = '/data';
@@ -30,6 +31,33 @@ async function fetchJSON<T>(path: string): Promise<T> {
 }
 
 /**
+ * Filter items by country - only return items that apply to the given country
+ * If an item has no countries field, it applies to all countries in the region
+ * @param items - Array of items with optional countries field
+ * @param countryCode - Country code to filter by
+ * @returns Filtered array of items
+ */
+function filterByCountry<T extends { countries?: string[] }>(
+  items: T[],
+  countryCode: string
+): T[] {
+  return items.filter(
+    (item) => !item.countries || item.countries.includes(countryCode)
+  );
+}
+
+/**
+ * Get the region identifier for a given country code
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to the region identifier
+ */
+async function getRegionForCountry(countryCode: string): Promise<string> {
+  const regions = await loadRegions();
+  const region = regions.find((r) => r.code === countryCode);
+  return region?.region || 'uk-ireland';
+}
+
+/**
  * Load the list of all available regions
  * @returns Promise resolving to array of Region objects
  */
@@ -38,62 +66,91 @@ export async function loadRegions(): Promise<Region[]> {
 }
 
 /**
- * Load region-specific configuration
- * @param region - Region code (e.g., 'gb', 'ie')
+ * Load country-specific configuration
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
  * @returns Promise resolving to RegionConfig object
  */
-export async function loadRegionConfig(region: string): Promise<RegionConfig> {
-  return fetchJSON<RegionConfig>(`${BASE_DATA_PATH}/${region}/config.json`);
+export async function loadRegionConfig(countryCode: string): Promise<RegionConfig> {
+  return fetchJSON<RegionConfig>(`${BASE_DATA_PATH}/countries/${countryCode}/config.json`);
 }
 
 /**
- * Load products data for a specific region
- * @param region - Region code (e.g., 'gb', 'ie')
- * @returns Promise resolving to ProductsData object
+ * Load products data for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to ProductsData object filtered by country
  */
-export async function loadProducts(region: string): Promise<ProductsData> {
-  return fetchJSON<ProductsData>(`${BASE_DATA_PATH}/${region}/products.json`);
+export async function loadProducts(countryCode: string): Promise<ProductsData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<ProductsData>(`${BASE_DATA_PATH}/regions/${regionId}/products.json`);
+
+  return {
+    products: filterByCountry(data.products, countryCode),
+    hotTopics: filterByCountry(data.hotTopics, countryCode),
+    quickAccessCards: filterByCountry(data.quickAccessCards, countryCode),
+  };
 }
 
 /**
- * Load topics/support hubs data for a specific region
- * @param region - Region code (e.g., 'gb', 'ie')
- * @returns Promise resolving to TopicsData object
+ * Load topics/support hubs data for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to TopicsData object filtered by country
  */
-export async function loadTopics(region: string): Promise<TopicsData> {
-  return fetchJSON<TopicsData>(`${BASE_DATA_PATH}/${region}/topics.json`);
+export async function loadTopics(countryCode: string): Promise<TopicsData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<TopicsData>(`${BASE_DATA_PATH}/regions/${regionId}/topics.json`);
+
+  return {
+    supportHubs: filterByCountry(data.supportHubs, countryCode),
+  };
 }
 
 /**
- * Load articles data for a specific region
- * @param region - Region code (e.g., 'gb', 'ie')
- * @returns Promise resolving to ArticlesData object
+ * Load articles data for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to ArticlesData object filtered by country
  */
-export async function loadArticles(region: string): Promise<ArticlesData> {
-  return fetchJSON<ArticlesData>(`${BASE_DATA_PATH}/${region}/articles.json`);
+export async function loadArticles(countryCode: string): Promise<ArticlesData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<ArticlesData>(`${BASE_DATA_PATH}/regions/${regionId}/articles.json`);
+
+  // Filter articles within each topic
+  const filteredArticles: { [topicId: string]: Article[] } = {};
+  for (const [topicId, articles] of Object.entries(data.articles)) {
+    filteredArticles[topicId] = filterByCountry(articles, countryCode);
+  }
+
+  return {
+    articles: filteredArticles,
+  };
 }
 
 /**
- * Load contact information for a specific region
- * @param region - Region code (e.g., 'gb', 'ie')
- * @returns Promise resolving to ContactData object
+ * Load contact information for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to ContactData object filtered by country
  */
-export async function loadContact(region: string): Promise<ContactData> {
-  return fetchJSON<ContactData>(`${BASE_DATA_PATH}/${region}/contact.json`);
+export async function loadContact(countryCode: string): Promise<ContactData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<ContactData>(`${BASE_DATA_PATH}/regions/${regionId}/contact.json`);
+
+  return {
+    contactTopics: filterByCountry(data.contactTopics, countryCode),
+    contactMethods: filterByCountry(data.contactMethods, countryCode),
+  };
 }
 
 /**
- * Load all data for a specific region
- * @param region - Region code (e.g., 'gb', 'ie')
- * @returns Promise resolving to an object containing all region data
+ * Load all data for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to an object containing all country data
  */
-export async function loadAllRegionData(region: string) {
+export async function loadAllRegionData(countryCode: string) {
   const [config, products, topics, articles, contact] = await Promise.all([
-    loadRegionConfig(region),
-    loadProducts(region),
-    loadTopics(region),
-    loadArticles(region),
-    loadContact(region),
+    loadRegionConfig(countryCode),
+    loadProducts(countryCode),
+    loadTopics(countryCode),
+    loadArticles(countryCode),
+    loadContact(countryCode),
   ]);
 
   return {

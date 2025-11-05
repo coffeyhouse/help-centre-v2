@@ -9,6 +9,7 @@ export interface Region {
   currency: string;
   currencySymbol: string;
   dateFormat: string;
+  region: string;
   default?: boolean;
 }
 
@@ -51,6 +52,7 @@ export interface Product {
   type: ProductType;
   personas: PersonaId[];
   icon: string;
+  countries?: string[];
 }
 
 export interface ProductsData {
@@ -66,6 +68,7 @@ export interface HotTopic {
   title: string;
   icon: string;
   url?: string;
+  countries?: string[];
 }
 
 // ==================== Quick Access Cards ====================
@@ -76,6 +79,7 @@ export interface QuickAccessCard {
   description: string;
   icon: string;
   url?: string;
+  countries?: string[];
 }
 
 // ==================== Topic/Support Hub Types ====================
@@ -86,6 +90,7 @@ export interface SupportHub {
   description: string;
   icon: string;
   productIds: string[];
+  countries?: string[];
 }
 
 export interface TopicsData {
@@ -99,6 +104,7 @@ export interface Article {
   title: string;
   description: string;
   topicId: string;
+  countries?: string[];
 }
 
 export interface ArticlesData {
@@ -113,6 +119,7 @@ export interface ContactTopic {
   id: string;
   title: string;
   icon: string;
+  countries?: string[];
 }
 
 export interface ContactMethod {
@@ -126,6 +133,7 @@ export interface ContactMethod {
   phoneNumber?: string;
   hours?: string;
   url?: string;
+  countries?: string[];
 }
 
 export interface ContactData {

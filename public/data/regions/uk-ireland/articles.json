@@ -52,10 +52,38 @@
         "topicId": "manage-vat"
       },
       {
+        "id": "vat-returns-uk",
+        "title": "Submit VAT returns to HMRC",
+        "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
+        "topicId": "manage-vat",
+        "countries": ["gb"]
+      },
+      {
+        "id": "vat-returns-ie",
+        "title": "Submit VAT returns to Revenue",
+        "description": "Irish-specific guidance for submitting VAT returns through ROS.",
+        "topicId": "manage-vat",
+        "countries": ["ie"]
+      },
+      {
         "id": "vat-rates",
         "title": "Understanding VAT rates",
         "description": "Learn about different VAT rates and when to apply them.",
         "topicId": "manage-vat"
+      },
+      {
+        "id": "vat-rates-uk",
+        "title": "UK VAT rates (20%, 5%, 0%)",
+        "description": "Detailed breakdown of standard, reduced, and zero-rated VAT in the UK.",
+        "topicId": "manage-vat",
+        "countries": ["gb"]
+      },
+      {
+        "id": "vat-rates-ie",
+        "title": "Irish VAT rates (23%, 13.5%, 9%, 0%)",
+        "description": "Detailed breakdown of Irish VAT rates including the second reduced rate.",
+        "topicId": "manage-vat",
+        "countries": ["ie"]
       },
       {
         "id": "vat-reporting",

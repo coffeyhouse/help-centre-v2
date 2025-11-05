@@ -41,7 +41,7 @@
       "buttonStyle": "primary"
     },
     {
-      "id": "phone",
+      "id": "phone-gb",
       "type": "action",
       "title": "Telephone",
       "description": "Give us a call and talk to one of our experts on the phone.",
@@ -49,7 +49,20 @@
       "buttonLabel": "Call now",
       "buttonStyle": "outline",
       "phoneNumber": "+44 (0) 191 294 3000",
-      "hours": "Monday-Friday, 9:00-17:00 GMT"
+      "hours": "Monday-Friday, 9:00-17:00 GMT",
+      "countries": ["gb"]
+    },
+    {
+      "id": "phone-ie",
+      "type": "action",
+      "title": "Telephone",
+      "description": "Give us a call and talk to one of our experts on the phone.",
+      "icon": "phone",
+      "buttonLabel": "Call now",
+      "buttonStyle": "outline",
+      "phoneNumber": "+353 (0) 1 904 9200",
+      "hours": "Monday-Friday, 9:00-17:00 IST",
+      "countries": ["ie"]
     }
   ]
 }
