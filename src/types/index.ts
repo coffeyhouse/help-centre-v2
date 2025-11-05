@@ -161,8 +161,9 @@ export interface IncidentBanner {
     url: string;
   };
   scope: {
-    type: 'global' | 'product' | 'page';
+    type: 'global' | 'product' | 'topic' | 'page';
     productIds?: string[]; // For product-specific banners
+    topicIds?: string[]; // For topic-specific banners (requires productId match too)
     pagePatterns?: string[]; // For page-specific banners (e.g., "/products/:productId", "/contact")
   };
   active: boolean;

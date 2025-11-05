@@ -66,6 +66,22 @@
         "type": "global"
       },
       "active": false
+    },
+    {
+      "id": "banking-topic-issue",
+      "state": "caution",
+      "title": "Known Issue: Bank Feed Sync",
+      "message": "We're aware of an issue with bank feed synchronization in this section. Our team is working on a fix.",
+      "link": {
+        "text": "View workaround",
+        "url": "https://status.example.com"
+      },
+      "scope": {
+        "type": "topic",
+        "productIds": ["product-a"],
+        "topicIds": ["banking"]
+      },
+      "active": false
     }
   ]
 }

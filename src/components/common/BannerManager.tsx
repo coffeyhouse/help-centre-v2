@@ -8,7 +8,7 @@
  * - Priority order: error > caution > info > resolved
  */
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
 import { useData } from '../../hooks/useData';
 import { loadIncidentBanners } from '../../utils/dataLoader';
@@ -18,11 +18,9 @@ import type { IncidentBanner as IncidentBannerType, IncidentBannerState } from '
 export default function BannerManager() {
   const { region } = useRegion();
   const location = useLocation();
+  const params = useParams<{ productId?: string; topicId?: string; subtopicId?: string }>();
 
-  // Extract productId from pathname since BannerManager is outside Routes
-  // Matches patterns like: /gb/products/product-a or /gb/products/product-a/topics/...
-  const productIdMatch = location.pathname.match(/\/products\/([^/]+)/);
-  const productId = productIdMatch ? productIdMatch[1] : undefined;
+  const { productId, topicId, subtopicId } = params;
 
   // Load incident banners for current region
   const { data: incidentsData } = useData(
@@ -40,7 +38,9 @@ export default function BannerManager() {
   // Debug logging
   console.log('BannerManager Debug:', {
     pathname: location.pathname,
-    productId: productId,
+    productId,
+    topicId,
+    subtopicId,
     totalBanners: incidentsData.banners.length,
     activeBanners: activeBanners.length,
     activeBannerIds: activeBanners.map(b => b.id),
@@ -70,6 +70,21 @@ export default function BannerManager() {
     // Product-specific banners but no productId in URL
     if (scope.type === 'product' && !productId) {
       console.log(`Banner ${banner.id}: Product banner but no productId in URL - HIDING`);
+      return false;
+    }
+
+    // Topic-specific banners (requires both productId and topicId match)
+    if (scope.type === 'topic' && productId && topicId) {
+      const productMatches = scope.productIds?.includes(productId);
+      const topicMatches = scope.topicIds?.includes(topicId);
+      const matches = productMatches && topicMatches;
+      console.log(`Banner ${banner.id}: Topic banner - productId=${productId}, topicId=${topicId}, targetProducts=${scope.productIds}, targetTopics=${scope.topicIds}, matches=${matches}`);
+      return matches;
+    }
+
+    // Topic-specific banners but missing params in URL
+    if (scope.type === 'topic' && (!productId || !topicId)) {
+      console.log(`Banner ${banner.id}: Topic banner but missing params (productId=${productId}, topicId=${topicId}) - HIDING`);
       return false;
     }
 

@@ -16,7 +16,7 @@ import { PersonaProvider } from './context/PersonaContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
-import BannerManager from './components/common/BannerManager';
+import Layout from './components/layout/Layout';
 
 // Page imports
 import HomePage from './pages/HomePage';
@@ -34,21 +34,20 @@ function App() {
             {/* Header with navigation and region selector */}
             <Header />
 
-            {/* Incident Banners */}
-            <BannerManager />
-
-            {/* Main content area */}
+            {/* Main content area with Layout (includes BannerManager) */}
             <main className="flex-grow">
               <Routes>
                 {/* Root redirects to default region (GB) */}
                 <Route path="/" element={<Navigate to="/gb" replace />} />
 
-                {/* Region-based routes */}
-                <Route path="/:region" element={<HomePage />} />
-                <Route path="/:region/products/:productId" element={<ProductLanding />} />
-                <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
-                <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
-                <Route path="/:region/contact" element={<ContactPage />} />
+                {/* Region-based routes with Layout wrapper */}
+                <Route element={<Layout />}>
+                  <Route path="/:region" element={<HomePage />} />
+                  <Route path="/:region/products/:productId" element={<ProductLanding />} />
+                  <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
+                  <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
+                  <Route path="/:region/contact" element={<ContactPage />} />
+                </Route>
 
                 {/* 404 - Redirect to default region */}
                 <Route path="*" element={<Navigate to="/gb" replace />} />
