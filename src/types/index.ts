@@ -183,6 +183,8 @@ export interface RegionContextValue {
   region: string;
   regionConfig: RegionConfig | null;
   changeRegion: (newRegion: string) => void;
+  loading: boolean;
+  error: string | null;
 }
 
 export interface PersonaContextValue {
