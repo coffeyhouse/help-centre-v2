@@ -69,14 +69,15 @@ export default function TopicPage() {
 
   // Find the current product and topic
   const product = productsData?.products.find((p) => p.id === productId);
-  const topic = topicsData?.supportHubs.find((t) => t.id === topicId);
+  const topic = topicsData?.supportHubs.find((t) => t.id === topicId && t.productId === productId);
 
   // Get names for display with fallbacks
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
   const topicName = topic?.title || topicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
 
-  // Get all articles for this topic
-  const allArticles = articlesData?.articles[topicId || ''] || [];
+  // Get all articles for this topic AND product
+  const allArticlesForTopic = articlesData?.articles[topicId || ''] || [];
+  const allArticles = allArticlesForTopic.filter((article) => article.productId === productId);
 
   return (
     <div className="min-h-screen bg-gray-50">

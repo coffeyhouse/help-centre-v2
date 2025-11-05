@@ -104,6 +104,7 @@ export interface Article {
   title: string;
   description: string;
   topicId: string;
+  productId: string;
   countries?: string[];
 }
 
