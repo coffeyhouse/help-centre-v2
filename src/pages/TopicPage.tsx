@@ -75,9 +75,8 @@ export default function TopicPage() {
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
   const topicName = topic?.title || topicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
 
-  // Get all articles for this topic AND product
-  const allArticlesForTopic = articlesData?.articles[topicId || ''] || [];
-  const allArticles = allArticlesForTopic.filter((article) => article.productId === productId);
+  // Get all articles for this product and topic (structure: articles[productId][topicId])
+  const allArticles = articlesData?.articles[productId || '']?.[topicId || ''] || [];
 
   return (
     <div className="min-h-screen bg-gray-50">

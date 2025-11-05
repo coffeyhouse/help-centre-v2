@@ -103,14 +103,14 @@ export interface Article {
   id: string;
   title: string;
   description: string;
-  topicId: string;
-  productId: string;
   countries?: string[];
 }
 
 export interface ArticlesData {
   articles: {
-    [topicId: string]: Article[];
+    [productId: string]: {
+      [topicId: string]: Article[];
+    };
   };
 }
 

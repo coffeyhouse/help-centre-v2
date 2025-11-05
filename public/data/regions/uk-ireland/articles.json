@@ -1,414 +1,334 @@
 {
   "articles": {
-    "install-software": [
-      {
-        "id": "whats-new-product-a",
-        "title": "What's new?",
-        "description": "Find out more about the latest improvements and features.",
-        "topicId": "install-software",
-        "productId": "product-a"
-      },
-      {
-        "id": "first-time-product-a",
-        "title": "New to this product?",
-        "description": "Installing for the first time? Don't worry it's a quick and easy process.",
-        "topicId": "install-software",
-        "productId": "product-a"
-      },
-      {
-        "id": "install-guide-product-a",
-        "title": "Install your software",
-        "description": "Install software on a new computer.",
-        "topicId": "install-software",
-        "productId": "product-a"
-      },
-      {
-        "id": "upgrade-product-a",
-        "title": "Upgrade your installed software",
-        "description": "Upgrade to the latest version and get the most from your software.",
-        "topicId": "install-software",
-        "productId": "product-a"
-      },
-      {
-        "id": "older-versions-product-a",
-        "title": "Download older versions",
-        "description": "You can download older versions here.",
-        "topicId": "install-software",
-        "productId": "product-a"
-      },
-      {
-        "id": "troubleshooting-product-a",
-        "title": "Common queries and troubleshooting",
-        "description": "Not going as expected? Check these common queries.",
-        "topicId": "install-software",
-        "productId": "product-a"
-      },
-      {
-        "id": "whats-new-product-c",
-        "title": "What's new?",
-        "description": "Find out more about the latest improvements and features.",
-        "topicId": "install-software",
-        "productId": "product-c"
-      },
-      {
-        "id": "first-time-product-c",
-        "title": "New to this product?",
-        "description": "Installing for the first time? Don't worry it's a quick and easy process.",
-        "topicId": "install-software",
-        "productId": "product-c"
-      },
-      {
-        "id": "install-guide-product-c",
-        "title": "Install your software",
-        "description": "Install software on a new computer.",
-        "topicId": "install-software",
-        "productId": "product-c"
-      },
-      {
-        "id": "upgrade-product-c",
-        "title": "Upgrade your installed software",
-        "description": "Upgrade to the latest version and get the most from your software.",
-        "topicId": "install-software",
-        "productId": "product-c"
-      }
-    ],
-    "manage-vat": [
-      {
-        "id": "vat-setup-product-a",
-        "title": "Set up VAT",
-        "description": "Configure your VAT settings correctly.",
-        "topicId": "manage-vat",
-        "productId": "product-a"
-      },
-      {
-        "id": "vat-returns-product-a",
-        "title": "Submit VAT returns",
-        "description": "How to submit your VAT return online.",
-        "topicId": "manage-vat",
-        "productId": "product-a"
-      },
-      {
-        "id": "vat-returns-uk-product-a",
-        "title": "Submit VAT returns to HMRC",
-        "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
-        "topicId": "manage-vat",
-        "productId": "product-a",
-        "countries": ["gb"]
-      },
-      {
-        "id": "vat-returns-ie-product-a",
-        "title": "Submit VAT returns to Revenue",
-        "description": "Irish-specific guidance for submitting VAT returns through ROS.",
-        "topicId": "manage-vat",
-        "productId": "product-a",
-        "countries": ["ie"]
-      },
-      {
-        "id": "vat-rates-product-a",
-        "title": "Understanding VAT rates",
-        "description": "Learn about different VAT rates and when to apply them.",
-        "topicId": "manage-vat",
-        "productId": "product-a"
-      },
-      {
-        "id": "vat-rates-uk-product-a",
-        "title": "UK VAT rates (20%, 5%, 0%)",
-        "description": "Detailed breakdown of standard, reduced, and zero-rated VAT in the UK.",
-        "topicId": "manage-vat",
-        "productId": "product-a",
-        "countries": ["gb"]
-      },
-      {
-        "id": "vat-rates-ie-product-a",
-        "title": "Irish VAT rates (23%, 13.5%, 9%, 0%)",
-        "description": "Detailed breakdown of Irish VAT rates including the second reduced rate.",
-        "topicId": "manage-vat",
-        "productId": "product-a",
-        "countries": ["ie"]
-      },
-      {
-        "id": "vat-reporting-product-a",
-        "title": "VAT reporting and reconciliation",
-        "description": "Generate VAT reports and reconcile your accounts.",
-        "topicId": "manage-vat",
-        "productId": "product-a"
-      },
-      {
-        "id": "vat-setup-product-b",
-        "title": "Set up VAT",
-        "description": "Configure your VAT settings correctly.",
-        "topicId": "manage-vat",
-        "productId": "product-b"
-      },
-      {
-        "id": "vat-returns-product-b",
-        "title": "Submit VAT returns",
-        "description": "How to submit your VAT return online.",
-        "topicId": "manage-vat",
-        "productId": "product-b"
-      },
-      {
-        "id": "vat-returns-uk-product-b",
-        "title": "Submit VAT returns to HMRC",
-        "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
-        "topicId": "manage-vat",
-        "productId": "product-b",
-        "countries": ["gb"]
-      },
-      {
-        "id": "vat-returns-ie-product-b",
-        "title": "Submit VAT returns to Revenue",
-        "description": "Irish-specific guidance for submitting VAT returns through ROS.",
-        "topicId": "manage-vat",
-        "productId": "product-b",
-        "countries": ["ie"]
-      },
-      {
-        "id": "vat-setup-product-d",
-        "title": "Set up VAT",
-        "description": "Configure your VAT settings correctly.",
-        "topicId": "manage-vat",
-        "productId": "product-d"
-      },
-      {
-        "id": "vat-returns-product-d",
-        "title": "Submit VAT returns",
-        "description": "How to submit your VAT return online.",
-        "topicId": "manage-vat",
-        "productId": "product-d"
-      }
-    ],
-    "banking": [
-      {
-        "id": "bank-connection-product-a",
-        "title": "Connect your bank account",
-        "description": "Link your bank account for automatic transaction imports.",
-        "topicId": "banking",
-        "productId": "product-a"
-      },
-      {
-        "id": "bank-reconciliation-product-a",
-        "title": "Bank reconciliation",
-        "description": "Match your bank transactions with your accounts.",
-        "topicId": "banking",
-        "productId": "product-a"
-      },
-      {
-        "id": "bank-feeds-product-a",
-        "title": "Set up bank feeds",
-        "description": "Automatically import transactions from your bank.",
-        "topicId": "banking",
-        "productId": "product-a"
-      },
-      {
-        "id": "bank-connection-product-b",
-        "title": "Connect your bank account",
-        "description": "Link your bank account for automatic transaction imports.",
-        "topicId": "banking",
-        "productId": "product-b"
-      },
-      {
-        "id": "bank-reconciliation-product-b",
-        "title": "Bank reconciliation",
-        "description": "Match your bank transactions with your accounts.",
-        "topicId": "banking",
-        "productId": "product-b"
-      },
-      {
-        "id": "bank-feeds-product-b",
-        "title": "Set up bank feeds",
-        "description": "Automatically import transactions from your bank.",
-        "topicId": "banking",
-        "productId": "product-b"
-      }
-    ],
-    "remote-access": [
-      {
-        "id": "remote-setup-product-a",
-        "title": "Set up Remote Data Access",
-        "description": "Configure remote access to your accounts.",
-        "topicId": "remote-access",
-        "productId": "product-a"
-      },
-      {
-        "id": "remote-troubleshooting-product-a",
-        "title": "Remote access troubleshooting",
-        "description": "Common issues and solutions for remote access.",
-        "topicId": "remote-access",
-        "productId": "product-a"
-      }
-    ],
-    "year-end": [
-      {
-        "id": "year-end-checklist-product-a",
-        "title": "Year end checklist",
-        "description": "Everything you need to complete your financial year end.",
-        "topicId": "year-end",
-        "productId": "product-a"
-      },
-      {
-        "id": "year-end-process-product-a",
-        "title": "Run your year end",
-        "description": "Step-by-step guide to completing your year end.",
-        "topicId": "year-end",
-        "productId": "product-a"
-      },
-      {
-        "id": "new-year-setup-product-a",
-        "title": "Start a new financial year",
-        "description": "Set up your accounts for the new financial year.",
-        "topicId": "year-end",
-        "productId": "product-a"
-      },
-      {
-        "id": "year-end-checklist-product-b",
-        "title": "Year end checklist",
-        "description": "Everything you need to complete your financial year end.",
-        "topicId": "year-end",
-        "productId": "product-b"
-      },
-      {
-        "id": "year-end-process-product-b",
-        "title": "Run your year end",
-        "description": "Step-by-step guide to completing your year end.",
-        "topicId": "year-end",
-        "productId": "product-b"
-      },
-      {
-        "id": "new-year-setup-product-b",
-        "title": "Start a new financial year",
-        "description": "Set up your accounts for the new financial year.",
-        "topicId": "year-end",
-        "productId": "product-b"
-      }
-    ],
-    "getting-started": [
-      {
-        "id": "quick-start-product-a",
-        "title": "Quick start guide",
-        "description": "Get up and running quickly with the basics.",
-        "topicId": "getting-started",
-        "productId": "product-a"
-      },
-      {
-        "id": "first-steps-product-a",
-        "title": "Your first steps",
-        "description": "Essential tasks to complete when you first start.",
-        "topicId": "getting-started",
-        "productId": "product-a"
-      },
-      {
-        "id": "basic-setup-product-a",
-        "title": "Basic setup",
-        "description": "Configure the essential settings for your business.",
-        "topicId": "getting-started",
-        "productId": "product-a"
-      },
-      {
-        "id": "quick-start-product-b",
-        "title": "Quick start guide",
-        "description": "Get up and running quickly with the basics.",
-        "topicId": "getting-started",
-        "productId": "product-b"
-      },
-      {
-        "id": "first-steps-product-b",
-        "title": "Your first steps",
-        "description": "Essential tasks to complete when you first start.",
-        "topicId": "getting-started",
-        "productId": "product-b"
-      },
-      {
-        "id": "basic-setup-product-b",
-        "title": "Basic setup",
-        "description": "Configure the essential settings for your business.",
-        "topicId": "getting-started",
-        "productId": "product-b"
-      },
-      {
-        "id": "quick-start-product-c",
-        "title": "Quick start guide",
-        "description": "Get up and running quickly with the basics.",
-        "topicId": "getting-started",
-        "productId": "product-c"
-      },
-      {
-        "id": "first-steps-product-c",
-        "title": "Your first steps",
-        "description": "Essential tasks to complete when you first start.",
-        "topicId": "getting-started",
-        "productId": "product-c"
-      },
-      {
-        "id": "basic-setup-product-c",
-        "title": "Basic setup",
-        "description": "Configure the essential settings for your business.",
-        "topicId": "getting-started",
-        "productId": "product-c"
-      },
-      {
-        "id": "quick-start-product-d",
-        "title": "Quick start guide",
-        "description": "Get up and running quickly with the basics.",
-        "topicId": "getting-started",
-        "productId": "product-d"
-      },
-      {
-        "id": "first-steps-product-d",
-        "title": "Your first steps",
-        "description": "Essential tasks to complete when you first start.",
-        "topicId": "getting-started",
-        "productId": "product-d"
-      },
-      {
-        "id": "basic-setup-product-d",
-        "title": "Basic setup",
-        "description": "Configure the essential settings for your business.",
-        "topicId": "getting-started",
-        "productId": "product-d"
-      },
-      {
-        "id": "quick-start-product-e",
-        "title": "Quick start guide",
-        "description": "Get up and running quickly with the basics.",
-        "topicId": "getting-started",
-        "productId": "product-e"
-      },
-      {
-        "id": "first-steps-product-e",
-        "title": "Your first steps",
-        "description": "Essential tasks to complete when you first start.",
-        "topicId": "getting-started",
-        "productId": "product-e"
-      },
-      {
-        "id": "basic-setup-product-e",
-        "title": "Basic setup",
-        "description": "Configure the essential settings for your business.",
-        "topicId": "getting-started",
-        "productId": "product-e"
-      },
-      {
-        "id": "quick-start-product-f",
-        "title": "Quick start guide",
-        "description": "Get up and running quickly with the basics.",
-        "topicId": "getting-started",
-        "productId": "product-f"
-      },
-      {
-        "id": "first-steps-product-f",
-        "title": "Your first steps",
-        "description": "Essential tasks to complete when you first start.",
-        "topicId": "getting-started",
-        "productId": "product-f"
-      },
-      {
-        "id": "basic-setup-product-f",
-        "title": "Basic setup",
-        "description": "Configure the essential settings for your business.",
-        "topicId": "getting-started",
-        "productId": "product-f"
-      }
-    ]
+    "product-a": {
+      "install-software-product-a": [
+        {
+          "id": "whats-new",
+          "title": "What's new?",
+          "description": "Find out more about the latest improvements and features."
+        },
+        {
+          "id": "first-time",
+          "title": "New to this product?",
+          "description": "Installing for the first time? Don't worry it's a quick and easy process."
+        },
+        {
+          "id": "install-guide",
+          "title": "Install your software",
+          "description": "Install software on a new computer."
+        },
+        {
+          "id": "upgrade",
+          "title": "Upgrade your installed software",
+          "description": "Upgrade to the latest version and get the most from your software."
+        },
+        {
+          "id": "older-versions",
+          "title": "Download older versions",
+          "description": "You can download older versions here."
+        },
+        {
+          "id": "troubleshooting",
+          "title": "Common queries and troubleshooting",
+          "description": "Not going as expected? Check these common queries."
+        }
+      ],
+      "manage-vat-product-a": [
+        {
+          "id": "vat-setup",
+          "title": "Set up VAT",
+          "description": "Configure your VAT settings correctly."
+        },
+        {
+          "id": "vat-returns",
+          "title": "Submit VAT returns",
+          "description": "How to submit your VAT return online."
+        },
+        {
+          "id": "vat-returns-uk",
+          "title": "Submit VAT returns to HMRC",
+          "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
+          "countries": ["gb"]
+        },
+        {
+          "id": "vat-returns-ie",
+          "title": "Submit VAT returns to Revenue",
+          "description": "Irish-specific guidance for submitting VAT returns through ROS.",
+          "countries": ["ie"]
+        },
+        {
+          "id": "vat-rates",
+          "title": "Understanding VAT rates",
+          "description": "Learn about different VAT rates and when to apply them."
+        },
+        {
+          "id": "vat-rates-uk",
+          "title": "UK VAT rates (20%, 5%, 0%)",
+          "description": "Detailed breakdown of standard, reduced, and zero-rated VAT in the UK.",
+          "countries": ["gb"]
+        },
+        {
+          "id": "vat-rates-ie",
+          "title": "Irish VAT rates (23%, 13.5%, 9%, 0%)",
+          "description": "Detailed breakdown of Irish VAT rates including the second reduced rate.",
+          "countries": ["ie"]
+        },
+        {
+          "id": "vat-reporting",
+          "title": "VAT reporting and reconciliation",
+          "description": "Generate VAT reports and reconcile your accounts."
+        }
+      ],
+      "banking-product-a": [
+        {
+          "id": "bank-connection",
+          "title": "Connect your bank account",
+          "description": "Link your bank account for automatic transaction imports."
+        },
+        {
+          "id": "bank-reconciliation",
+          "title": "Bank reconciliation",
+          "description": "Match your bank transactions with your accounts."
+        },
+        {
+          "id": "bank-feeds",
+          "title": "Set up bank feeds",
+          "description": "Automatically import transactions from your bank."
+        }
+      ],
+      "remote-access-product-a": [
+        {
+          "id": "remote-setup",
+          "title": "Set up Remote Data Access",
+          "description": "Configure remote access to your accounts."
+        },
+        {
+          "id": "remote-troubleshooting",
+          "title": "Remote access troubleshooting",
+          "description": "Common issues and solutions for remote access."
+        }
+      ],
+      "year-end-product-a": [
+        {
+          "id": "year-end-checklist",
+          "title": "Year end checklist",
+          "description": "Everything you need to complete your financial year end."
+        },
+        {
+          "id": "year-end-process",
+          "title": "Run your year end",
+          "description": "Step-by-step guide to completing your year end."
+        },
+        {
+          "id": "new-year-setup",
+          "title": "Start a new financial year",
+          "description": "Set up your accounts for the new financial year."
+        }
+      ],
+      "getting-started-product-a": [
+        {
+          "id": "quick-start",
+          "title": "Quick start guide",
+          "description": "Get up and running quickly with the basics."
+        },
+        {
+          "id": "first-steps",
+          "title": "Your first steps",
+          "description": "Essential tasks to complete when you first start."
+        },
+        {
+          "id": "basic-setup",
+          "title": "Basic setup",
+          "description": "Configure the essential settings for your business."
+        }
+      ]
+    },
+    "product-b": {
+      "manage-vat-product-b": [
+        {
+          "id": "vat-setup",
+          "title": "Set up VAT",
+          "description": "Configure your VAT settings correctly."
+        },
+        {
+          "id": "vat-returns",
+          "title": "Submit VAT returns",
+          "description": "How to submit your VAT return online."
+        },
+        {
+          "id": "vat-returns-uk",
+          "title": "Submit VAT returns to HMRC",
+          "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
+          "countries": ["gb"]
+        },
+        {
+          "id": "vat-returns-ie",
+          "title": "Submit VAT returns to Revenue",
+          "description": "Irish-specific guidance for submitting VAT returns through ROS.",
+          "countries": ["ie"]
+        }
+      ],
+      "banking-product-b": [
+        {
+          "id": "bank-connection",
+          "title": "Connect your bank account",
+          "description": "Link your bank account for automatic transaction imports."
+        },
+        {
+          "id": "bank-reconciliation",
+          "title": "Bank reconciliation",
+          "description": "Match your bank transactions with your accounts."
+        },
+        {
+          "id": "bank-feeds",
+          "title": "Set up bank feeds",
+          "description": "Automatically import transactions from your bank."
+        }
+      ],
+      "year-end-product-b": [
+        {
+          "id": "year-end-checklist",
+          "title": "Year end checklist",
+          "description": "Everything you need to complete your financial year end."
+        },
+        {
+          "id": "year-end-process",
+          "title": "Run your year end",
+          "description": "Step-by-step guide to completing your year end."
+        },
+        {
+          "id": "new-year-setup",
+          "title": "Start a new financial year",
+          "description": "Set up your accounts for the new financial year."
+        }
+      ],
+      "getting-started-product-b": [
+        {
+          "id": "quick-start",
+          "title": "Quick start guide",
+          "description": "Get up and running quickly with the basics."
+        },
+        {
+          "id": "first-steps",
+          "title": "Your first steps",
+          "description": "Essential tasks to complete when you first start."
+        },
+        {
+          "id": "basic-setup",
+          "title": "Basic setup",
+          "description": "Configure the essential settings for your business."
+        }
+      ]
+    },
+    "product-c": {
+      "install-software-product-c": [
+        {
+          "id": "whats-new",
+          "title": "What's new?",
+          "description": "Find out more about the latest improvements and features."
+        },
+        {
+          "id": "first-time",
+          "title": "New to this product?",
+          "description": "Installing for the first time? Don't worry it's a quick and easy process."
+        },
+        {
+          "id": "install-guide",
+          "title": "Install your software",
+          "description": "Install software on a new computer."
+        },
+        {
+          "id": "upgrade",
+          "title": "Upgrade your installed software",
+          "description": "Upgrade to the latest version and get the most from your software."
+        }
+      ],
+      "getting-started-product-c": [
+        {
+          "id": "quick-start",
+          "title": "Quick start guide",
+          "description": "Get up and running quickly with the basics."
+        },
+        {
+          "id": "first-steps",
+          "title": "Your first steps",
+          "description": "Essential tasks to complete when you first start."
+        },
+        {
+          "id": "basic-setup",
+          "title": "Basic setup",
+          "description": "Configure the essential settings for your business."
+        }
+      ]
+    },
+    "product-d": {
+      "manage-vat-product-d": [
+        {
+          "id": "vat-setup",
+          "title": "Set up VAT",
+          "description": "Configure your VAT settings correctly."
+        },
+        {
+          "id": "vat-returns",
+          "title": "Submit VAT returns",
+          "description": "How to submit your VAT return online."
+        }
+      ],
+      "getting-started-product-d": [
+        {
+          "id": "quick-start",
+          "title": "Quick start guide",
+          "description": "Get up and running quickly with the basics."
+        },
+        {
+          "id": "first-steps",
+          "title": "Your first steps",
+          "description": "Essential tasks to complete when you first start."
+        },
+        {
+          "id": "basic-setup",
+          "title": "Basic setup",
+          "description": "Configure the essential settings for your business."
+        }
+      ]
+    },
+    "product-e": {
+      "getting-started-product-e": [
+        {
+          "id": "quick-start",
+          "title": "Quick start guide",
+          "description": "Get up and running quickly with the basics."
+        },
+        {
+          "id": "first-steps",
+          "title": "Your first steps",
+          "description": "Essential tasks to complete when you first start."
+        },
+        {
+          "id": "basic-setup",
+          "title": "Basic setup",
+          "description": "Configure the essential settings for your business."
+        }
+      ]
+    },
+    "product-f": {
+      "getting-started-product-f": [
+        {
+          "id": "quick-start",
+          "title": "Quick start guide",
+          "description": "Get up and running quickly with the basics."
+        },
+        {
+          "id": "first-steps",
+          "title": "Your first steps",
+          "description": "Essential tasks to complete when you first start."
+        },
+        {
+          "id": "basic-setup",
+          "title": "Basic setup",
+          "description": "Configure the essential settings for your business."
+        }
+      ]
+    }
   }
 }

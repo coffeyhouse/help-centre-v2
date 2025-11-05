@@ -113,10 +113,14 @@ export async function loadArticles(countryCode: string): Promise<ArticlesData> {
   const regionId = await getRegionForCountry(countryCode);
   const data = await fetchJSON<ArticlesData>(`${BASE_DATA_PATH}/regions/${regionId}/articles.json`);
 
-  // Filter articles within each topic
-  const filteredArticles: { [topicId: string]: Article[] } = {};
-  for (const [topicId, articles] of Object.entries(data.articles)) {
-    filteredArticles[topicId] = filterByCountry(articles, countryCode);
+  // Filter articles within each product > topic hierarchy
+  const filteredArticles: { [productId: string]: { [topicId: string]: Article[] } } = {};
+
+  for (const [productId, topics] of Object.entries(data.articles)) {
+    filteredArticles[productId] = {};
+    for (const [topicId, articles] of Object.entries(topics)) {
+      filteredArticles[productId][topicId] = filterByCountry(articles, countryCode);
+    }
   }
 
   return {
