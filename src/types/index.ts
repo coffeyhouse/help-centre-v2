@@ -139,6 +139,15 @@ export interface ContactMethod {
   phoneNumber?: string;
   hours?: string;
   url?: string;
+  openModal?: boolean; // If true, clicking opens a modal instead of navigating
+  modalContent?: {
+    title: string;
+    sections: {
+      heading?: string;
+      content: string;
+      type?: 'text' | 'list' | 'warning' | 'info';
+    }[];
+  };
   countries?: string[];
   productIds?: string[];
 }
