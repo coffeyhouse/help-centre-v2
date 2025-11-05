@@ -10,10 +10,41 @@
 
 import { useParams } from 'react-router-dom';
 import { useRegion } from '../hooks/useRegion';
+import { useData } from '../hooks/useData';
+import { loadProducts, loadTopics, loadArticles } from '../utils/dataLoader';
+import Breadcrumb from '../components/layout/Breadcrumb';
+import Hero from '../components/common/Hero';
+import TabNavigation from '../components/pages/TopicPage/TabNavigation';
+import ArticlesGrid from '../components/pages/TopicPage/ArticlesGrid';
+import type { ProductsData, TopicsData, ArticlesData } from '../types';
 
 export default function TopicPage() {
   const { productId, topicId } = useParams<{ productId: string; topicId: string }>();
-  const { region, regionConfig, loading, error } = useRegion();
+  const { region, loading: regionLoading, error: regionError } = useRegion();
+
+  // Load products data to get product name
+  const {
+    data: productsData,
+    loading: productsLoading,
+    error: productsError,
+  } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  // Load topics data to get topic details
+  const {
+    data: topicsData,
+    loading: topicsLoading,
+    error: topicsError,
+  } = useData<TopicsData>(() => loadTopics(region), [region]);
+
+  // Load articles data
+  const {
+    data: articlesData,
+    loading: articlesLoading,
+    error: articlesError,
+  } = useData<ArticlesData>(() => loadArticles(region), [region]);
+
+  const loading = regionLoading || productsLoading || topicsLoading || articlesLoading;
+  const error = regionError || productsError || topicsError || articlesError;
 
   if (loading) {
     return (
@@ -36,46 +67,45 @@ export default function TopicPage() {
     );
   }
 
+  // Find the current product and topic
+  const product = productsData?.products.find((p) => p.id === productId);
+  const topic = topicsData?.supportHubs.find((t) => t.id === topicId);
+
+  // Get names for display with fallbacks
+  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+  const topicName = topic?.title || topicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
+
+  // Get all articles for this topic
+  const allArticles = articlesData?.articles[topicId || ''] || [];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-black text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {topicId ? topicId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Topic'}
-          </h1>
-          <p className="text-lg text-gray-300">
-            Find articles and guides for this topic
-          </p>
-        </div>
-      </div>
+      <Hero
+        title={topicName}
+        subtitle={topic?.description || 'Find articles and guides for this topic'}
+        searchBar={true}
+        searchPlaceholder="Search for answers..."
+      />
 
-      {/* Content */}
-      <div className="container-custom py-12">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold mb-4">TopicPage - Placeholder</h2>
-          <p className="text-gray-600 mb-4">
-            This is a placeholder for the TopicPage component.
-          </p>
-          <div className="space-y-2 text-sm">
-            <p><strong>Current Region:</strong> {region}</p>
-            <p><strong>Region Display Name:</strong> {regionConfig?.displayName}</p>
-            <p><strong>Product ID:</strong> {productId}</p>
-            <p><strong>Topic ID:</strong> {topicId}</p>
-            <p><strong>URL Path:</strong> /{region}/products/{productId}/topics/{topicId}</p>
-          </div>
-          <div className="mt-6 p-4 bg-blue-50 rounded">
-            <p className="text-sm text-blue-900">
-              <strong>Phase 4:</strong> Routing is now working! This page will be implemented in Phase 9 with:
-            </p>
-            <ul className="list-disc list-inside text-sm text-blue-800 mt-2">
-              <li>Breadcrumb navigation (Product → Support hubs → Topic)</li>
-              <li>Tab navigation (Support guides, Free training, Get in touch)</li>
-              <li>Article grid (filtered by topic)</li>
-              <li>Search functionality</li>
-            </ul>
-          </div>
-        </div>
+      {/* Main Content */}
+      <div className="container-custom py-8">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: productName, path: `/${region}/products/${productId}` },
+            { label: 'Support hubs', path: `/${region}/products/${productId}` },
+            { label: topicName, current: true },
+          ]}
+        />
+
+        {/* Tab Navigation */}
+        <TabNavigation />
+
+        {/* Articles Grid */}
+        {topicId && (
+          <ArticlesGrid articles={allArticles} topicId={topicId} />
+        )}
       </div>
     </div>
   );
