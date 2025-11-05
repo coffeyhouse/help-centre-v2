@@ -23,6 +23,7 @@ import HomePage from './pages/HomePage';
 import ProductLanding from './pages/ProductLanding';
 import TopicPage from './pages/TopicPage';
 import ContactPage from './pages/ContactPage';
+import SearchResultsPage from './pages/SearchResultsPage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
                 {/* Region-based routes with Layout wrapper */}
                 <Route element={<Layout />}>
                   <Route path="/:region" element={<HomePage />} />
+                  <Route path="/:region/search" element={<SearchResultsPage />} />
                   <Route path="/:region/products/:productId" element={<ProductLanding />} />
                   <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
                   <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
