@@ -104,7 +104,7 @@ export default function TopicPage() {
       {/* Hero Section */}
       <Hero
         title={topicName}
-        subtitle={topic?.description || 'Find articles and guides for this topic'}
+        subtitle={currentTopic?.description || 'Find articles and guides for this topic'}
         searchBar={true}
         searchPlaceholder="Search for answers..."
       />
