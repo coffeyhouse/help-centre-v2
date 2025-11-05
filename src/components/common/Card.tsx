@@ -18,37 +18,40 @@ export default function Card({ title, description, type, icon, onClick, href }: 
   const baseClasses = 'card card-hover cursor-pointer';
 
   const content = (
-    <>
-      {/* Icon */}
-      {icon && (
-        <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-4">
-          <Icon name={icon} className="w-7 h-7 text-gray-700" />
-        </div>
-      )}
+    <div className="flex items-center gap-4">
+      {/* Left side: Content */}
+      <div className="flex-1">
+        {/* Icon */}
+        {icon && (
+          <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-4">
+            <Icon name={icon} className="w-7 h-7 text-gray-700" />
+          </div>
+        )}
 
-      {/* Type Badge */}
-      {type && (
-        <div className="mb-2">
-          <span className="inline-block px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-blue-100 text-blue-800">
-            {type}
-          </span>
-        </div>
-      )}
+        {/* Type Badge */}
+        {type && (
+          <div className="mb-2">
+            <span className="inline-block px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-blue-100 text-blue-800">
+              {type}
+            </span>
+          </div>
+        )}
 
-      {/* Title */}
-      <h3 className="text-lg font-semibold mb-2 text-gray-900">
-        {title}
-      </h3>
+        {/* Title */}
+        <h3 className="text-lg font-semibold mb-2 text-gray-900">
+          {title}
+        </h3>
 
-      {/* Description */}
-      {description && (
-        <p className="text-sm text-gray-600 leading-relaxed">
-          {description}
-        </p>
-      )}
+        {/* Description */}
+        {description && (
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {description}
+          </p>
+        )}
+      </div>
 
-      {/* Arrow indicator */}
-      <div className="mt-4 text-gray-400">
+      {/* Right side: Arrow indicator */}
+      <div className="flex-shrink-0 text-gray-400">
         <svg
           className="w-5 h-5"
           fill="none"
@@ -63,7 +66,7 @@ export default function Card({ title, description, type, icon, onClick, href }: 
           />
         </svg>
       </div>
-    </>
+    </div>
   );
 
   // If href is provided, render as Link
