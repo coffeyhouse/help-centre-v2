@@ -3,17 +3,43 @@
  *
  * Features:
  * - Hero section
- * - Contact form with dropdowns (Region, Persona, Product)
+ * - Contact form with dropdowns (Persona, Product)
  * - Quick access topics grid
- * - Contact methods (Community, Chat, Phone)
+ * - Contact methods (Community, Phone)
  */
 
+import { useState } from 'react';
 import { useRegion } from '../hooks/useRegion';
-import { usePersona } from '../hooks/usePersona';
+import { useData } from '../hooks/useData';
+import { loadProducts, loadContact } from '../utils/dataLoader';
+import Hero from '../components/common/Hero';
+import ContactForm from '../components/pages/ContactPage/ContactForm';
+import ContactTopicsGrid from '../components/pages/ContactPage/ContactTopicsGrid';
+import ContactMethods from '../components/pages/ContactPage/ContactMethods';
+import type { ProductsData, ContactData } from '../types';
 
 export default function ContactPage() {
-  const { region, regionConfig, loading, error } = useRegion();
-  const { persona } = usePersona();
+  const { region, regionConfig, loading: regionLoading, error: regionError } = useRegion();
+
+  // State for selected product
+  const [selectedProduct, setSelectedProduct] = useState('product-a');
+
+  // Load products data
+  const {
+    data: productsData,
+    loading: productsLoading,
+    error: productsError,
+  } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  // Load contact data
+  const {
+    data: contactData,
+    loading: contactLoading,
+    error: contactError,
+  } = useData<ContactData>(() => loadContact(region), [region]);
+
+  const loading = regionLoading || productsLoading || contactLoading;
+  const error = regionError || productsError || contactError;
 
   if (loading) {
     return (
@@ -36,44 +62,39 @@ export default function ContactPage() {
     );
   }
 
+  const personas = regionConfig?.personas || [];
+  const products = productsData?.products || [];
+  const contactTopics = contactData?.contactTopics || [];
+  const contactMethods = contactData?.contactMethods || [];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-black text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Get in touch
-          </h1>
-          <p className="text-lg text-gray-300">
-            If you want to get in touch with us, select an option below.
-          </p>
-        </div>
-      </div>
+      <Hero
+        title="Get in touch"
+        subtitle="If you want to get in touch with us, select an option below."
+      />
 
-      {/* Content */}
+      {/* Main Content */}
       <div className="container-custom py-12">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold mb-4">ContactPage - Placeholder</h2>
-          <p className="text-gray-600 mb-4">
-            This is a placeholder for the ContactPage component.
-          </p>
-          <div className="space-y-2 text-sm">
-            <p><strong>Current Region:</strong> {region}</p>
-            <p><strong>Region Display Name:</strong> {regionConfig?.displayName}</p>
-            <p><strong>Current Persona:</strong> {persona}</p>
-            <p><strong>URL Path:</strong> /{region}/contact</p>
-          </div>
-          <div className="mt-6 p-4 bg-blue-50 rounded">
-            <p className="text-sm text-blue-900">
-              <strong>Phase 4:</strong> Routing is now working! This page will be implemented in Phase 10 with:
-            </p>
-            <ul className="list-disc list-inside text-sm text-blue-800 mt-2">
-              <li>Contact form with dropdowns (Region, Persona, Product)</li>
-              <li>Quick access topics grid</li>
-              <li>Contact methods (Community Hub, Phone)</li>
-              <li>Region-specific contact information</li>
-            </ul>
-          </div>
+        {/* Contact Form */}
+        <ContactForm
+          personas={personas}
+          products={products}
+          selectedProduct={selectedProduct}
+          onProductChange={setSelectedProduct}
+        />
+
+        {/* Contact Topics Grid */}
+        <ContactTopicsGrid
+          topics={contactTopics}
+          productId={selectedProduct}
+        />
+
+        {/* Contact Methods */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-semibold mb-6">Alternative contact methods</h2>
+          <ContactMethods methods={contactMethods} />
         </div>
       </div>
     </div>
