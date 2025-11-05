@@ -96,6 +96,7 @@ export default function TopicPage() {
         subtitle={currentTopic?.description || 'Find articles and guides for this topic'}
         searchBar={true}
         searchPlaceholder="Search for answers..."
+        productId={productId}
       />
 
       {/* Main Content */}

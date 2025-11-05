@@ -229,6 +229,7 @@ export interface HeroProps {
   subtitle: string;
   searchBar?: boolean;
   searchPlaceholder?: string;
+  productId?: string;
 }
 
 // ==================== Context Types ====================
@@ -244,6 +245,17 @@ export interface RegionContextValue {
 export interface PersonaContextValue {
   persona: PersonaId;
   setPersona: (persona: PersonaId) => void;
+}
+
+// ==================== Search Types ====================
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  summary: string;
+  productId?: string;
+  topicId?: string;
+  url: string;
 }
 
 // ==================== Hook Return Types ====================

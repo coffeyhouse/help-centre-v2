@@ -78,6 +78,7 @@ export default function ProductLanding() {
         subtitle="You need help. We have answers."
         searchBar={true}
         searchPlaceholder="Search for answers..."
+        productId={productId}
       />
 
       {/* Main Content */}

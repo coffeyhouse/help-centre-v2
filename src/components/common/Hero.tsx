@@ -4,28 +4,22 @@
  * Features:
  * - Black background with white text
  * - Title and subtitle
- * - Optional search bar
+ * - Optional search bar with type-ahead
  * - Responsive grid layout with illustration placeholder
  * - Consistent styling across pages
  */
 
-import { useState } from 'react';
 import type { HeroProps } from '../../types';
 import Icon from './Icon';
+import SearchBar from './SearchBar';
 
 export default function Hero({
   title,
   subtitle,
   searchBar = false,
   searchPlaceholder = 'Search for answers...',
+  productId,
 }: HeroProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement search functionality in future phases
-    console.log('Search query:', searchQuery);
-  };
 
   return (
     <div className="bg-black text-white py-16">
@@ -46,39 +40,10 @@ export default function Hero({
             {/* Search bar (optional) */}
             {searchBar && (
               <div className="mt-6">
-                <form onSubmit={handleSearch} className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={searchPlaceholder}
-                    className="w-full border border-gray-700 p-4 rounded-md bg-gray-900 px-4 py-3 pr-12 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-                  />
-                  <button
-                    type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700"
-                    aria-label="Search"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
-                </form>
-
-                {/* Tip text */}
-                <p className="text-xs text-gray-400 mt-2">
-                  Use detailed phrases or exact error messages to find the most relevant help guides
-                </p>
+                <SearchBar
+                  placeholder={searchPlaceholder}
+                  productId={productId}
+                />
               </div>
             )}
           </div>
