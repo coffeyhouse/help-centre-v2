@@ -115,13 +115,6 @@ export interface ArticlesData {
 
 // ==================== Contact Types ====================
 
-export interface ContactTopic {
-  id: string;
-  title: string;
-  icon: string;
-  countries?: string[];
-}
-
 export interface ContactMethod {
   id: string;
   type: 'card' | 'action';
@@ -134,10 +127,10 @@ export interface ContactMethod {
   hours?: string;
   url?: string;
   countries?: string[];
+  productIds?: string[];
 }
 
 export interface ContactData {
-  contactTopics: ContactTopic[];
   contactMethods: ContactMethod[];
 }
 

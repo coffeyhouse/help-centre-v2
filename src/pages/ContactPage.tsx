@@ -4,17 +4,15 @@
  * Features:
  * - Hero section
  * - Contact form with dropdowns (Persona, Product)
- * - Quick access topics grid
- * - Contact methods (Community, Phone)
+ * - Contact methods filtered by selected product (Community, Phone, etc.)
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
 import { loadProducts, loadContact } from '../utils/dataLoader';
 import Hero from '../components/common/Hero';
 import ContactForm from '../components/pages/ContactPage/ContactForm';
-import ContactTopicsGrid from '../components/pages/ContactPage/ContactTopicsGrid';
 import ContactMethods from '../components/pages/ContactPage/ContactMethods';
 import type { ProductsData, ContactData } from '../types';
 
@@ -64,8 +62,15 @@ export default function ContactPage() {
 
   const personas = regionConfig?.personas || [];
   const products = productsData?.products || [];
-  const contactTopics = contactData?.contactTopics || [];
-  const contactMethods = contactData?.contactMethods || [];
+  const allContactMethods = contactData?.contactMethods || [];
+
+  // Filter contact methods by selected product
+  // If productIds is not specified, the method applies to all products
+  const filteredContactMethods = useMemo(() => {
+    return allContactMethods.filter((method) =>
+      !method.productIds || method.productIds.includes(selectedProduct)
+    );
+  }, [allContactMethods, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -85,16 +90,10 @@ export default function ContactPage() {
           onProductChange={setSelectedProduct}
         />
 
-        {/* Contact Topics Grid */}
-        <ContactTopicsGrid
-          topics={contactTopics}
-          productId={selectedProduct}
-        />
-
         {/* Contact Methods */}
         <div className="mb-12">
-          <h2 className="text-2xl font-semibold mb-6">Alternative contact methods</h2>
-          <ContactMethods methods={contactMethods} />
+          <h2 className="text-2xl font-semibold mb-6">How would you like to get in touch?</h2>
+          <ContactMethods methods={filteredContactMethods} />
         </div>
       </div>
     </div>

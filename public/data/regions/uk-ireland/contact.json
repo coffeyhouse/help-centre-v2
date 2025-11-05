@@ -1,36 +1,4 @@
 {
-  "contactTopics": [
-    {
-      "id": "install-software",
-      "title": "Install your software",
-      "icon": "download"
-    },
-    {
-      "id": "manage-vat",
-      "title": "Manage your VAT",
-      "icon": "document"
-    },
-    {
-      "id": "banking",
-      "title": "Working with the bank",
-      "icon": "bank"
-    },
-    {
-      "id": "remote-access",
-      "title": "Run your accounts remotely",
-      "icon": "remote"
-    },
-    {
-      "id": "year-end",
-      "title": "Financial year end",
-      "icon": "calendar"
-    },
-    {
-      "id": "other",
-      "title": "Something else...",
-      "icon": "question"
-    }
-  ],
   "contactMethods": [
     {
       "id": "community",

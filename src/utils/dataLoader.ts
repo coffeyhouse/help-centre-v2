@@ -134,7 +134,6 @@ export async function loadContact(countryCode: string): Promise<ContactData> {
   const data = await fetchJSON<ContactData>(`${BASE_DATA_PATH}/regions/${regionId}/contact.json`);
 
   return {
-    contactTopics: filterByCountry(data.contactTopics, countryCode),
     contactMethods: filterByCountry(data.contactMethods, countryCode),
   };
 }
