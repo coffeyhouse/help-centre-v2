@@ -81,19 +81,48 @@
       ],
       "banking": [
         {
+          "id": "banking-overview",
+          "title": "Banking overview",
+          "description": "Learn about banking features and how to manage your finances."
+        }
+      ],
+      "bank-feeds": [
+        {
           "id": "bank-connection",
           "title": "Connect your bank account",
           "description": "Link your bank account for automatic transaction imports."
         },
         {
-          "id": "bank-reconciliation",
-          "title": "Bank reconciliation",
-          "description": "Match your bank transactions with your accounts."
-        },
-        {
-          "id": "bank-feeds",
+          "id": "setup-bank-feeds",
           "title": "Set up bank feeds",
           "description": "Automatically import transactions from your bank."
+        },
+        {
+          "id": "bank-feeds-troubleshooting",
+          "title": "Bank feeds troubleshooting",
+          "description": "Common issues and solutions for bank feeds."
+        },
+        {
+          "id": "supported-banks",
+          "title": "Supported banks",
+          "description": "List of banks that support automatic feeds."
+        }
+      ],
+      "bank-reconciliation": [
+        {
+          "id": "reconciliation-basics",
+          "title": "Bank reconciliation basics",
+          "description": "Learn the fundamentals of bank reconciliation."
+        },
+        {
+          "id": "perform-reconciliation",
+          "title": "Perform a bank reconciliation",
+          "description": "Step-by-step guide to reconciling your bank accounts."
+        },
+        {
+          "id": "reconciliation-reports",
+          "title": "Bank reconciliation reports",
+          "description": "Generate and understand reconciliation reports."
         }
       ],
       "remote-access": [

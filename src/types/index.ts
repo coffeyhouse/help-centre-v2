@@ -90,6 +90,7 @@ export interface SupportHub {
   description: string;
   icon: string;
   productId: string;
+  parentTopicId?: string; // For subtopics, references the parent topic ID
   countries?: string[];
 }
 
