@@ -1,0 +1,112 @@
+/**
+ * TopicPage - Topic/Support Hub detail page
+ *
+ * Features:
+ * - Breadcrumb navigation (Product > Support hubs > Topic)
+ * - Hero section with search
+ * - Tab navigation (Support guides, Free training, Get in touch)
+ * - Article grid (filtered by topic)
+ */
+
+import { useParams } from 'react-router-dom';
+import { useRegion } from '../hooks/useRegion';
+import { useData } from '../hooks/useData';
+import { loadProducts, loadTopics, loadArticles } from '../utils/dataLoader';
+import Breadcrumb from '../components/layout/Breadcrumb';
+import Hero from '../components/common/Hero';
+import TabNavigation from '../components/pages/TopicPage/TabNavigation';
+import ArticlesGrid from '../components/pages/TopicPage/ArticlesGrid';
+import type { ProductsData, TopicsData, ArticlesData } from '../types';
+
+export default function TopicPage() {
+  const { productId, topicId } = useParams<{ productId: string; topicId: string }>();
+  const { region, loading: regionLoading, error: regionError } = useRegion();
+
+  // Load products data to get product name
+  const {
+    data: productsData,
+    loading: productsLoading,
+    error: productsError,
+  } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  // Load topics data to get topic details
+  const {
+    data: topicsData,
+    loading: topicsLoading,
+    error: topicsError,
+  } = useData<TopicsData>(() => loadTopics(region), [region]);
+
+  // Load articles data
+  const {
+    data: articlesData,
+    loading: articlesLoading,
+    error: articlesError,
+  } = useData<ArticlesData>(() => loadArticles(region), [region]);
+
+  const loading = regionLoading || productsLoading || topicsLoading || articlesLoading;
+  const error = regionError || productsError || topicsError || articlesError;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center text-red-600">
+          <p className="text-lg font-semibold">Error</p>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Find the current product and topic
+  const product = productsData?.products.find((p) => p.id === productId);
+  const topic = topicsData?.supportHubs.find((t) => t.id === topicId);
+
+  // Get names for display with fallbacks
+  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+  const topicName = topic?.title || topicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
+
+  // Get all articles for this topic
+  const allArticles = articlesData?.articles[topicId || ''] || [];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <Hero
+        title={topicName}
+        subtitle={topic?.description || 'Find articles and guides for this topic'}
+        searchBar={true}
+        searchPlaceholder="Search for answers..."
+      />
+
+      {/* Main Content */}
+      <div className="container-custom py-8">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: productName, path: `/${region}/products/${productId}` },
+            { label: 'Support hubs', path: `/${region}/products/${productId}` },
+            { label: topicName, current: true },
+          ]}
+        />
+
+        {/* Tab Navigation */}
+        <TabNavigation />
+
+        {/* Articles Grid */}
+        {topicId && (
+          <ArticlesGrid articles={allArticles} topicId={topicId} />
+        )}
+      </div>
+    </div>
+  );
+}

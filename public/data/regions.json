@@ -1,0 +1,20 @@
+[
+  {
+    "code": "gb",
+    "name": "United Kingdom",
+    "language": "en-GB",
+    "currency": "GBP",
+    "currencySymbol": "£",
+    "dateFormat": "DD/MM/YYYY",
+    "default": true
+  },
+  {
+    "code": "ie",
+    "name": "Ireland",
+    "language": "en-IE",
+    "currency": "EUR",
+    "currencySymbol": "€",
+    "dateFormat": "DD/MM/YYYY",
+    "default": false
+  }
+]

@@ -1,0 +1,102 @@
+/**
+ * ProductLanding - Product-specific help page
+ *
+ * Features:
+ * - Product breadcrumb navigation
+ * - Top navigation bar
+ * - Hero section with search
+ * - Support hubs grid (filtered by product)
+ * - "View all support hubs" button
+ */
+
+import { useParams } from 'react-router-dom';
+import { useRegion } from '../hooks/useRegion';
+import { useData } from '../hooks/useData';
+import { loadProducts, loadTopics } from '../utils/dataLoader';
+import Breadcrumb from '../components/layout/Breadcrumb';
+import TopNavigation from '../components/pages/ProductLanding/TopNavigation';
+import Hero from '../components/common/Hero';
+import SupportHubsGrid from '../components/pages/ProductLanding/SupportHubsGrid';
+import type { ProductsData, TopicsData } from '../types';
+
+export default function ProductLanding() {
+  const { productId } = useParams<{ productId: string }>();
+  const { region, loading: regionLoading, error: regionError } = useRegion();
+
+  // Load products data to get product name
+  const {
+    data: productsData,
+    loading: productsLoading,
+    error: productsError,
+  } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  // Load topics/support hubs data
+  const {
+    data: topicsData,
+    loading: topicsLoading,
+    error: topicsError,
+  } = useData<TopicsData>(() => loadTopics(region), [region]);
+
+  const loading = regionLoading || productsLoading || topicsLoading;
+  const error = regionError || productsError || topicsError;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center text-red-600">
+          <p className="text-lg font-semibold">Error</p>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Find the current product
+  const product = productsData?.products.find((p) => p.id === productId);
+
+  // Get product name for display
+  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation */}
+      <TopNavigation />
+
+      {/* Hero Section */}
+      <Hero
+        title={`${productName} Help`}
+        subtitle="You need help. We have answers."
+        searchBar={true}
+        searchPlaceholder="Search for answers..."
+      />
+
+      {/* Main Content */}
+      <div className="container-custom py-8">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: productName, current: true },
+          ]}
+        />
+
+        {/* Support Hubs Grid */}
+        {topicsData && productId && (
+          <SupportHubsGrid
+            supportHubs={topicsData.supportHubs}
+            productId={productId}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
