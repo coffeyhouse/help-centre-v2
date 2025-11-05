@@ -89,7 +89,7 @@ export interface SupportHub {
   title: string;
   description: string;
   icon: string;
-  productIds: string[];
+  productId: string;
   countries?: string[];
 }
 

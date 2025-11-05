@@ -27,7 +27,7 @@ export default function SupportHubsGrid({ supportHubs, productId }: SupportHubsG
   // Filter support hubs by current product
   const filteredHubs = useMemo(() => {
     return supportHubs.filter((hub) =>
-      hub.productIds.includes(productId)
+      hub.productId === productId
     );
   }, [supportHubs, productId]);
 

@@ -1,46 +1,116 @@
 {
   "supportHubs": [
     {
-      "id": "install-software",
+      "id": "install-software-product-a",
       "title": "Install your software",
       "description": "Everything you need to install your software.",
       "icon": "download",
-      "productIds": ["product-a", "product-c"]
+      "productId": "product-a"
     },
     {
-      "id": "manage-vat",
+      "id": "manage-vat-product-a",
       "title": "Manage your VAT",
       "description": "Record VAT transactions and produce VAT Returns.",
       "icon": "document",
-      "productIds": ["product-a", "product-b", "product-d"]
+      "productId": "product-a"
     },
     {
-      "id": "banking",
+      "id": "banking-product-a",
       "title": "Working with the bank",
       "description": "Record and keep track of money paid and received.",
       "icon": "bank",
-      "productIds": ["product-a", "product-b"]
+      "productId": "product-a"
     },
     {
-      "id": "remote-access",
+      "id": "remote-access-product-a",
       "title": "Run your accounts remotely",
       "description": "Don't be tied to the office, work flexibly with Remote Data Access.",
       "icon": "remote",
-      "productIds": ["product-a"]
+      "productId": "product-a"
     },
     {
-      "id": "year-end",
+      "id": "year-end-product-a",
       "title": "Financial year end",
       "description": "Complete your year end, then get ready for the new year.",
       "icon": "calendar",
-      "productIds": ["product-a", "product-b"]
+      "productId": "product-a"
     },
     {
-      "id": "getting-started",
+      "id": "getting-started-product-a",
       "title": "Getting started",
       "description": "New to this product? Start here for basics.",
       "icon": "play",
-      "productIds": ["product-a", "product-b", "product-c", "product-d", "product-e", "product-f"]
+      "productId": "product-a"
+    },
+    {
+      "id": "manage-vat-product-b",
+      "title": "Manage your VAT",
+      "description": "Record VAT transactions and produce VAT Returns.",
+      "icon": "document",
+      "productId": "product-b"
+    },
+    {
+      "id": "banking-product-b",
+      "title": "Working with the bank",
+      "description": "Record and keep track of money paid and received.",
+      "icon": "bank",
+      "productId": "product-b"
+    },
+    {
+      "id": "year-end-product-b",
+      "title": "Financial year end",
+      "description": "Complete your year end, then get ready for the new year.",
+      "icon": "calendar",
+      "productId": "product-b"
+    },
+    {
+      "id": "getting-started-product-b",
+      "title": "Getting started",
+      "description": "New to this product? Start here for basics.",
+      "icon": "play",
+      "productId": "product-b"
+    },
+    {
+      "id": "install-software-product-c",
+      "title": "Install your software",
+      "description": "Everything you need to install your software.",
+      "icon": "download",
+      "productId": "product-c"
+    },
+    {
+      "id": "getting-started-product-c",
+      "title": "Getting started",
+      "description": "New to this product? Start here for basics.",
+      "icon": "play",
+      "productId": "product-c"
+    },
+    {
+      "id": "manage-vat-product-d",
+      "title": "Manage your VAT",
+      "description": "Record VAT transactions and produce VAT Returns.",
+      "icon": "document",
+      "productId": "product-d"
+    },
+    {
+      "id": "getting-started-product-d",
+      "title": "Getting started",
+      "description": "New to this product? Start here for basics.",
+      "icon": "play",
+      "productId": "product-d"
+    },
+    {
+      "id": "getting-started-product-e",
+      "title": "Getting started",
+      "description": "New to this product? Start here for basics.",
+      "icon": "play",
+      "productId": "product-e"
+    },
+    {
+      "id": "getting-started-product-f",
+      "title": "Getting started",
+      "description": "New to this product? Start here for basics.",
+      "icon": "play",
+      "productId": "product-f"
     }
   ]
 }
