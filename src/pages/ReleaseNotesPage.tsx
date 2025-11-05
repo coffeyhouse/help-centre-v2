@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
 import { loadReleaseNotes, loadProducts } from '../utils/dataLoader';
@@ -8,48 +9,29 @@ import Breadcrumb from '../components/layout/Breadcrumb';
 
 const ReleaseNotesPage: React.FC = () => {
   const { region } = useRegion();
-  const [selectedProduct, setSelectedProduct] = useState<string>('all');
+  const { productId } = useParams<{ productId: string }>();
 
-  // Load release notes
+  // Load release notes filtered by productId
   const { data: releaseNotesData, loading: notesLoading, error: notesError } = useData<ReleaseNotesData>(
-    () => loadReleaseNotes(region),
-    [region]
+    () => loadReleaseNotes(region, productId),
+    [region, productId]
   );
 
-  // Load products for the filter dropdown
+  // Load products to get product name
   const { data: productsData } = useData<ProductsData>(
     () => loadProducts(region),
     [region]
   );
 
-  // Filter release notes by selected product
+  // Get the current product
+  const currentProduct = useMemo(() => {
+    return productsData?.products.find(p => p.id === productId);
+  }, [productsData, productId]);
+
+  // Get all release notes (no additional filtering needed as loadReleaseNotes handles it)
   const filteredReleaseNotes = useMemo(() => {
-    if (!releaseNotesData?.releaseNotes) return [];
-    if (selectedProduct === 'all') return releaseNotesData.releaseNotes;
-
-    return releaseNotesData.releaseNotes.filter(
-      note => !note.productIds || note.productIds.includes(selectedProduct)
-    );
-  }, [releaseNotesData, selectedProduct]);
-
-  // Get products that have release notes
-  const productsWithReleases = useMemo(() => {
-    if (!productsData?.products || !releaseNotesData?.releaseNotes) return [];
-
-    const productIds = new Set<string>();
-    releaseNotesData.releaseNotes.forEach(note => {
-      note.productIds?.forEach(id => productIds.add(id));
-    });
-
-    return productsData.products.filter(p => productIds.has(p.id));
-  }, [productsData, releaseNotesData]);
-
-  // Get product name by ID
-  const getProductName = (productIds?: string[]): string => {
-    if (!productIds || productIds.length === 0 || !productsData?.products) return '';
-    const product = productsData.products.find(p => productIds.includes(p.id));
-    return product?.name || '';
-  };
+    return releaseNotesData?.releaseNotes || [];
+  }, [releaseNotesData]);
 
   // Format date to readable format
   const formatDate = (dateString: string): string => {
@@ -78,10 +60,11 @@ const ReleaseNotesPage: React.FC = () => {
 
   const years = Object.keys(releasesByYear).sort((a, b) => parseInt(b) - parseInt(a));
 
-  const breadcrumbItems = [
+  const breadcrumbItems = useMemo(() => [
     { label: 'Home', path: `/${region}` },
+    { label: currentProduct?.name || 'Product', path: `/${region}/products/${productId}` },
     { label: 'Release Notes', current: true },
-  ];
+  ], [region, currentProduct, productId]);
 
   if (notesLoading) {
     return (
@@ -107,39 +90,17 @@ const ReleaseNotesPage: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Hero
-        title="Release Notes"
-        subtitle="Stay up to date with the latest features, improvements, and fixes across our products"
+        title={`${currentProduct?.name || 'Product'} Release Notes`}
+        subtitle="Stay up to date with the latest features, improvements, and fixes"
       />
 
       <div className="container-custom py-8">
         <Breadcrumb items={breadcrumbItems} />
 
-        {/* Product Filter */}
-        {productsWithReleases.length > 0 && (
-          <div className="mt-8 mb-8">
-            <label htmlFor="product-filter" className="block text-sm font-medium text-gray-700 mb-2">
-              Filter by Product
-            </label>
-            <select
-              id="product-filter"
-              value={selectedProduct}
-              onChange={(e) => setSelectedProduct(e.target.value)}
-              className="block w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
-            >
-              <option value="all">All Products</option>
-              {productsWithReleases.map(product => (
-                <option key={product.id} value={product.id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
         {/* Timeline */}
         {filteredReleaseNotes.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">No release notes available.</p>
+            <p className="text-gray-600">No release notes available for this product.</p>
           </div>
         ) : (
           <div className="space-y-12">
@@ -165,11 +126,6 @@ const ReleaseNotesPage: React.FC = () => {
                                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-black text-white">
                                   {release.version}
                                 </span>
-                                {release.productIds && (
-                                  <span className="text-sm text-gray-600">
-                                    {getProductName(release.productIds)}
-                                  </span>
-                                )}
                               </div>
                               <h3 className="text-xl font-bold text-gray-900 mb-1">
                                 {release.title}
