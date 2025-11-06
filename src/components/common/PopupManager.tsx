@@ -131,7 +131,12 @@ export default function PopupManager() {
     const { trigger } = popupToShow;
 
     if (trigger.type === 'immediate') {
-      setShowPopup(true);
+      // Show after 0.5s for better UX
+      const timer = setTimeout(() => {
+        setShowPopup(true);
+      }, 500);
+
+      return () => clearTimeout(timer);
     } else if (trigger.type === 'delay' && trigger.delay) {
       const timer = setTimeout(() => {
         setShowPopup(true);

@@ -122,7 +122,7 @@ export default function PopupModal({ popup, onDismiss }: PopupModalProps) {
               {popup.buttons.map((button, index) => {
                 const buttonContent = button.text;
                 const buttonClass = button.primary
-                  ? 'bg-brand-teal hover:bg-brand-teal-hover text-white font-semibold'
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white font-semibold'
                   : 'bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium';
 
                 // If it's a link button with internal URL, use Link component
