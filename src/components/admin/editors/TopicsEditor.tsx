@@ -35,8 +35,11 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
   const [topicToDelete, setTopicToDelete] = useState<{ index: number; title: string } | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
+  // Ensure supportHubs exists and is an array
+  const supportHubs = data.supportHubs || [];
+
   // Group topics by product for easier viewing
-  const topicsByProduct = data.supportHubs.reduce((acc: any, topic, index) => {
+  const topicsByProduct = supportHubs.reduce((acc: any, topic, index) => {
     if (!acc[topic.productId]) {
       acc[topic.productId] = [];
     }
@@ -45,10 +48,10 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
   }, {});
 
   const products = Object.keys(topicsByProduct).sort();
-  const currentProductTopics = selectedProductId ? topicsByProduct[selectedProductId] : [];
+  const currentProductTopics = selectedProductId ? (topicsByProduct[selectedProductId] || []) : [];
 
   // Get topics for selected product only (for drag and drop)
-  const currentTopics = currentProductTopics.map((t: any) => data.supportHubs[t.originalIndex]);
+  const currentTopics = currentProductTopics.map((t: any) => supportHubs[t.originalIndex]);
 
   // Drag and drop handlers
   const {
@@ -61,7 +64,7 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
     handleDragEnd,
   } = useDragAndDrop(currentTopics, (reorderedTopics) => {
     // We need to update the full supportHubs array, not just the current product's topics
-    const otherTopics = data.supportHubs.filter((t) => t.productId !== selectedProductId);
+    const otherTopics = supportHubs.filter((t) => t.productId !== selectedProductId);
     onChange({
       ...data,
       supportHubs: [...otherTopics, ...reorderedTopics],
@@ -72,7 +75,7 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     if (selectedTopicIndex !== null && draggedIndex !== null) {
       const selectedTopic = currentTopics[currentTopics.findIndex((_, i) =>
-        data.supportHubs.indexOf(_) === selectedTopicIndex
+        supportHubs.indexOf(_) === selectedTopicIndex
       )];
 
       handleDropRaw(e, dropIndex);
@@ -80,12 +83,12 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
       // Find the new index of the selected topic after reorder
       if (selectedTopic) {
         const localSelectedIndex = currentTopics.findIndex((_, i) =>
-          data.supportHubs.indexOf(_) === selectedTopicIndex
+          supportHubs.indexOf(_) === selectedTopicIndex
         );
 
         if (localSelectedIndex === draggedIndex) {
           // The selected item was dragged - update to new position
-          const newGlobalIndex = data.supportHubs.filter(t => t.productId !== selectedProductId).length + dropIndex;
+          const newGlobalIndex = supportHubs.filter(t => t.productId !== selectedProductId).length + dropIndex;
           setTimeout(() => setSelectedTopicIndex(newGlobalIndex), 0);
         }
       }
@@ -113,7 +116,7 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
   const handleSaveNew = (topic: SupportHub) => {
     onChange({
       ...data,
-      supportHubs: [...data.supportHubs, topic],
+      supportHubs: [...supportHubs, topic],
     });
     setIsAddingNew(false);
   };
@@ -121,12 +124,12 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
   const handleUpdateTopic = (index: number, updatedTopic: SupportHub) => {
     onChange({
       ...data,
-      supportHubs: data.supportHubs.map((t, i) => (i === index ? updatedTopic : t)),
+      supportHubs: supportHubs.map((t, i) => (i === index ? updatedTopic : t)),
     });
   };
 
   const handleDeleteTopic = (index: number) => {
-    const topic = data.supportHubs[index];
+    const topic = supportHubs[index];
     setTopicToDelete({ index, title: topic.title });
     setDeleteConfirmOpen(true);
   };
@@ -135,7 +138,7 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
     if (topicToDelete) {
       onChange({
         ...data,
-        supportHubs: data.supportHubs.filter((_, i) => i !== topicToDelete.index),
+        supportHubs: supportHubs.filter((_, i) => i !== topicToDelete.index),
       });
       setSelectedTopicIndex(null);
       setTopicToDelete(null);
@@ -278,7 +281,7 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
       <div>
         {(selectedTopicIndex !== null || isAddingNew) ? (
           <TopicForm
-            topic={selectedTopicIndex !== null ? data.supportHubs[selectedTopicIndex] : null}
+            topic={selectedTopicIndex !== null ? supportHubs[selectedTopicIndex] : null}
             isNew={isAddingNew}
             defaultProductId={selectedProductId || ''}
             availableParentTopics={currentProductTopics}
@@ -324,7 +327,7 @@ export default function TopicsEditor({ data, onChange, filterByProductId, articl
       >
         {selectedProductId && (
           <TopicsPreview
-            supportHubs={data.supportHubs}
+            supportHubs={supportHubs}
             productId={selectedProductId}
           />
         )}
