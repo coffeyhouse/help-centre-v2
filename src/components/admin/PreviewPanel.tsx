@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { PersonaContext } from '../../context/PersonaContext';
-import ProductGrid from '../pages/HomePage/ProductGrid';
-import type { PersonaId } from '../../types';
+import { useState, useMemo } from 'react';
+import Card from '../common/Card';
+import type { PersonaId, Product } from '../../types';
 
 interface PreviewPanelProps {
   fileId: string;
@@ -46,30 +45,76 @@ function PreviewPersonaTabs({ currentPersona, onPersonaChange }: {
   );
 }
 
+// Preview product grid component (doesn't need region context)
+function PreviewProductGrid({ products, persona }: { products: Product[]; persona: PersonaId }) {
+  // Filter products by selected persona
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      product.personas.includes(persona)
+    );
+  }, [products, persona]);
+
+  // Show first 6 products
+  const visibleProducts = filteredProducts.slice(0, 6);
+
+  return (
+    <div className="mb-12">
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {visibleProducts.map((product) => (
+          <Card
+            key={product.id}
+            title={product.name}
+            description={product.description}
+            type={product.type}
+            icon={product.icon}
+          />
+        ))}
+      </div>
+
+      {/* See more indicator */}
+      {filteredProducts.length > 6 && (
+        <div className="text-center">
+          <div className="inline-block px-4 py-2 bg-gray-100 text-gray-600 rounded-md text-sm">
+            + {filteredProducts.length - 6} more products not shown (showing first 6)
+          </div>
+        </div>
+      )}
+
+      {/* No products message */}
+      {filteredProducts.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">
+            No products available for this persona.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Products preview wrapper component
 function ProductsPreview({ products }: { products: any[] }) {
   const [currentPersona, setCurrentPersona] = useState<PersonaId>('customer');
 
   return (
-    <PersonaContext.Provider value={{ persona: currentPersona, setPersona: setCurrentPersona }}>
-      <div className="space-y-6">
-        <div>
-          <h3 className="font-semibold text-gray-900 mb-4">Products Preview</h3>
-          <p className="text-sm text-gray-600 mb-6">
-            This shows how products will appear on the homepage. Switch between personas to see different filtered views.
-          </p>
+    <div className="space-y-6">
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-4">Products Preview</h3>
+        <p className="text-sm text-gray-600 mb-6">
+          This shows how products will appear on the homepage. Switch between personas to see different filtered views.
+        </p>
 
-          {/* Persona Tabs */}
-          <PreviewPersonaTabs
-            currentPersona={currentPersona}
-            onPersonaChange={setCurrentPersona}
-          />
+        {/* Persona Tabs */}
+        <PreviewPersonaTabs
+          currentPersona={currentPersona}
+          onPersonaChange={setCurrentPersona}
+        />
 
-          {/* Product Grid - exactly as it appears on homepage */}
-          <ProductGrid products={products} />
-        </div>
+        {/* Product Grid - matches homepage layout */}
+        <PreviewProductGrid products={products} persona={currentPersona} />
       </div>
-    </PersonaContext.Provider>
+    </div>
   );
 }
 
