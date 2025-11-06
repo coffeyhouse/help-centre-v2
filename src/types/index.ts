@@ -331,6 +331,38 @@ export interface SearchResult {
   productId?: string;
   topicId?: string;
   url: string;
+  taxonomy?: string[];
+  attributes?: Record<string, string>;
+  language?: string;
+  relevanceScore?: number;
+}
+
+// Search API parameters
+export interface SearchParams {
+  query: string;
+  country: string;
+  products?: string[];
+  taxonomy?: string;
+  attributes?: Record<string, string>;
+  language?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Search API response
+export interface SearchResponse {
+  results: SearchResult[];
+  total: number;
+  hasMore: boolean;
+  query: string;
+  filters: {
+    country: string;
+    products?: string[];
+    taxonomy?: string;
+    attributes?: Record<string, string>;
+    language?: string;
+  };
+  executionTime: number;
 }
 
 // ==================== Hook Return Types ====================
