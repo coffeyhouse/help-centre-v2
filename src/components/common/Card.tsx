@@ -11,7 +11,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import { CubeIcon } from '@heroicons/react/24/outline';
+import { CubeIcon, DocumentTextIcon, FolderIcon } from '@heroicons/react/24/outline';
 import type { CardProps } from '../../types';
 import Icon from './Icon';
 
@@ -31,19 +31,19 @@ export default function Card({ title, description, type, icon, onClick, href }: 
           )}
         </div>
 
-        {/* Type Badge */}
-        {type && (
-          <div className="mb-2">
-            <span className="inline-block px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-blue-100 text-blue-800">
-              {type}
-            </span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 mb-2">
+          {/* Type Icon */}
+          {type === 'Topic' ? (
+            <FolderIcon className="w-5 h-5 text-blue-600" />
+          ) : type === 'Article' ? (
+            <DocumentTextIcon className="w-5 h-5 text-gray-600" />
+          ) : null}
 
-        {/* Title */}
-        <h3 className="text-lg font-semibold mb-2 text-gray-900">
-          {title}
-        </h3>
+          {/* Title */}
+          <h3 className="text-lg font-semibold text-gray-900">
+            {title}
+          </h3>
+        </div>
 
         {/* Description */}
         {description && (
