@@ -5,10 +5,12 @@ import {
   ArrowLeftIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import EditorForm from '../../components/admin/EditorForm';
 import PreviewPanel from '../../components/admin/PreviewPanel';
 import Modal from '../../components/common/Modal';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 export default function EditorPage() {
   const { fileId } = useParams<{ fileId: string }>();
@@ -16,17 +18,23 @@ export default function EditorPage() {
   const navigate = useNavigate();
 
   const [data, setData] = useState<any>(null);
+  const [originalData, setOriginalData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPreview, setShowPreview] = useState(false);
+  const [showNavConfirm, setShowNavConfirm] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   useEffect(() => {
     if (fileId) {
       fetchFile();
     }
   }, [fileId]);
+
+  // Check if there are unsaved changes
+  const hasChanges = originalData !== null && JSON.stringify(data) !== JSON.stringify(originalData);
 
   const fetchFile = async () => {
     try {
@@ -42,6 +50,7 @@ export default function EditorPage() {
 
       const result = await response.json();
       setData(result.data);
+      setOriginalData(result.data);
     } catch (err) {
       setError('Failed to load file. Please try again.');
       console.error(err);
@@ -49,6 +58,19 @@ export default function EditorPage() {
       setLoading(false);
     }
   };
+
+  // Block browser navigation when there are unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasChanges]);
 
   const handleSave = async () => {
     setError('');
@@ -74,6 +96,7 @@ export default function EditorPage() {
       }
 
       setSuccess('File saved successfully!');
+      setOriginalData(data); // Reset original data after successful save
       setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
       setError(err.message || 'Failed to save file. Please try again.');
@@ -83,7 +106,24 @@ export default function EditorPage() {
   };
 
   const handleBack = () => {
-    navigate('/admin/dashboard');
+    if (hasChanges) {
+      setPendingNavigation('/admin/dashboard');
+      setShowNavConfirm(true);
+    } else {
+      navigate('/admin/dashboard');
+    }
+  };
+
+  const confirmNavigation = () => {
+    setShowNavConfirm(false);
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+    }
+  };
+
+  const cancelNavigation = () => {
+    setShowNavConfirm(false);
+    setPendingNavigation(null);
   };
 
   if (loading) {
@@ -127,13 +167,22 @@ export default function EditorPage() {
               </button>
               <button
                 onClick={handleSave}
-                disabled={saving}
+                disabled={saving || !hasChanges}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
+
+          {/* Unsaved Changes Banner */}
+          {hasChanges && (
+            <div className="mt-4 flex items-center gap-2 bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg">
+              <ExclamationTriangleIcon className="h-5 w-5 flex-shrink-0" />
+              <span className="font-medium">You have unsaved changes.</span>
+              <span className="text-yellow-700">Remember to click "Save Changes" to persist your edits.</span>
+            </div>
+          )}
 
           {/* Notifications */}
           {error && (
@@ -170,6 +219,18 @@ export default function EditorPage() {
       >
         <PreviewPanel fileId={fileId!} data={data} />
       </Modal>
+
+      {/* Navigation Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showNavConfirm}
+        onClose={cancelNavigation}
+        onConfirm={confirmNavigation}
+        title="Unsaved Changes"
+        message="You have unsaved changes. Are you sure you want to leave this page? All unsaved changes will be lost."
+        confirmText="Leave Page"
+        cancelText="Stay on Page"
+        confirmStyle="danger"
+      />
     </div>
   );
 }
