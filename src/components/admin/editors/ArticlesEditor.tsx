@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import ConfirmModal from '../ConfirmModal';
 import DraggableListItem from '../DraggableListItem';
@@ -229,6 +229,21 @@ function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
       countries: [],
     }
   );
+
+  // Update form data when article changes
+  useEffect(() => {
+    if (article) {
+      setFormData(article);
+    } else if (!isNew) {
+      setFormData({
+        id: '',
+        title: '',
+        description: '',
+        type: 'article',
+        countries: [],
+      });
+    }
+  }, [article, isNew]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
