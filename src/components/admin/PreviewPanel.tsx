@@ -204,11 +204,5 @@ export default function PreviewPanel({ fileId, data }: PreviewPanelProps) {
     }
   };
 
-  return (
-    <div className="h-full">
-      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 max-h-[calc(100vh-300px)] overflow-y-auto">
-        {renderPreview()}
-      </div>
-    </div>
-  );
+  return renderPreview();
 }

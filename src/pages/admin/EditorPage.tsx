@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import EditorForm from '../../components/admin/EditorForm';
 import PreviewPanel from '../../components/admin/PreviewPanel';
+import Modal from '../../components/common/Modal';
 
 export default function EditorPage() {
   const { fileId } = useParams<{ fileId: string }>();
@@ -119,10 +120,10 @@ export default function EditorPage() {
 
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setShowPreview(!showPreview)}
+                onClick={() => setShowPreview(true)}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                {showPreview ? 'Hide' : 'Show'} Preview
+                Preview
               </button>
               <button
                 onClick={handleSave}
@@ -153,22 +154,22 @@ export default function EditorPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className={`grid ${showPreview ? 'lg:grid-cols-2' : 'lg:grid-cols-1'} gap-6`}>
-          {/* Editor Form */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Content</h2>
-            {data && <EditorForm fileId={fileId!} data={data} onChange={setData} />}
-          </div>
-
-          {/* Preview Panel */}
-          {showPreview && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Preview</h2>
-              <PreviewPanel fileId={fileId!} data={data} />
-            </div>
-          )}
+        {/* Editor Form */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Content</h2>
+          {data && <EditorForm fileId={fileId!} data={data} onChange={setData} />}
         </div>
       </main>
+
+      {/* Preview Modal */}
+      <Modal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        title="Preview"
+        maxWidth="max-w-6xl"
+      >
+        <PreviewPanel fileId={fileId!} data={data} />
+      </Modal>
     </div>
   );
 }
