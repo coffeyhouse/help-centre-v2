@@ -55,16 +55,18 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   };
 
   const handleSaveNew = (product: Product) => {
-    const updated = { ...data };
-    updated.products.push(product);
-    onChange(updated);
+    onChange({
+      ...data,
+      products: [...data.products, product],
+    });
     setIsAddingNew(false);
   };
 
   const handleUpdateProduct = (index: number, updatedProduct: Product) => {
-    const updated = { ...data };
-    updated.products[index] = updatedProduct;
-    onChange(updated);
+    onChange({
+      ...data,
+      products: data.products.map((p, i) => (i === index ? updatedProduct : p)),
+    });
   };
 
   const handleDeleteProduct = (index: number) => {
@@ -75,9 +77,10 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
 
   const confirmDelete = () => {
     if (itemToDelete) {
-      const updated = { ...data };
-      updated.products.splice(itemToDelete.index, 1);
-      onChange(updated);
+      onChange({
+        ...data,
+        products: data.products.filter((_, i) => i !== itemToDelete.index),
+      });
       setSelectedProductIndex(null);
       setItemToDelete(null);
     }
@@ -110,13 +113,14 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
       return;
     }
 
-    const updated = { ...data };
-    const reorderedProducts = [...updated.products];
+    const reorderedProducts = [...data.products];
     const [movedProduct] = reorderedProducts.splice(draggedIndex, 1);
     reorderedProducts.splice(dropIndex, 0, movedProduct);
 
-    updated.products = reorderedProducts;
-    onChange(updated);
+    onChange({
+      ...data,
+      products: reorderedProducts,
+    });
 
     // Update selected index if needed
     if (selectedProductIndex === draggedIndex) {
@@ -561,9 +565,7 @@ function HotTopicsSection({ hotTopics, onChange }: { hotTopics: HotTopic[]; onCh
 
   const confirmDelete = () => {
     if (topicToDelete) {
-      const updated = [...hotTopics];
-      updated.splice(topicToDelete.index, 1);
-      onChange(updated);
+      onChange(hotTopics.filter((_, i) => i !== topicToDelete.index));
       setTopicToDelete(null);
     }
   };
@@ -661,9 +663,7 @@ function QuickAccessCardsSection({
 
   const confirmDelete = () => {
     if (cardToDelete) {
-      const updated = [...cards];
-      updated.splice(cardToDelete.index, 1);
-      onChange(updated);
+      onChange(cards.filter((_, i) => i !== cardToDelete.index));
       setCardToDelete(null);
     }
   };
