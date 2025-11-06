@@ -22,10 +22,11 @@ interface TopicsEditorProps {
     supportHubs: SupportHub[];
   };
   onChange: (data: any) => void;
+  filterByProductId?: string; // Optional: filter to show only this product's topics
 }
 
-export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+export default function TopicsEditor({ data, onChange, filterByProductId }: TopicsEditorProps) {
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(filterByProductId || null);
   const [selectedTopicIndex, setSelectedTopicIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -145,12 +146,13 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Left Panel - Product Selector */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Products</h3>
-        <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
-          {products.map((productId) => {
+    <div className={`grid grid-cols-1 ${filterByProductId ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-6`}>
+      {/* Left Panel - Product Selector (hidden when filtering) */}
+      {!filterByProductId && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Products</h3>
+          <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
+            {products.map((productId) => {
             const topicCount = topicsByProduct[productId].length;
             return (
               <button
@@ -177,7 +179,8 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
             );
           })}
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Middle Panel - Topics List (Draggable) */}
       <div className="space-y-4">
