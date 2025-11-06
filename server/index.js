@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.js';
 import filesRoutes from './routes/files.js';
 import regionsRoutes from './routes/regions.js';
+import searchRoutes from './routes/search.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/files', filesRoutes);
 app.use('/api/regions', regionsRoutes);
+app.use('/api/search', searchRoutes);
 
 // Serve static files in production
 if (NODE_ENV === 'production') {

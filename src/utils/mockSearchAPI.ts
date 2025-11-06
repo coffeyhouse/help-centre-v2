@@ -1,8 +1,8 @@
 /**
- * Mock Search API
+ * Search API Client
  *
- * This mock API simulates search functionality until a real API is implemented.
- * It filters mock data based on search query, region, product(s), taxonomy, attributes, and language.
+ * Calls the server-side search API which securely handles authentication
+ * with your external search service.
  *
  * Supported parameters:
  * - query: Search query string (searches title, summary)
@@ -14,6 +14,10 @@
  */
 
 import type { SearchResult, SearchParams, SearchResponse } from '../types';
+
+// Configuration
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_SEARCH === 'true';
 
 // Cache for search results data
 let searchResultsCache: SearchResult[] | null = null;
@@ -103,12 +107,52 @@ function matchesAttributes(
 }
 
 /**
- * Enhanced mock search function with full parameter support
+ * Search function with full parameter support
+ * Calls the server API which handles authentication to your external search service
  *
  * @param params - Search parameters object
  * @returns Promise resolving to SearchResponse with results and metadata
  */
 export async function search(params: SearchParams): Promise<SearchResponse> {
+  // Use mock data if configured (useful for development/testing)
+  if (USE_MOCK_DATA) {
+    return searchMock(params);
+  }
+
+  // Call the server API
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(errorData.error || `Search API error: ${response.status}`);
+    }
+
+    const data: SearchResponse = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Search API error:', error);
+
+    // Fallback to mock data on error
+    console.warn('Falling back to mock search data');
+    return searchMock(params);
+  }
+}
+
+/**
+ * Mock search function (used as fallback or when USE_MOCK_DATA is true)
+ *
+ * @param params - Search parameters object
+ * @returns Promise resolving to SearchResponse with results and metadata
+ */
+async function searchMock(params: SearchParams): Promise<SearchResponse> {
   const startTime = performance.now();
 
   // Simulate API delay
