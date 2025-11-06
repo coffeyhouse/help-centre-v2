@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface SupportHub {
@@ -217,6 +217,23 @@ function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel 
       showOnProductLanding: true,
     }
   );
+
+  // Update form data when topic prop changes
+  useEffect(() => {
+    if (topic) {
+      setFormData(topic);
+    } else {
+      setFormData({
+        id: '',
+        title: '',
+        description: '',
+        icon: '',
+        productId: defaultProductId,
+        parentTopicId: '',
+        showOnProductLanding: true,
+      });
+    }
+  }, [topic, defaultProductId]);
 
   const handleChange = (field: keyof SupportHub, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
