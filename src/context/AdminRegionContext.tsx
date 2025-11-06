@@ -10,6 +10,7 @@
 
 import { createContext, useState, useEffect, useContext } from 'react';
 import type { ReactNode } from 'react';
+import { useAdminAuth } from './AdminAuthContext';
 
 export interface Region {
   id: string;
@@ -40,6 +41,7 @@ interface AdminRegionProviderProps {
 const STORAGE_KEY = 'admin_selected_region';
 
 export function AdminRegionProvider({ children }: AdminRegionProviderProps) {
+  const { token } = useAdminAuth();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,11 +49,22 @@ export function AdminRegionProvider({ children }: AdminRegionProviderProps) {
 
   // Load regions from API
   const loadRegions = async () => {
+    // Don't load if not authenticated
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/regions');
+      const response = await fetch('/api/regions', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (!response.ok) {
         throw new Error('Failed to load regions');
       }
@@ -67,10 +80,10 @@ export function AdminRegionProvider({ children }: AdminRegionProviderProps) {
     }
   };
 
-  // Load regions on mount
+  // Load regions when token is available
   useEffect(() => {
     loadRegions();
-  }, []);
+  }, [token]);
 
   // Load selected region from localStorage on mount
   useEffect(() => {
