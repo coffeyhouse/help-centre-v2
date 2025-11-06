@@ -12,6 +12,7 @@ import type {
   ContactData,
   ArticleItem,
   IncidentBannersData,
+  PopupsData,
   ReleaseNotesData
 } from '../types';
 
@@ -155,6 +156,20 @@ export async function loadIncidentBanners(countryCode: string): Promise<Incident
 
   return {
     banners: filterByCountry(data.banners, countryCode),
+  };
+}
+
+/**
+ * Load popup modals for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @returns Promise resolving to PopupsData object filtered by country
+ */
+export async function loadPopups(countryCode: string): Promise<PopupsData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<PopupsData>(`${BASE_DATA_PATH}/regions/${regionId}/popups.json`);
+
+  return {
+    popups: filterByCountry(data.popups, countryCode),
   };
 }
 

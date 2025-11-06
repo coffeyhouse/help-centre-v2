@@ -1,12 +1,13 @@
 /**
- * Layout - Wraps page content with BannerManager
+ * Layout - Wraps page content with BannerManager and PopupManager
  *
  * This component is used by all routes to provide consistent layout
- * and give BannerManager access to route parameters via useParams()
+ * and give BannerManager and PopupManager access to route parameters via useParams()
  */
 
 import { Outlet } from 'react-router-dom';
 import BannerManager from '../common/BannerManager';
+import PopupManager from '../common/PopupManager';
 
 export default function Layout() {
   return (
@@ -16,6 +17,9 @@ export default function Layout() {
 
       {/* Page content */}
       <Outlet />
+
+      {/* Popup Modals - has access to route params via useParams */}
+      <PopupManager />
     </>
   );
 }

@@ -203,6 +203,44 @@ export interface IncidentBannersData {
   banners: IncidentBanner[];
 }
 
+// ==================== Popup Modal Types ====================
+
+export type PopupTriggerType = 'immediate' | 'delay' | 'scroll';
+
+export interface PopupButton {
+  text: string;
+  url?: string; // External or internal link
+  action?: 'dismiss' | 'link'; // Action to perform
+  primary?: boolean; // Primary button styling
+}
+
+export interface PopupModal {
+  id: string;
+  title: string;
+  message: string;
+  image?: string; // Optional image URL
+  video?: string; // Optional video URL (YouTube embed, etc.)
+  buttons?: PopupButton[]; // Call-to-action buttons
+  scope: {
+    type: 'global' | 'product' | 'topic' | 'page';
+    productIds?: string[]; // For product-specific popups
+    topicIds?: string[]; // For topic-specific popups (requires productId match too)
+    pagePatterns?: string[]; // For page-specific popups (e.g., "/products/:productId", "/contact")
+  };
+  trigger: {
+    type: PopupTriggerType;
+    delay?: number; // Delay in milliseconds (for 'delay' type)
+    scrollPercentage?: number; // Scroll percentage 0-100 (for 'scroll' type)
+  };
+  priority: number; // Higher number = higher priority
+  active: boolean;
+  countries?: string[];
+}
+
+export interface PopupsData {
+  popups: PopupModal[];
+}
+
 // ==================== Breadcrumb Types ====================
 
 export interface BreadcrumbItem {

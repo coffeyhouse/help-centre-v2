@@ -3,6 +3,7 @@ import ProductsEditor from './editors/ProductsEditor';
 import ArticlesEditor from './editors/ArticlesEditor';
 import TopicsEditor from './editors/TopicsEditor';
 import IncidentsEditor from './editors/IncidentsEditor';
+import PopupsEditor from './editors/PopupsEditor';
 import ContactEditor from './editors/ContactEditor';
 import ReleaseNotesEditor from './editors/ReleaseNotesEditor';
 import RegionsEditor from './editors/RegionsEditor';
@@ -34,6 +35,8 @@ export default function EditorForm({ fileId, data, onChange }: EditorFormProps) 
         return <TopicsEditor data={data} onChange={onChange} />;
       case 'uk-ireland-incidents':
         return <IncidentsEditor data={data} onChange={onChange} />;
+      case 'uk-ireland-popups':
+        return <PopupsEditor data={data} onChange={onChange} />;
       case 'uk-ireland-contact':
         return <ContactEditor data={data} onChange={onChange} />;
       case 'uk-ireland-release-notes':
