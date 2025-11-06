@@ -241,6 +241,8 @@ interface ProductFormProps {
 }
 
 function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductFormProps) {
+  const availablePersonas = ['customer', 'accountant', 'partner', 'developer'];
+
   const [formData, setFormData] = useState<Product>(
     product || {
       id: '',
@@ -252,12 +254,9 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
     }
   );
 
-  const [personasInput, setPersonasInput] = useState('');
-
   useEffect(() => {
     if (product) {
       setFormData(product);
-      setPersonasInput(product.personas.join(', '));
     } else {
       setFormData({
         id: '',
@@ -267,7 +266,6 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
         personas: [],
         icon: '',
       });
-      setPersonasInput('');
     }
   }, [product]);
 
@@ -275,10 +273,14 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handlePersonasChange = (value: string) => {
-    setPersonasInput(value);
-    const personasArray = value.split(',').map((p) => p.trim()).filter((p) => p);
-    setFormData((prev) => ({ ...prev, personas: personasArray }));
+  const handlePersonaToggle = (persona: string) => {
+    setFormData((prev) => {
+      const isSelected = prev.personas.includes(persona);
+      const newPersonas = isSelected
+        ? prev.personas.filter((p) => p !== persona)
+        : [...prev.personas, persona];
+      return { ...prev, personas: newPersonas };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -380,18 +382,23 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           Personas <span className="text-red-500">*</span>
         </label>
-        <input
-          type="text"
-          value={personasInput}
-          onChange={(e) => handlePersonasChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="e.g., customer, accountant"
-          required
-        />
-        <p className="text-xs text-gray-500 mt-1">Comma-separated list of personas</p>
+        <div className="space-y-2">
+          {availablePersonas.map((persona) => (
+            <label key={persona} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.personas.includes(persona)}
+                onChange={() => handlePersonaToggle(persona)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700 capitalize">{persona}</span>
+            </label>
+          ))}
+        </div>
+        <p className="text-xs text-gray-500 mt-2">Select all applicable personas</p>
       </div>
 
       <div className="flex gap-3 pt-4 border-t border-gray-200">
