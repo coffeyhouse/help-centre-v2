@@ -91,12 +91,16 @@ export default function HomePage() {
         {productsData && (!user || showAllProducts) && (
           <CategoryProductGrid products={productsData.products} />
         )}
-
-        {/* Quick Access Cards */}
-        {productsData && productsData.quickAccessCards && (
-          <QuickAccessCards cards={productsData.quickAccessCards} />
-        )}
       </div>
+
+      {/* Resources Section - Full width with darker background */}
+      {productsData && productsData.quickAccessCards && (
+        <div className="bg-gray-100 py-12">
+          <div className="container-custom">
+            <QuickAccessCards cards={productsData.quickAccessCards} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
