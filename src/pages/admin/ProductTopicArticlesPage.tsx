@@ -209,6 +209,7 @@ export default function ProductTopicArticlesPage() {
             articles={articles}
             onChange={handleArticlesChange}
             topicsData={topicsData}
+            countryCodes={currentRegion?.countryCodes}
           />
         </div>
       ) : null}

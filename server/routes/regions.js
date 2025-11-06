@@ -31,12 +31,14 @@ async function getAdminRegions() {
           name: country.regionName || formatRegionName(regionKey), // Use stored name if available
           code: regionKey,
           countries: [],
+          countryCodes: [], // Add country codes array
           currency: country.currency,
           dateFormat: country.dateFormat,
           language: country.language,
         };
       }
       regionsMap[regionKey].countries.push(country.name);
+      regionsMap[regionKey].countryCodes.push(country.code);
     });
 
     return Object.values(regionsMap);

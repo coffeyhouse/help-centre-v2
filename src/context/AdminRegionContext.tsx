@@ -17,6 +17,7 @@ export interface Region {
   name: string;
   code: string;
   countries: string[];
+  countryCodes: string[];
   currency: string;
   dateFormat: string;
   language: string;

@@ -24,9 +24,10 @@ interface ArticlesEditorProps {
   articles: Article[];
   onChange: (articles: Article[]) => void;
   topicsData?: Topic[];
+  countryCodes?: string[];
 }
 
-export default function ArticlesEditor({ productId, topicId, articles, onChange, topicsData }: ArticlesEditorProps) {
+export default function ArticlesEditor({ productId, topicId, articles, onChange, topicsData, countryCodes = ['gb', 'ie'] }: ArticlesEditorProps) {
   const [selectedArticleIndex, setSelectedArticleIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -178,6 +179,7 @@ export default function ArticlesEditor({ productId, topicId, articles, onChange,
             onSave={handleSaveNew}
             onCancel={handleCancel}
             topicsData={topicsData}
+            countryCodes={countryCodes}
             isNew
           />
         ) : selectedArticle ? (
@@ -197,6 +199,7 @@ export default function ArticlesEditor({ productId, topicId, articles, onChange,
               onSave={handleUpdateArticle}
               onCancel={handleCancel}
               topicsData={topicsData}
+              countryCodes={countryCodes}
             />
           </>
         ) : (
@@ -227,9 +230,10 @@ interface ArticleFormProps {
   onCancel: () => void;
   isNew?: boolean;
   topicsData?: Topic[];
+  countryCodes?: string[];
 }
 
-function ArticleForm({ article, onSave, onCancel, isNew, topicsData }: ArticleFormProps) {
+function ArticleForm({ article, onSave, onCancel, isNew, topicsData, countryCodes = ['gb', 'ie'] }: ArticleFormProps) {
   const [formData, setFormData] = useState<Article>(
     article || {
       id: '',
@@ -434,7 +438,7 @@ function ArticleForm({ article, onSave, onCancel, isNew, topicsData }: ArticleFo
           Countries (optional)
         </label>
         <div className="flex flex-wrap gap-2">
-          {['gb', 'ie'].map((country) => (
+          {countryCodes.map((country) => (
             <button
               key={country}
               type="button"
