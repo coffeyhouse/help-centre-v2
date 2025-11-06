@@ -16,6 +16,7 @@ import { useRegion } from '../../hooks/useRegion';
 import { useData } from '../../hooks/useData';
 import { loadProducts, loadReleaseNotes } from '../../utils/dataLoader';
 import Icon from '../common/Icon';
+import GlobalRegionSelector from './GlobalRegionSelector';
 import type { ProductsData, ReleaseNotesData } from '../../types';
 
 export default function Footer() {
@@ -139,6 +140,14 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+          </div>
+        </div>
+
+        {/* Global Country Selector */}
+        <div className="mb-8 pb-8 border-b border-white/10">
+          <div className="max-w-xs">
+            <h3 className="text-sm font-semibold mb-3 text-gray-300">Change Country / Region</h3>
+            <GlobalRegionSelector />
           </div>
         </div>
 
