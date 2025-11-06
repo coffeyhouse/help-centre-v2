@@ -9,6 +9,7 @@
  * - Quick access cards
  */
 
+import { useState } from 'react';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -24,6 +25,7 @@ import type { ProductsData } from '../types';
 export default function HomePage() {
   const { region, regionConfig, loading: regionLoading, error: regionError } = useRegion();
   const { user } = useAuth();
+  const [showAllProducts, setShowAllProducts] = useState(false);
 
   // Set page title
   usePageTitle('Home');
@@ -80,12 +82,19 @@ export default function HomePage() {
       <div className="container-custom py-12">
         {/* Your Products Section - Only shown when logged in */}
         {user && productsData && (
-          <MyProductsGrid products={productsData.products} />
+          <MyProductsGrid
+            products={productsData.products}
+            showAllProducts={showAllProducts}
+            onToggleShowAll={() => setShowAllProducts(!showAllProducts)}
+          />
         )}
 
         {/* Products by Category */}
         {productsData && (
-          <CategoryProductGrid products={productsData.products} />
+          <CategoryProductGrid
+            products={productsData.products}
+            showAllProducts={showAllProducts}
+          />
         )}
 
         {/* Hot Topics */}

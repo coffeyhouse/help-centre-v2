@@ -4,7 +4,7 @@
  * Features:
  * - Groups products by category
  * - Shows category headings
- * - Filters out owned products when user is logged in
+ * - Optionally filters out owned products when user is logged in
  * - Uses Card component for each product
  * - Links to Product Landing pages
  * - Responsive grid
@@ -18,6 +18,7 @@ import type { Product, ProductCategory } from '../../../types';
 
 interface CategoryProductGridProps {
   products: Product[];
+  showAllProducts: boolean;
 }
 
 // Category display names
@@ -36,19 +37,19 @@ const categoryOrder: ProductCategory[] = [
   'solutions-accountants-bookkeepers',
 ];
 
-export default function CategoryProductGrid({ products }: CategoryProductGridProps) {
+export default function CategoryProductGrid({ products, showAllProducts }: CategoryProductGridProps) {
   const { region } = useRegion();
   const { user } = useAuth();
 
-  // Filter products to exclude owned products and group by category
+  // Filter products and group by category
   const productsByCategory = useMemo(() => {
-    // First filter out owned products
+    // Filter products based on country and optionally exclude owned products
     const availableProducts = products.filter((product) => {
       // Check if product is available for the current country
       const matchesCountry = !product.countries || product.countries.includes(region);
 
-      // Exclude products owned by the user (if logged in)
-      const isNotOwned = !user || !user.ownedProducts.includes(product.id);
+      // Exclude products owned by the user only if showAllProducts is false
+      const isNotOwned = showAllProducts || !user || !user.ownedProducts.includes(product.id);
 
       return matchesCountry && isNotOwned;
     });
@@ -70,7 +71,7 @@ export default function CategoryProductGrid({ products }: CategoryProductGridPro
     });
 
     return grouped;
-  }, [products, region, user]);
+  }, [products, region, user, showAllProducts]);
 
   // If no products available, show message
   if (productsByCategory.size === 0) {
