@@ -27,6 +27,7 @@ import TopicPage from './pages/TopicPage';
 import ContactPage from './pages/ContactPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ReleaseNotesPage from './pages/ReleaseNotesPage';
+import CountrySelector from './pages/CountrySelector';
 
 // Admin imports
 import LoginPage from './pages/admin/LoginPage';
@@ -182,6 +183,9 @@ function App() {
             - /admin/:region/release-notes (ReleaseNotesPage)
             - /admin/:region/settings (RegionsManagementPage)
             */}
+
+            {/* Country selector (no region context needed) */}
+            <Route path="/select-country" element={<CountrySelector />} />
 
             {/* Public routes */}
           <Route
