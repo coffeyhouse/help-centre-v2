@@ -45,12 +45,19 @@ export type PersonaId = 'customer' | 'accountant' | 'partner' | 'developer';
 
 export type ProductType = 'cloud' | 'desktop';
 
+export type ProductCategory =
+  | 'accounting-software'
+  | 'people-payroll'
+  | 'business-management'
+  | 'solutions-accountants-bookkeepers';
+
 export interface Product {
   id: string;
   name: string;
   description: string;
   type: ProductType;
   personas: PersonaId[];
+  categories: ProductCategory[];
   icon: string;
   countries?: string[];
 }

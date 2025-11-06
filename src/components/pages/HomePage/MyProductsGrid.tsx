@@ -38,7 +38,7 @@ export default function MyProductsGrid({ products }: MyProductsGridProps) {
   return (
     <div className="mb-12">
       {/* Section Title */}
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">My products</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Your products</h2>
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

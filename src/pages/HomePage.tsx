@@ -2,9 +2,9 @@
  * HomePage - Main landing page for the Help Centre
  *
  * Features:
- * - Hero section with welcome message
- * - Persona tabs (Customer, Accountant/Bookkeeper)
- * - Product grid filtered by persona
+ * - Hero section with personalized welcome message
+ * - Your products section (for logged-in users)
+ * - Products organized by category
  * - Hot topics section
  * - Quick access cards
  */
@@ -15,8 +15,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../hooks/useAuth';
 import { loadProducts } from '../utils/dataLoader';
 import Hero from '../components/common/Hero';
-import PersonaTabs from '../components/pages/HomePage/PersonaTabs';
-import ProductGrid from '../components/pages/HomePage/ProductGrid';
+import CategoryProductGrid from '../components/pages/HomePage/CategoryProductGrid';
 import MyProductsGrid from '../components/pages/HomePage/MyProductsGrid';
 import HotTopics from '../components/pages/HomePage/HotTopics';
 import QuickAccessCards from '../components/pages/HomePage/QuickAccessCards';
@@ -79,17 +78,14 @@ export default function HomePage() {
 
       {/* Main Content */}
       <div className="container-custom py-12">
-        {/* My Products Section - Only shown when logged in */}
+        {/* Your Products Section - Only shown when logged in */}
         {user && productsData && (
           <MyProductsGrid products={productsData.products} />
         )}
 
-        {/* Persona Tabs */}
-        <PersonaTabs />
-
-        {/* Product Grid */}
+        {/* Products by Category */}
         {productsData && (
-          <ProductGrid products={productsData.products} />
+          <CategoryProductGrid products={productsData.products} />
         )}
 
         {/* Hot Topics */}
