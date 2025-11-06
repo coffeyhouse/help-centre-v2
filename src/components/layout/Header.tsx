@@ -11,7 +11,7 @@
  */
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
 import RegionSelector from './RegionSelector';
 import UserMenu from './UserMenu';
@@ -19,9 +19,14 @@ import Icon from '../common/Icon';
 
 export default function Header() {
   const { region, regionConfig } = useRegion();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navigationLinks = regionConfig?.navigation.main || [];
+  // Filter out Home link if we're on the homepage
+  const isHomePage = location.pathname === `/${region}`;
+  const navigationLinks = (regionConfig?.navigation.main || []).filter(
+    (link) => !isHomePage || link.path !== `/${region}`
+  );
 
   return (
     <header className="bg-black text-white sticky top-0 z-40 shadow-lg">
