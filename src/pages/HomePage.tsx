@@ -38,6 +38,11 @@ export default function HomePage() {
   const loading = regionLoading || dataLoading;
   const error = regionError || dataError;
 
+  // Check if user has any products in the current region
+  const userHasProductsInRegion = user && productsData
+    ? productsData.products.some(product => user.ownedProducts.includes(product.id))
+    : false;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -78,8 +83,8 @@ export default function HomePage() {
 
       {/* Main Content */}
       <div className="container-custom py-12">
-        {/* Your Products Section - Only shown when logged in */}
-        {user && productsData && (
+        {/* Your Products Section - Only shown when logged in and has products */}
+        {user && productsData && userHasProductsInRegion && (
           <MyProductsGrid
             products={productsData.products}
             showAllProducts={showAllProducts}
@@ -87,8 +92,8 @@ export default function HomePage() {
           />
         )}
 
-        {/* Products by Category - Hidden by default when logged in, shown when "Show all products" is clicked or when not logged in */}
-        {productsData && (!user || showAllProducts) && (
+        {/* Products by Category - Show if: not logged in, OR user has no products in region, OR "Show all products" is clicked */}
+        {productsData && (!user || !userHasProductsInRegion || showAllProducts) && (
           <CategoryProductGrid products={productsData.products} />
         )}
       </div>
