@@ -4,7 +4,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
-import JSONEditor from '../../components/admin/editors/JSONEditor';
+import ArticlesEditor from '../../components/admin/editors/ArticlesEditor';
 
 interface Product {
   id: string;
@@ -132,7 +132,23 @@ export default function ProductTopicArticlesPage() {
     }
   };
 
-  const articleCount = data?.articles?.[productId]?.[topicId]?.length || 0;
+  const handleArticlesChange = (newArticles: any[]) => {
+    // Update the articles for this specific product/topic
+    const newData = {
+      ...data,
+      articles: {
+        ...data.articles,
+        [productId!]: {
+          ...data.articles?.[productId!],
+          [topicId!]: newArticles,
+        },
+      },
+    };
+    setData(newData);
+  };
+
+  const articles = data?.articles?.[productId]?.[topicId] || [];
+  const articleCount = articles.length;
 
   return (
     <AdminLayout
@@ -184,15 +200,13 @@ export default function ProductTopicArticlesPage() {
           <p className="mt-4 text-gray-600">Loading articles...</p>
         </div>
       ) : data ? (
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
-            <strong>Note:</strong> Currently using JSON editor. Navigate to{' '}
-            <code className="bg-blue-100 px-1 py-0.5 rounded">
-              articles &gt; {productId} &gt; {topicId}
-            </code>{' '}
-            to edit articles for this topic.
-          </div>
-          <JSONEditor data={data} onChange={setData} />
+        <div className="bg-white rounded-lg shadow">
+          <ArticlesEditor
+            productId={productId!}
+            topicId={topicId!}
+            articles={articles}
+            onChange={handleArticlesChange}
+          />
         </div>
       ) : null}
     </AdminLayout>
