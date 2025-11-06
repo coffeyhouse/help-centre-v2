@@ -172,6 +172,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
             topic={selectedTopicIndex !== null ? data.supportHubs[selectedTopicIndex] : null}
             isNew={isAddingNew}
             defaultProductId={selectedProductId || ''}
+            availableParentTopics={currentProductTopics}
             onSave={
               isAddingNew
                 ? handleSaveNew
@@ -200,12 +201,13 @@ interface TopicFormProps {
   topic: SupportHub | null;
   isNew: boolean;
   defaultProductId: string;
+  availableParentTopics: any[];
   onSave: (topic: SupportHub) => void;
   onDelete?: () => void;
   onCancel: () => void;
 }
 
-function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel }: TopicFormProps) {
+function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSave, onDelete, onCancel }: TopicFormProps) {
   const [formData, setFormData] = useState<SupportHub>(
     topic || {
       id: '',
@@ -218,10 +220,13 @@ function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel 
     }
   );
 
+  const [hasParentTopic, setHasParentTopic] = useState(false);
+
   // Update form data when topic prop changes
   useEffect(() => {
     if (topic) {
       setFormData(topic);
+      setHasParentTopic(!!topic.parentTopicId);
     } else {
       setFormData({
         id: '',
@@ -232,11 +237,19 @@ function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel 
         parentTopicId: '',
         showOnProductLanding: true,
       });
+      setHasParentTopic(false);
     }
   }, [topic, defaultProductId]);
 
   const handleChange = (field: keyof SupportHub, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleParentTopicToggle = (checked: boolean) => {
+    setHasParentTopic(checked);
+    if (!checked) {
+      setFormData((prev) => ({ ...prev, parentTopicId: '' }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -275,11 +288,16 @@ function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel 
           type="text"
           value={formData.id}
           onChange={(e) => handleChange('id', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          disabled={!isNew}
+          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            !isNew ? 'bg-gray-100 cursor-not-allowed' : ''
+          }`}
           placeholder="e.g., install-software"
           required
         />
-        <p className="text-xs text-gray-500 mt-1">Unique identifier (use lowercase with hyphens)</p>
+        <p className="text-xs text-gray-500 mt-1">
+          {isNew ? 'Unique identifier (use lowercase with hyphens)' : 'ID cannot be changed after creation'}
+        </p>
       </div>
 
       <div>
@@ -325,33 +343,43 @@ function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel 
         <p className="text-xs text-gray-500 mt-1">Icon name for UI display</p>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Product ID <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          value={formData.productId}
-          onChange={(e) => handleChange('productId', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="e.g., product-a"
-          required
-        />
-        <p className="text-xs text-gray-500 mt-1">Which product this topic belongs to</p>
-      </div>
+      <div className="space-y-3">
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="hasParentTopic"
+            checked={hasParentTopic}
+            onChange={(e) => handleParentTopicToggle(e.target.checked)}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <label htmlFor="hasParentTopic" className="ml-2 text-sm font-medium text-gray-700">
+            This is a subtopic
+          </label>
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Parent Topic ID <span className="text-gray-400">(optional)</span>
-        </label>
-        <input
-          type="text"
-          value={formData.parentTopicId || ''}
-          onChange={(e) => handleChange('parentTopicId', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="e.g., banking"
-        />
-        <p className="text-xs text-gray-500 mt-1">If this is a subtopic, enter the parent topic ID</p>
+        {hasParentTopic && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Parent Topic <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={formData.parentTopicId || ''}
+              onChange={(e) => handleChange('parentTopicId', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required={hasParentTopic}
+            >
+              <option value="">Select parent topic...</option>
+              {availableParentTopics
+                .filter((t: any) => t.id !== formData.id) // Don't allow selecting itself
+                .map((t: any) => (
+                  <option key={t.id} value={t.id}>
+                    {t.title} ({t.id})
+                  </option>
+                ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">Select the parent topic this belongs under</p>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center">
