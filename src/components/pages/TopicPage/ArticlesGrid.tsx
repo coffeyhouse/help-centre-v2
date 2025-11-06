@@ -74,6 +74,7 @@ export default function ArticlesGrid({
                 title={item.title || ''}
                 description={item.description}
                 href={`#article-${item.id}`}
+                type="Article"
               />
             );
           }

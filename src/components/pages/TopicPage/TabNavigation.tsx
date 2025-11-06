@@ -13,19 +13,26 @@ import { useState } from 'react';
 
 interface TabNavigationProps {
   onTabChange?: (tabId: string) => void;
+  activeTab?: string;
 }
 
-export default function TabNavigation({ onTabChange }: TabNavigationProps) {
-  const [activeTab, setActiveTab] = useState('support-guides');
+export default function TabNavigation({ onTabChange, activeTab: controlledActiveTab }: TabNavigationProps) {
+  const [internalActiveTab, setInternalActiveTab] = useState('support-guides');
+
+  // Use controlled or internal state
+  const activeTab = controlledActiveTab !== undefined ? controlledActiveTab : internalActiveTab;
 
   const tabs = [
     { id: 'support-guides', label: 'Support guides' },
     { id: 'free-training', label: 'Free training' },
+    { id: 'videos', label: 'Videos' },
     { id: 'get-in-touch', label: 'Get in touch' },
   ];
 
   const handleTabClick = (tabId: string) => {
-    setActiveTab(tabId);
+    if (controlledActiveTab === undefined) {
+      setInternalActiveTab(tabId);
+    }
     if (onTabChange) {
       onTabChange(tabId);
     }

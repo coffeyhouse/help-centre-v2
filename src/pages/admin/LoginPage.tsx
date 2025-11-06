@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 
 export default function LoginPage() {
@@ -10,6 +11,9 @@ export default function LoginPage() {
   const { login } = useAdminAuth();
   const navigate = useNavigate();
 
+  // Set page title
+  usePageTitle('Admin Login');
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
@@ -18,7 +22,7 @@ export default function LoginPage() {
     const result = await login(password);
 
     if (result.success) {
-      navigate('/admin/dashboard');
+      navigate('/admin/regions');
     } else {
       setError(result.error || 'Login failed');
     }

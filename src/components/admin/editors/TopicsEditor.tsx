@@ -22,18 +22,24 @@ interface TopicsEditorProps {
     supportHubs: SupportHub[];
   };
   onChange: (data: any) => void;
+  filterByProductId?: string; // Optional: filter to show only this product's topics
+  articlesData?: any; // Optional: articles data to show article counts
+  onNavigateToArticles?: (topicId: string) => void; // Optional: callback for navigating to articles
 }
 
-export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+export default function TopicsEditor({ data, onChange, filterByProductId, articlesData, onNavigateToArticles }: TopicsEditorProps) {
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(filterByProductId || null);
   const [selectedTopicIndex, setSelectedTopicIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [topicToDelete, setTopicToDelete] = useState<{ index: number; title: string } | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
+  // Ensure supportHubs exists and is an array
+  const supportHubs = data.supportHubs || [];
+
   // Group topics by product for easier viewing
-  const topicsByProduct = data.supportHubs.reduce((acc: any, topic, index) => {
+  const topicsByProduct = supportHubs.reduce((acc: any, topic, index) => {
     if (!acc[topic.productId]) {
       acc[topic.productId] = [];
     }
@@ -42,10 +48,10 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   }, {});
 
   const products = Object.keys(topicsByProduct).sort();
-  const currentProductTopics = selectedProductId ? topicsByProduct[selectedProductId] : [];
+  const currentProductTopics = selectedProductId ? (topicsByProduct[selectedProductId] || []) : [];
 
   // Get topics for selected product only (for drag and drop)
-  const currentTopics = currentProductTopics.map((t: any) => data.supportHubs[t.originalIndex]);
+  const currentTopics = currentProductTopics.map((t: any) => supportHubs[t.originalIndex]);
 
   // Drag and drop handlers
   const {
@@ -58,7 +64,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
     handleDragEnd,
   } = useDragAndDrop(currentTopics, (reorderedTopics) => {
     // We need to update the full supportHubs array, not just the current product's topics
-    const otherTopics = data.supportHubs.filter((t) => t.productId !== selectedProductId);
+    const otherTopics = supportHubs.filter((t) => t.productId !== selectedProductId);
     onChange({
       ...data,
       supportHubs: [...otherTopics, ...reorderedTopics],
@@ -69,7 +75,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     if (selectedTopicIndex !== null && draggedIndex !== null) {
       const selectedTopic = currentTopics[currentTopics.findIndex((_, i) =>
-        data.supportHubs.indexOf(_) === selectedTopicIndex
+        supportHubs.indexOf(_) === selectedTopicIndex
       )];
 
       handleDropRaw(e, dropIndex);
@@ -77,12 +83,12 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
       // Find the new index of the selected topic after reorder
       if (selectedTopic) {
         const localSelectedIndex = currentTopics.findIndex((_, i) =>
-          data.supportHubs.indexOf(_) === selectedTopicIndex
+          supportHubs.indexOf(_) === selectedTopicIndex
         );
 
         if (localSelectedIndex === draggedIndex) {
           // The selected item was dragged - update to new position
-          const newGlobalIndex = data.supportHubs.filter(t => t.productId !== selectedProductId).length + dropIndex;
+          const newGlobalIndex = supportHubs.filter(t => t.productId !== selectedProductId).length + dropIndex;
           setTimeout(() => setSelectedTopicIndex(newGlobalIndex), 0);
         }
       }
@@ -110,7 +116,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   const handleSaveNew = (topic: SupportHub) => {
     onChange({
       ...data,
-      supportHubs: [...data.supportHubs, topic],
+      supportHubs: [...supportHubs, topic],
     });
     setIsAddingNew(false);
   };
@@ -118,12 +124,12 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   const handleUpdateTopic = (index: number, updatedTopic: SupportHub) => {
     onChange({
       ...data,
-      supportHubs: data.supportHubs.map((t, i) => (i === index ? updatedTopic : t)),
+      supportHubs: supportHubs.map((t, i) => (i === index ? updatedTopic : t)),
     });
   };
 
   const handleDeleteTopic = (index: number) => {
-    const topic = data.supportHubs[index];
+    const topic = supportHubs[index];
     setTopicToDelete({ index, title: topic.title });
     setDeleteConfirmOpen(true);
   };
@@ -132,7 +138,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
     if (topicToDelete) {
       onChange({
         ...data,
-        supportHubs: data.supportHubs.filter((_, i) => i !== topicToDelete.index),
+        supportHubs: supportHubs.filter((_, i) => i !== topicToDelete.index),
       });
       setSelectedTopicIndex(null);
       setTopicToDelete(null);
@@ -145,12 +151,13 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Left Panel - Product Selector */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Products</h3>
-        <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
-          {products.map((productId) => {
+    <div className={`grid grid-cols-1 ${filterByProductId ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-6`}>
+      {/* Left Panel - Product Selector (hidden when filtering) */}
+      {!filterByProductId && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Products</h3>
+          <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
+            {products.map((productId) => {
             const topicCount = topicsByProduct[productId].length;
             return (
               <button
@@ -177,7 +184,8 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
             );
           })}
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Middle Panel - Topics List (Draggable) */}
       <div className="space-y-4">
@@ -206,34 +214,60 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
             </div>
 
             <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
-              {currentProductTopics.map((topic: any, localIndex: number) => (
-                <DraggableListItem
-                  key={topic.originalIndex}
-                  index={localIndex}
-                  isSelected={selectedTopicIndex === topic.originalIndex}
-                  isDragging={draggedIndex === localIndex}
-                  isDragOver={dragOverIndex === localIndex}
-                  onDragStart={handleDragStart}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onDragEnd={handleDragEnd}
-                  onClick={() => handleSelectTopic(topic.originalIndex)}
-                >
-                  <div className="flex items-center justify-between flex-1">
-                    <div className="flex-1">
-                      <div className="font-medium text-sm text-gray-900">{topic.title}</div>
-                      <div className="text-xs text-gray-500 mt-1">{topic.id}</div>
-                      {topic.parentTopicId && (
-                        <div className="text-xs text-gray-400 mt-1">
-                          ↳ Child of: {topic.parentTopicId}
+              {currentProductTopics.map((topic: any, localIndex: number) => {
+                // Calculate article count for this topic
+                const articleCount = articlesData?.articles?.[selectedProductId]?.[topic.id]?.length || 0;
+
+                return (
+                  <DraggableListItem
+                    key={topic.originalIndex}
+                    index={localIndex}
+                    isSelected={selectedTopicIndex === topic.originalIndex}
+                    isDragging={draggedIndex === localIndex}
+                    isDragOver={dragOverIndex === localIndex}
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => handleSelectTopic(topic.originalIndex)}
+                  >
+                    <div className="flex items-center justify-between flex-1 gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-gray-900">{topic.title}</div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-gray-500">{topic.id}</span>
+                          {articlesData && (
+                            <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+                              {articleCount} {articleCount === 1 ? 'article' : 'articles'}
+                            </span>
+                          )}
                         </div>
-                      )}
+                        {topic.parentTopicId && (
+                          <div className="text-xs text-gray-400 mt-1">
+                            ↳ Child of: {topic.parentTopicId}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {onNavigateToArticles && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onNavigateToArticles(topic.id);
+                            }}
+                            className="px-2 py-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+                            title="Manage articles"
+                          >
+                            Manage Articles
+                          </button>
+                        )}
+                        <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                      </div>
                     </div>
-                    <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0 ml-2" />
-                  </div>
-                </DraggableListItem>
-              ))}
+                  </DraggableListItem>
+                );
+              })}
             </div>
           </>
         ) : (
@@ -247,7 +281,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
       <div>
         {(selectedTopicIndex !== null || isAddingNew) ? (
           <TopicForm
-            topic={selectedTopicIndex !== null ? data.supportHubs[selectedTopicIndex] : null}
+            topic={selectedTopicIndex !== null ? supportHubs[selectedTopicIndex] : null}
             isNew={isAddingNew}
             defaultProductId={selectedProductId || ''}
             availableParentTopics={currentProductTopics}
@@ -293,7 +327,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
       >
         {selectedProductId && (
           <TopicsPreview
-            supportHubs={data.supportHubs}
+            supportHubs={supportHubs}
             productId={selectedProductId}
           />
         )}
@@ -384,17 +418,20 @@ function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSa
   const [hasParentTopic, setHasParentTopic] = useState(!!topic?.parentTopicId);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
+  // Memoize the default topic to prevent infinite loops
+  const defaultTopic = useMemo(() => ({
+    id: '',
+    title: '',
+    description: '',
+    icon: '',
+    productId: defaultProductId,
+    parentTopicId: '',
+    showOnProductLanding: true,
+  }), [defaultProductId]);
+
   // Use the change tracking hook
   const { formData, setFormData, hasChanges } = useFormChangeTracking<SupportHub>(
-    topic || {
-      id: '',
-      title: '',
-      description: '',
-      icon: '',
-      productId: defaultProductId,
-      parentTopicId: '',
-      showOnProductLanding: true,
-    }
+    topic || defaultTopic
   );
 
   const handleChange = (field: keyof SupportHub, value: any) => {

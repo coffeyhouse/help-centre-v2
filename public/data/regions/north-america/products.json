@@ -1,0 +1,12 @@
+{
+  "products": [
+    {
+      "id": "sage-50",
+      "name": "Sage 50",
+      "description": "testing ",
+      "type": "cloud"
+    }
+  ],
+  "hotTopics": [],
+  "quickAccessCards": []
+}

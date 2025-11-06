@@ -11,6 +11,7 @@
 
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { loadProducts } from '../utils/dataLoader';
 import Hero from '../components/common/Hero';
 import PersonaTabs from '../components/pages/HomePage/PersonaTabs';
@@ -21,6 +22,9 @@ import type { ProductsData } from '../types';
 
 export default function HomePage() {
   const { region, regionConfig, loading: regionLoading, error: regionError } = useRegion();
+
+  // Set page title
+  usePageTitle('Home');
 
   // Load products data for this region
   const {

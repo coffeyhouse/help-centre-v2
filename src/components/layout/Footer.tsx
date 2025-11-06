@@ -3,82 +3,107 @@
  *
  * Features:
  * - Black background with white text
- * - Three columns: Popular Products, Product Roadmaps, Useful Links
+ * - Three columns: Popular Products, Release Notes, Useful Links
  * - Social media icons
  * - Copyright and legal links
  * - Responsive design (stacks on mobile)
+ * - Dynamically populated from products.json and release-notes.json
  */
 
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
+import { useData } from '../../hooks/useData';
+import { loadProducts, loadReleaseNotes } from '../../utils/dataLoader';
 import Icon from '../common/Icon';
+import GlobalRegionSelector from './GlobalRegionSelector';
+import type { ProductsData, ReleaseNotesData } from '../../types';
 
 export default function Footer() {
   const { region } = useRegion();
+
+  // Load products data
+  const { data: productsData } = useData<ProductsData>(() => loadProducts(region), [region]);
+
+  // Load release notes data
+  const { data: releaseNotesData } = useData<ReleaseNotesData>(() => loadReleaseNotes(region), [region]);
+
+  // Filter products by country
+  const availableProducts = useMemo(() => {
+    if (!productsData?.products) return [];
+    return productsData.products.filter(
+      (product) => !product.countries || product.countries.includes(region)
+    );
+  }, [productsData, region]);
+
+  // Get products that have release notes
+  const productsWithReleaseNotes = useMemo(() => {
+    if (!releaseNotesData?.releaseNotes || !availableProducts.length) return [];
+
+    return availableProducts.filter((product) => {
+      const notes = releaseNotesData.releaseNotes[product.id];
+      return notes && notes.length > 0;
+    });
+  }, [releaseNotesData, availableProducts]);
+
+  // Get top 4 popular products (or less if fewer available)
+  const popularProducts = useMemo(() => {
+    return availableProducts.slice(0, 4);
+  }, [availableProducts]);
+
+  // Show release notes column only if there are products with release notes
+  const showReleaseNotes = productsWithReleaseNotes.length > 0;
 
   return (
     <footer className="bg-black text-white mt-auto">
       <div className="container-custom py-12">
         {/* Main footer content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className={`grid grid-cols-1 gap-8 mb-8 ${showReleaseNotes ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
           {/* Column 1 - Popular Products */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Popular Products</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to={`/${region}/products/product-a`} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product A
-                </Link>
-              </li>
-              <li>
-                <Link to={`/${region}/products/product-b`} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product B
-                </Link>
-              </li>
-              <li>
-                <Link to={`/${region}/products/product-c`} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product C
-                </Link>
-              </li>
-              <li>
-                <Link to={`/${region}/products/product-d`} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product D
-                </Link>
-              </li>
-              <li>
-                <Link to={`/${region}`} className="text-sm text-gray-300 hover:text-white transition-colors font-medium">
-                  See all products →
-                </Link>
-              </li>
+              {popularProducts.map((product) => (
+                <li key={product.id}>
+                  <Link
+                    to={`/${region}/products/${product.id}`}
+                    className="text-sm text-gray-300 hover:text-white transition-colors"
+                  >
+                    {product.name}
+                  </Link>
+                </li>
+              ))}
+              {availableProducts.length > 4 && (
+                <li>
+                  <Link
+                    to={`/${region}`}
+                    className="text-sm text-gray-300 hover:text-white transition-colors font-medium"
+                  >
+                    See all products →
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
-          {/* Column 2 - Product Roadmaps */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Product Roadmaps</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product A Roadmap
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product B Roadmap
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product C Roadmap
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-                  Product D Roadmap
-                </a>
-              </li>
-            </ul>
-          </div>
+          {/* Column 2 - Release Notes (conditional) */}
+          {showReleaseNotes && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Release Notes</h3>
+              <ul className="space-y-2">
+                {productsWithReleaseNotes.slice(0, 4).map((product) => (
+                  <li key={product.id}>
+                    <Link
+                      to={`/${region}/products/${product.id}/release-notes`}
+                      className="text-sm text-gray-300 hover:text-white transition-colors"
+                    >
+                      {product.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Column 3 - Useful Links */}
           <div>
@@ -115,6 +140,14 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+          </div>
+        </div>
+
+        {/* Global Country Selector */}
+        <div className="mb-8 pb-8 border-b border-white/10">
+          <div className="max-w-xs">
+            <h3 className="text-sm font-semibold mb-3 text-gray-300">Change Country / Region</h3>
+            <GlobalRegionSelector />
           </div>
         </div>
 

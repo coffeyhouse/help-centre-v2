@@ -29,7 +29,8 @@ export default function ProductGrid({ products }: ProductGridProps) {
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       // Check if product is available for the selected persona
-      const matchesPersona = product.personas.includes(persona);
+      // If personas array doesn't exist, show the product (backwards compatibility)
+      const matchesPersona = !product.personas || product.personas.includes(persona);
 
       // Check if product is available for the current country
       // If countries array doesn't exist, show the product (backwards compatibility)

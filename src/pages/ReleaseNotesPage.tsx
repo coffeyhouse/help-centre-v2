@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { loadReleaseNotes, loadProducts } from '../utils/dataLoader';
 import type { ReleaseNotesData, ProductsData, ReleaseNote } from '../types';
 import Hero from '../components/common/Hero';
@@ -27,6 +28,9 @@ const ReleaseNotesPage: React.FC = () => {
   const currentProduct = useMemo(() => {
     return productsData?.products.find(p => p.id === productId);
   }, [productsData, productId]);
+
+  // Set page title
+  usePageTitle('Release Notes', currentProduct?.name);
 
   // Get release notes for the current product
   const filteredReleaseNotes = useMemo(() => {

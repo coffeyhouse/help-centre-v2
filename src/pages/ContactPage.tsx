@@ -10,6 +10,7 @@
 import { useState, useMemo } from 'react';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { loadProducts, loadContact } from '../utils/dataLoader';
 import Hero from '../components/common/Hero';
 import ContactForm from '../components/pages/ContactPage/ContactForm';
@@ -18,6 +19,9 @@ import type { ProductsData, ContactData } from '../types';
 
 export default function ContactPage() {
   const { region, regionConfig, loading: regionLoading, error: regionError } = useRegion();
+
+  // Set page title
+  usePageTitle('Contact Us');
 
   // State for selected product
   const [selectedProduct, setSelectedProduct] = useState('product-a');

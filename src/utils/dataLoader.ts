@@ -44,19 +44,21 @@ function filterByCountry<T extends { countries?: string[] }>(
   items: T[],
   countryCode: string
 ): T[] {
+  const normalizedCode = countryCode.toLowerCase();
   return items.filter(
-    (item) => !item.countries || item.countries.includes(countryCode)
+    (item) => !item.countries || item.countries.map(c => c.toLowerCase()).includes(normalizedCode)
   );
 }
 
 /**
  * Get the region identifier for a given country code
- * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @param countryCode - Country code (e.g., 'gb', 'ie', 'GB', 'US')
  * @returns Promise resolving to the region identifier
  */
 async function getRegionForCountry(countryCode: string): Promise<string> {
   const regions = await loadRegions();
-  const region = regions.find((r) => r.code === countryCode);
+  const normalizedCode = countryCode.toLowerCase();
+  const region = regions.find((r) => r.code === normalizedCode);
   return region?.region || 'uk-ireland';
 }
 
@@ -70,11 +72,13 @@ export async function loadRegions(): Promise<Region[]> {
 
 /**
  * Load country-specific configuration
- * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @param countryCode - Country code (e.g., 'gb', 'ie', 'GB', 'US')
  * @returns Promise resolving to RegionConfig object
  */
 export async function loadRegionConfig(countryCode: string): Promise<RegionConfig> {
-  return fetchJSON<RegionConfig>(`${BASE_DATA_PATH}/countries/${countryCode}/config.json`);
+  // Normalize to lowercase for consistent file paths
+  const normalizedCode = countryCode.toLowerCase();
+  return fetchJSON<RegionConfig>(`${BASE_DATA_PATH}/countries/${normalizedCode}/config.json`);
 }
 
 /**

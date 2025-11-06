@@ -48,13 +48,23 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
   const getRegionFromPath = (): string => {
     const pathParts = location.pathname.split('/').filter(Boolean);
     const firstPart = pathParts[0];
-    // Check if first part is a valid region code
-    // If validRegionCodes hasn't loaded yet, allow common codes as fallback
-    const validCodes = validRegionCodes.length > 0 ? validRegionCodes : ['gb', 'ie'];
-    if (firstPart && validCodes.includes(firstPart)) {
-      return firstPart;
+
+    // If we have a first part that looks like a region code (2-3 letter code)
+    if (firstPart && /^[a-z]{2,3}$/i.test(firstPart)) {
+      // If validRegionCodes has loaded, validate against it
+      if (validRegionCodes.length > 0) {
+        if (validRegionCodes.includes(firstPart.toLowerCase())) {
+          return firstPart.toLowerCase();
+        }
+        // If it's not in the list, don't default - return the code anyway
+        // This allows new regions to work before the list is cached
+        return firstPart.toLowerCase();
+      }
+      // If validRegionCodes hasn't loaded yet, accept any 2-3 letter code
+      return firstPart.toLowerCase();
     }
-    // Fall back to params or initial region
+
+    // Fall back to params or initial region only if no valid code in path
     return params.region || initialRegion;
   };
 
@@ -123,6 +133,13 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
             : `Failed to load configuration for region: ${region}`;
           setError(errorMessage);
           console.error('RegionContext: Failed to load region config', err);
+
+          // If config loading fails and we have valid regions loaded, check if region is valid
+          if (validRegionCodes.length > 0 && !validRegionCodes.includes(region)) {
+            console.warn(`Invalid region code: ${region}. Redirecting to country selector.`);
+            // Redirect to country selector
+            navigate('/select-country', { replace: true });
+          }
         }
       } finally {
         if (isMounted) {
@@ -136,7 +153,7 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
     return () => {
       isMounted = false;
     };
-  }, [region]);
+  }, [region, validRegionCodes, navigate]);
 
   // Save region to localStorage when it changes
   useEffect(() => {
