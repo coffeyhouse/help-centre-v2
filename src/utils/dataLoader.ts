@@ -11,7 +11,8 @@ import type {
   ArticlesData,
   ContactData,
   ArticleItem,
-  IncidentBannersData
+  IncidentBannersData,
+  ReleaseNotesData
 } from '../types';
 
 const BASE_DATA_PATH = '/data';
@@ -154,6 +155,50 @@ export async function loadIncidentBanners(countryCode: string): Promise<Incident
 
   return {
     banners: filterByCountry(data.banners, countryCode),
+  };
+}
+
+/**
+ * Load release notes for a specific country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @param productId - Optional product ID to filter release notes by product
+ * @returns Promise resolving to ReleaseNotesData object filtered by country and optionally by product
+ */
+export async function loadReleaseNotes(countryCode: string, productId?: string): Promise<ReleaseNotesData> {
+  const regionId = await getRegionForCountry(countryCode);
+  const data = await fetchJSON<ReleaseNotesData>(`${BASE_DATA_PATH}/regions/${regionId}/release-notes.json`);
+
+  // If productId is specified, return only that product's release notes
+  if (productId) {
+    const productNotes = data.releaseNotes[productId] || [];
+    const filteredNotes = filterByCountry(productNotes, countryCode);
+
+    // Sort by date in descending order (newest first)
+    filteredNotes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return {
+      releaseNotes: {
+        [productId]: filteredNotes,
+      },
+    };
+  }
+
+  // Otherwise return all release notes, filtered by country
+  const filteredReleaseNotes: { [productId: string]: typeof data.releaseNotes[string] } = {};
+
+  for (const [pid, notes] of Object.entries(data.releaseNotes)) {
+    const filtered = filterByCountry(notes, countryCode);
+
+    // Sort by date in descending order (newest first)
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    if (filtered.length > 0) {
+      filteredReleaseNotes[pid] = filtered;
+    }
+  }
+
+  return {
+    releaseNotes: filteredReleaseNotes,
   };
 }
 

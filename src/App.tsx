@@ -24,6 +24,7 @@ import ProductLanding from './pages/ProductLanding';
 import TopicPage from './pages/TopicPage';
 import ContactPage from './pages/ContactPage';
 import SearchResultsPage from './pages/SearchResultsPage';
+import ReleaseNotesPage from './pages/ReleaseNotesPage';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
                   <Route path="/:region" element={<HomePage />} />
                   <Route path="/:region/search" element={<SearchResultsPage />} />
                   <Route path="/:region/products/:productId" element={<ProductLanding />} />
+                  <Route path="/:region/products/:productId/release-notes" element={<ReleaseNotesPage />} />
                   <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
                   <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
                   <Route path="/:region/contact" element={<ContactPage />} />

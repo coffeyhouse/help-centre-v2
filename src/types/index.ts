@@ -61,6 +61,26 @@ export interface ProductsData {
   quickAccessCards: QuickAccessCard[];
 }
 
+// ==================== Release Notes Types ====================
+
+export interface ReleaseNote {
+  id: string;
+  version: string;
+  date: string; // ISO date format: YYYY-MM-DD
+  title: string;
+  description?: string;
+  features?: string[];
+  improvements?: string[];
+  fixes?: string[];
+  countries?: string[];
+}
+
+export interface ReleaseNotesData {
+  releaseNotes: {
+    [productId: string]: ReleaseNote[];
+  };
+}
+
 // ==================== Hot Topics ====================
 
 export interface HotTopic {

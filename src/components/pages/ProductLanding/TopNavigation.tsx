@@ -2,7 +2,7 @@
  * TopNavigation - Horizontal navigation bar for product pages
  *
  * Features:
- * - Links: Hot topics, Contact us
+ * - Links: Hot topics, Release notes (if available), Contact us
  * - Uses data from region config (if available)
  * - Horizontal layout with dividers
  * - Responsive design
@@ -10,12 +10,30 @@
 
 import { Link } from 'react-router-dom';
 import { useRegion } from '../../../hooks/useRegion';
+import { useData } from '../../../hooks/useData';
+import { loadReleaseNotes } from '../../../utils/dataLoader';
+import type { ReleaseNotesData } from '../../../types';
 
-export default function TopNavigation() {
+interface TopNavigationProps {
+  productId?: string;
+}
+
+export default function TopNavigation({ productId }: TopNavigationProps) {
   const { region } = useRegion();
+
+  // Load release notes to check if this product has any
+  const { data: releaseNotesData } = useData<ReleaseNotesData>(
+    () => productId ? loadReleaseNotes(region, productId) : Promise.resolve({ releaseNotes: {} }),
+    [region, productId]
+  );
+
+  const hasReleaseNotes = releaseNotesData && productId &&
+    releaseNotesData.releaseNotes[productId] &&
+    releaseNotesData.releaseNotes[productId].length > 0;
 
   const links = [
     { label: 'Hot topics', path: `/${region}` },
+    ...(hasReleaseNotes && productId ? [{ label: 'Release notes', path: `/${region}/products/${productId}/release-notes` }] : []),
     { label: 'Contact us', path: `/${region}/contact` },
   ];
 

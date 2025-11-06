@@ -70,7 +70,7 @@ export default function ProductLanding() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
-      <TopNavigation />
+      <TopNavigation productId={productId} />
 
       {/* Hero Section */}
       <Hero
