@@ -15,6 +15,7 @@ import {
 import AdminLayout from '../../components/admin/AdminLayout';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import Icon from '../../components/common/Icon';
+import IconSelector from '../../components/admin/IconSelector';
 
 interface Product {
   id: string;
@@ -441,15 +442,12 @@ export default function ProductDetailPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Icon
                       </label>
-                      <input
-                        type="text"
+                      <IconSelector
                         value={editedProduct?.icon || ''}
-                        onChange={(e) => handleFieldChange('icon', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="e.g., icon-a"
+                        onChange={(value) => handleFieldChange('icon', value)}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        Icon name (e.g., icon-a, icon-b, icon-c, icon-d, icon-e, icon-f, star, lock, etc.)
+                        Select an icon for this product
                       </p>
                     </div>
 
