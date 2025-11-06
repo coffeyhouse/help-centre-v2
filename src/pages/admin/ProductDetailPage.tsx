@@ -168,18 +168,22 @@ export default function ProductDetailPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          ...productsData,
-          products: updatedProducts,
+          data: {
+            ...productsData,
+            products: updatedProducts,
+          },
         }),
       });
 
       if (!saveResponse.ok) {
-        throw new Error('Failed to save product changes');
+        const errorData = await saveResponse.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to save product changes');
       }
 
       setProduct(editedProduct);
       setIsEditing(false);
       setEditedProduct(null);
+      setSaveError('');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save changes';
       setSaveError(errorMessage);
