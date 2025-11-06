@@ -418,17 +418,20 @@ function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSa
   const [hasParentTopic, setHasParentTopic] = useState(!!topic?.parentTopicId);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
+  // Memoize the default topic to prevent infinite loops
+  const defaultTopic = useMemo(() => ({
+    id: '',
+    title: '',
+    description: '',
+    icon: '',
+    productId: defaultProductId,
+    parentTopicId: '',
+    showOnProductLanding: true,
+  }), [defaultProductId]);
+
   // Use the change tracking hook
   const { formData, setFormData, hasChanges } = useFormChangeTracking<SupportHub>(
-    topic || {
-      id: '',
-      title: '',
-      description: '',
-      icon: '',
-      productId: defaultProductId,
-      parentTopicId: '',
-      showOnProductLanding: true,
-    }
+    topic || defaultTopic
   );
 
   const handleChange = (field: keyof SupportHub, value: any) => {
