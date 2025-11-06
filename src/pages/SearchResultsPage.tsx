@@ -13,7 +13,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import type { SearchResult } from '../types';
-import { searchArticles } from '../utils/mockSearchAPI';
+import { search } from '../utils/mockSearchAPI';
 import Breadcrumb from '../components/layout/Breadcrumb';
 
 export default function SearchResultsPage() {
@@ -22,9 +22,10 @@ export default function SearchResultsPage() {
   const navigate = useNavigate();
 
   const searchTerm = searchParams.get('term') || '';
-  const productId = searchParams.get('product') || undefined;
+  const knowledgebaseCollection = searchParams.get('collection') || undefined;
 
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [totalResults, setTotalResults] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Set page title
@@ -34,18 +35,21 @@ export default function SearchResultsPage() {
     async function fetchResults() {
       if (!searchTerm) {
         setResults([]);
+        setTotalResults(0);
         setIsLoading(false);
         return;
       }
 
       setIsLoading(true);
       try {
-        const searchResults = await searchArticles(
-          searchTerm,
-          region || 'gb',
-          productId
-        );
-        setResults(searchResults);
+        const searchResponse = await search({
+          query: searchTerm,
+          country: region || 'gb',
+          products: knowledgebaseCollection ? [knowledgebaseCollection] : undefined,
+          limit: 50
+        });
+        setResults(searchResponse.results);
+        setTotalResults(searchResponse.total);
       } catch (error) {
         console.error('Search error:', error);
       } finally {
@@ -54,7 +58,7 @@ export default function SearchResultsPage() {
     }
 
     fetchResults();
-  }, [searchTerm, region, productId]);
+  }, [searchTerm, region, knowledgebaseCollection]);
 
   const handleBack = () => {
     navigate(-1);
@@ -95,7 +99,7 @@ export default function SearchResultsPage() {
                 'Searching...'
               ) : (
                 <>
-                  Found {results.length} result{results.length !== 1 ? 's' : ''} for "{searchTerm}"
+                  Found {totalResults} result{totalResults !== 1 ? 's' : ''} for "{searchTerm}"
                 </>
               )}
             </p>
