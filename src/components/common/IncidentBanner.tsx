@@ -72,7 +72,7 @@ export default function IncidentBanner({ banner }: IncidentBannerProps) {
 
   return (
     <div
-      className={`${config.bgColor} border-b ${config.borderColor}`}
+      className={`${config.bgColor} border-b ${config.borderColor} sticky top-16 z-30`}
       role="alert"
       aria-live="polite"
     >
