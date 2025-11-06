@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
+import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import ConfirmModal from '../ConfirmModal';
 
 interface Product {
@@ -33,354 +33,588 @@ interface ProductsEditorProps {
   onChange: (data: any) => void;
 }
 
-type DeleteItem = {
-  type: 'product' | 'hotTopic' | 'quickAccessCard';
-  index: number;
-  name: string;
-};
+type SectionType = 'products' | 'hotTopics' | 'quickAccessCards';
 
 export default function ProductsEditor({ data, onChange }: ProductsEditorProps) {
+  const [activeSection, setActiveSection] = useState<SectionType>('products');
+  const [selectedProductIndex, setSelectedProductIndex] = useState<number | null>(null);
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<DeleteItem | null>(null);
-  const updateProduct = (index: number, field: string, value: any) => {
+  const [itemToDelete, setItemToDelete] = useState<{ name: string; index: number } | null>(null);
+
+  const handleSelectProduct = (index: number) => {
+    setSelectedProductIndex(index);
+    setIsAddingNew(false);
+  };
+
+  const handleAddNew = () => {
+    setIsAddingNew(true);
+    setSelectedProductIndex(null);
+  };
+
+  const handleSaveNew = (product: Product) => {
     const updated = { ...data };
-    updated.products[index] = { ...updated.products[index], [field]: value };
+    updated.products.push(product);
+    onChange(updated);
+    setIsAddingNew(false);
+  };
+
+  const handleUpdateProduct = (index: number, updatedProduct: Product) => {
+    const updated = { ...data };
+    updated.products[index] = updatedProduct;
     onChange(updated);
   };
 
-  const addProduct = () => {
-    const updated = { ...data };
-    updated.products.push({
-      id: `product-${Date.now()}`,
-      name: 'New Product',
-      description: '',
-      type: 'cloud',
-      personas: ['customer'],
-      icon: 'icon-default',
-    });
-    onChange(updated);
-  };
-
-  const removeProduct = (index: number) => {
-    setItemToDelete({
-      type: 'product',
-      index,
-      name: data.products[index].name,
-    });
-    setDeleteConfirmOpen(true);
-  };
-
-  const updateHotTopic = (index: number, field: string, value: any) => {
-    const updated = { ...data };
-    updated.hotTopics[index] = { ...updated.hotTopics[index], [field]: value };
-    onChange(updated);
-  };
-
-  const addHotTopic = () => {
-    const updated = { ...data };
-    updated.hotTopics.push({
-      id: `topic-${Date.now()}`,
-      title: 'New Hot Topic',
-      icon: 'star',
-    });
-    onChange(updated);
-  };
-
-  const removeHotTopic = (index: number) => {
-    setItemToDelete({
-      type: 'hotTopic',
-      index,
-      name: data.hotTopics[index].title,
-    });
-    setDeleteConfirmOpen(true);
-  };
-
-  const updateQuickAccessCard = (index: number, field: string, value: any) => {
-    const updated = { ...data };
-    updated.quickAccessCards[index] = { ...updated.quickAccessCards[index], [field]: value };
-    onChange(updated);
-  };
-
-  const addQuickAccessCard = () => {
-    const updated = { ...data };
-    updated.quickAccessCards.push({
-      id: `card-${Date.now()}`,
-      title: 'New Card',
-      description: '',
-      icon: 'checklist',
-    });
-    onChange(updated);
-  };
-
-  const removeQuickAccessCard = (index: number) => {
-    setItemToDelete({
-      type: 'quickAccessCard',
-      index,
-      name: data.quickAccessCards[index].title,
-    });
+  const handleDeleteProduct = (index: number) => {
+    const product = data.products[index];
+    setItemToDelete({ index, name: product.name });
     setDeleteConfirmOpen(true);
   };
 
   const confirmDelete = () => {
-    if (!itemToDelete) return;
-
-    const updated = { ...data };
-
-    switch (itemToDelete.type) {
-      case 'product':
-        updated.products.splice(itemToDelete.index, 1);
-        break;
-      case 'hotTopic':
-        updated.hotTopics.splice(itemToDelete.index, 1);
-        break;
-      case 'quickAccessCard':
-        updated.quickAccessCards.splice(itemToDelete.index, 1);
-        break;
+    if (itemToDelete) {
+      const updated = { ...data };
+      updated.products.splice(itemToDelete.index, 1);
+      onChange(updated);
+      setSelectedProductIndex(null);
+      setItemToDelete(null);
     }
+  };
 
-    onChange(updated);
-    setItemToDelete(null);
+  const handleCancel = () => {
+    setIsAddingNew(false);
+    setSelectedProductIndex(null);
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Section Tabs */}
+      <div className="flex gap-2 border-b border-gray-200">
+        <button
+          onClick={() => setActiveSection('products')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeSection === 'products'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Products ({data.products.length})
+        </button>
+        <button
+          onClick={() => setActiveSection('hotTopics')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeSection === 'hotTopics'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Hot Topics ({data.hotTopics.length})
+        </button>
+        <button
+          onClick={() => setActiveSection('quickAccessCards')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeSection === 'quickAccessCards'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Quick Access Cards ({data.quickAccessCards.length})
+        </button>
+      </div>
+
       {/* Products Section */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Products</h3>
-          <button
-            onClick={addProduct}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add Product
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {data.products.map((product, index) => (
-            <div key={product.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium text-gray-900">Product {index + 1}</h4>
-                <button
-                  onClick={() => removeProduct(index)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
-                  <input
-                    type="text"
-                    value={product.id}
-                    onChange={(e) => updateProduct(index, 'id', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                  <input
-                    type="text"
-                    value={product.name}
-                    onChange={(e) => updateProduct(index, 'name', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <input
-                    type="text"
-                    value={product.description}
-                    onChange={(e) => updateProduct(index, 'description', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                  <select
-                    value={product.type}
-                    onChange={(e) => updateProduct(index, 'type', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="cloud">Cloud</option>
-                    <option value="desktop">Desktop</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Icon</label>
-                  <input
-                    type="text"
-                    value={product.icon}
-                    onChange={(e) => updateProduct(index, 'icon', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Personas (comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={product.personas.join(', ')}
-                    onChange={(e) =>
-                      updateProduct(
-                        index,
-                        'personas',
-                        e.target.value.split(',').map((p) => p.trim())
-                      )
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
+      {activeSection === 'products' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Panel - Products List */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Products</h3>
+              <button
+                onClick={handleAddNew}
+                className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <PlusIcon className="h-4 w-4" />
+                Add Product
+              </button>
             </div>
-          ))}
+
+            <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
+              {data.products.map((product, index) => (
+                <button
+                  key={product.id}
+                  onClick={() => handleSelectProduct(index)}
+                  className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                    selectedProductIndex === index
+                      ? 'bg-blue-50 border-blue-300'
+                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm text-gray-900">{product.name}</div>
+                      <div className="text-xs text-gray-500 mt-1">{product.id}</div>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                          product.type === 'cloud' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {product.type}
+                        </span>
+                        {product.personas.map((persona) => (
+                          <span
+                            key={persona}
+                            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800"
+                          >
+                            {persona}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Panel - Product Form */}
+          <div>
+            {selectedProductIndex !== null || isAddingNew ? (
+              <ProductForm
+                product={selectedProductIndex !== null ? data.products[selectedProductIndex] : null}
+                isNew={isAddingNew}
+                onSave={
+                  isAddingNew
+                    ? handleSaveNew
+                    : (product) => handleUpdateProduct(selectedProductIndex!, product)
+                }
+                onDelete={
+                  selectedProductIndex !== null ? () => handleDeleteProduct(selectedProductIndex) : undefined
+                }
+                onCancel={handleCancel}
+              />
+            ) : (
+              <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center h-full flex items-center justify-center">
+                <p className="text-gray-600">Select a product to edit or click "Add Product" to create one.</p>
+              </div>
+            )}
+          </div>
         </div>
-      </section>
+      )}
 
       {/* Hot Topics Section */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Hot Topics</h3>
-          <button
-            onClick={addHotTopic}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add Hot Topic
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          {data.hotTopics.map((topic, index) => (
-            <div key={topic.id} className="p-4 border border-gray-200 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="flex-1 grid grid-cols-3 gap-3">
-                  <input
-                    type="text"
-                    placeholder="ID"
-                    value={topic.id}
-                    onChange={(e) => updateHotTopic(index, 'id', e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={topic.title}
-                    onChange={(e) => updateHotTopic(index, 'title', e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Icon"
-                    value={topic.icon}
-                    onChange={(e) => updateHotTopic(index, 'icon', e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <button
-                  onClick={() => removeHotTopic(index)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {activeSection === 'hotTopics' && (
+        <HotTopicsSection
+          hotTopics={data.hotTopics}
+          onChange={(hotTopics) => onChange({ ...data, hotTopics })}
+        />
+      )}
 
       {/* Quick Access Cards Section */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Quick Access Cards</h3>
-          <button
-            onClick={addQuickAccessCard}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add Card
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {data.quickAccessCards.map((card, index) => (
-            <div key={card.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium text-gray-900">Card {index + 1}</h4>
-                <button
-                  onClick={() => removeQuickAccessCard(index)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
-                  <input
-                    type="text"
-                    value={card.id}
-                    onChange={(e) => updateQuickAccessCard(index, 'id', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Icon</label>
-                  <input
-                    type="text"
-                    value={card.icon}
-                    onChange={(e) => updateQuickAccessCard(index, 'icon', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                  <input
-                    type="text"
-                    value={card.title}
-                    onChange={(e) => updateQuickAccessCard(index, 'title', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={card.description}
-                    onChange={(e) => updateQuickAccessCard(index, 'description', e.target.value)}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {activeSection === 'quickAccessCards' && (
+        <QuickAccessCardsSection
+          cards={data.quickAccessCards}
+          onChange={(quickAccessCards) => onChange({ ...data, quickAccessCards })}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal
         isOpen={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
         onConfirm={confirmDelete}
-        title={`Delete ${itemToDelete?.type === 'product' ? 'Product' : itemToDelete?.type === 'hotTopic' ? 'Hot Topic' : 'Quick Access Card'}`}
+        title="Delete Product"
         message={`Are you sure you want to delete "${itemToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
+    </div>
+  );
+}
+
+interface ProductFormProps {
+  product: Product | null;
+  isNew: boolean;
+  onSave: (product: Product) => void;
+  onDelete?: () => void;
+  onCancel: () => void;
+}
+
+function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductFormProps) {
+  const [formData, setFormData] = useState<Product>(
+    product || {
+      id: '',
+      name: '',
+      description: '',
+      type: 'cloud',
+      personas: [],
+      icon: '',
+    }
+  );
+
+  const [personasInput, setPersonasInput] = useState('');
+
+  useEffect(() => {
+    if (product) {
+      setFormData(product);
+      setPersonasInput(product.personas.join(', '));
+    } else {
+      setFormData({
+        id: '',
+        name: '',
+        description: '',
+        type: 'cloud',
+        personas: [],
+        icon: '',
+      });
+      setPersonasInput('');
+    }
+  }, [product]);
+
+  const handleChange = (field: keyof Product, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePersonasChange = (value: string) => {
+    setPersonasInput(value);
+    const personasArray = value.split(',').map((p) => p.trim()).filter((p) => p);
+    setFormData((prev) => ({ ...prev, personas: personasArray }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">
+          {isNew ? 'New Product' : 'Edit Product'}
+        </h3>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <XMarkIcon className="h-6 w-6" />
+        </button>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          ID <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={formData.id}
+          onChange={(e) => handleChange('id', e.target.value)}
+          disabled={!isNew}
+          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            !isNew ? 'bg-gray-100 cursor-not-allowed' : ''
+          }`}
+          placeholder="e.g., product-a"
+          required
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          {isNew ? 'Unique identifier (use lowercase with hyphens)' : 'ID cannot be changed after creation'}
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Name <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="e.g., Product A"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Description <span className="text-red-500">*</span>
+        </label>
+        <textarea
+          value={formData.description}
+          onChange={(e) => handleChange('description', e.target.value)}
+          rows={2}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Brief description..."
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Type <span className="text-red-500">*</span>
+        </label>
+        <select
+          value={formData.type}
+          onChange={(e) => handleChange('type', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          required
+        >
+          <option value="cloud">Cloud</option>
+          <option value="desktop">Desktop</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Icon <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={formData.icon}
+          onChange={(e) => handleChange('icon', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="e.g., icon-a"
+          required
+        />
+        <p className="text-xs text-gray-500 mt-1">Icon identifier for UI display</p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Personas <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={personasInput}
+          onChange={(e) => handlePersonasChange(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="e.g., customer, accountant"
+          required
+        />
+        <p className="text-xs text-gray-500 mt-1">Comma-separated list of personas</p>
+      </div>
+
+      <div className="flex gap-3 pt-4 border-t border-gray-200">
+        <button
+          type="submit"
+          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          {isNew ? 'Create Product' : 'Save Changes'}
+        </button>
+        {onDelete && (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            <TrashIcon className="h-5 w-5" />
+          </button>
+        )}
+      </div>
+    </form>
+  );
+}
+
+// Hot Topics Section Component
+function HotTopicsSection({ hotTopics, onChange }: { hotTopics: HotTopic[]; onChange: (topics: HotTopic[]) => void }) {
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [topicToDelete, setTopicToDelete] = useState<{ index: number; title: string } | null>(null);
+
+  const addTopic = () => {
+    onChange([...hotTopics, { id: `topic-${Date.now()}`, title: '', icon: '' }]);
+  };
+
+  const updateTopic = (index: number, field: keyof HotTopic, value: string) => {
+    const updated = [...hotTopics];
+    updated[index] = { ...updated[index], [field]: value };
+    onChange(updated);
+  };
+
+  const removeTopic = (index: number) => {
+    setTopicToDelete({ index, title: hotTopics[index].title });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (topicToDelete) {
+      const updated = [...hotTopics];
+      updated.splice(topicToDelete.index, 1);
+      onChange(updated);
+      setTopicToDelete(null);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900">Hot Topics</h3>
+        <button
+          onClick={addTopic}
+          className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Add Hot Topic
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {hotTopics.map((topic, index) => (
+          <div key={index} className="p-4 border border-gray-200 rounded-lg bg-white">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 grid grid-cols-3 gap-3">
+                <input
+                  type="text"
+                  placeholder="ID"
+                  value={topic.id}
+                  onChange={(e) => updateTopic(index, 'id', e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={topic.title}
+                  onChange={(e) => updateTopic(index, 'title', e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <input
+                  type="text"
+                  placeholder="Icon"
+                  value={topic.icon}
+                  onChange={(e) => updateTopic(index, 'icon', e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <button
+                onClick={() => removeTopic(index)}
+                className="text-red-600 hover:text-red-700"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Hot Topic"
+        message={`Are you sure you want to delete "${topicToDelete?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
+    </div>
+  );
+}
+
+// Quick Access Cards Section Component
+function QuickAccessCardsSection({
+  cards,
+  onChange,
+}: {
+  cards: QuickAccessCard[];
+  onChange: (cards: QuickAccessCard[]) => void;
+}) {
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState<{ index: number; title: string } | null>(null);
+
+  const addCard = () => {
+    onChange([...cards, { id: `card-${Date.now()}`, title: '', description: '', icon: '' }]);
+  };
+
+  const updateCard = (index: number, field: keyof QuickAccessCard, value: string) => {
+    const updated = [...cards];
+    updated[index] = { ...updated[index], [field]: value };
+    onChange(updated);
+  };
+
+  const removeCard = (index: number) => {
+    setCardToDelete({ index, title: cards[index].title });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (cardToDelete) {
+      const updated = [...cards];
+      updated.splice(cardToDelete.index, 1);
+      onChange(updated);
+      setCardToDelete(null);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900">Quick Access Cards</h3>
+        <button
+          onClick={addCard}
+          className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Add Card
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {cards.map((card, index) => (
+          <div key={index} className="p-4 border border-gray-200 rounded-lg bg-white space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium text-gray-900">Card {index + 1}</h4>
+              <button onClick={() => removeCard(index)} className="text-red-600 hover:text-red-700">
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">ID</label>
+                <input
+                  type="text"
+                  value={card.id}
+                  onChange={(e) => updateCard(index, 'id', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Icon</label>
+                <input
+                  type="text"
+                  value={card.icon}
+                  onChange={(e) => updateCard(index, 'icon', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                <input
+                  type="text"
+                  value={card.title}
+                  onChange={(e) => updateCard(index, 'title', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={card.description}
+                  onChange={(e) => updateCard(index, 'description', e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Quick Access Card"
+        message={`Are you sure you want to delete "${cardToDelete?.title}"? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
         confirmStyle="danger"
