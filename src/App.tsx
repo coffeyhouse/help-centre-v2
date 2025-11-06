@@ -12,6 +12,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { RegionProvider } from './context/RegionContext';
 import { PersonaProvider } from './context/PersonaContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
+import { AdminRegionProvider } from './context/AdminRegionContext';
 
 // Layout imports
 import Header from './components/layout/Header';
@@ -31,6 +32,8 @@ import ReleaseNotesPage from './pages/ReleaseNotesPage';
 import LoginPage from './pages/admin/LoginPage';
 import DashboardPage from './pages/admin/DashboardPage';
 import EditorPage from './pages/admin/EditorPage';
+import RegionSelectorPage from './pages/admin/RegionSelectorPage';
+import MainMenuPage from './pages/admin/MainMenuPage';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 
 function App() {
@@ -38,27 +41,64 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <AdminAuthProvider>
-        <Routes>
-          {/* Admin routes */}
-          <Route path="/admin/login" element={<LoginPage />} />
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/edit/:fileId"
-            element={
-              <ProtectedRoute>
-                <EditorPage />
-              </ProtectedRoute>
-            }
-          />
+        <AdminRegionProvider>
+          <Routes>
+            {/* Admin routes - Login (no auth required) */}
+            <Route path="/admin/login" element={<LoginPage />} />
 
-          {/* Public routes */}
+            {/* Admin routes - Protected */}
+            <Route path="/admin" element={<Navigate to="/admin/regions" replace />} />
+            <Route
+              path="/admin/regions"
+              element={
+                <ProtectedRoute>
+                  <RegionSelectorPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/menu"
+              element={
+                <ProtectedRoute>
+                  <MainMenuPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Legacy admin routes (keep for backward compatibility) */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/edit/:fileId"
+              element={
+                <ProtectedRoute>
+                  <EditorPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* TODO: Add new admin routes as pages are created:
+            - /admin/regions (RegionSelectorPage)
+            - /admin/:region/menu (MainMenuPage)
+            - /admin/:region/products (ProductsListPage)
+            - /admin/:region/products/:productId (ProductDetailPage)
+            - /admin/:region/products/:productId/topics (TopicsListPage)
+            - /admin/:region/products/:productId/topics/:topicId (TopicDetailPage)
+            - /admin/:region/products/:productId/topics/:topicId/articles (ArticlesEditorPage)
+            - /admin/:region/incidents (IncidentsPage)
+            - /admin/:region/popups (PopupsPage)
+            - /admin/:region/contact (ContactOptionsPage)
+            - /admin/:region/release-notes (ReleaseNotesPage)
+            - /admin/:region/settings (RegionsManagementPage)
+            */}
+
+            {/* Public routes */}
           <Route
             path="/*"
             element={
@@ -98,6 +138,7 @@ function App() {
             }
           />
         </Routes>
+        </AdminRegionProvider>
       </AdminAuthProvider>
     </BrowserRouter>
   );
