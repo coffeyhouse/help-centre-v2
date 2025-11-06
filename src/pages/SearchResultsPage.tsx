@@ -4,25 +4,29 @@
  * Features:
  * - Displays search results based on URL search params
  * - Shows results with title and summary
+ * - Pagination (10 results per page)
+ * - Links to external knowledgebase articles
  * - Breadcrumb navigation
- * - Links to article pages
  * - Handles empty states
  */
 
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import type { SearchResult } from '../types';
 import { search } from '../utils/mockSearchAPI';
 import Breadcrumb from '../components/layout/Breadcrumb';
 
+const RESULTS_PER_PAGE = 10;
+
 export default function SearchResultsPage() {
   const { region } = useParams<{ region: string }>();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const searchTerm = searchParams.get('term') || '';
   const knowledgebaseCollection = searchParams.get('collection') || undefined;
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
   const [results, setResults] = useState<SearchResult[]>([]);
   const [totalResults, setTotalResults] = useState(0);
@@ -30,6 +34,10 @@ export default function SearchResultsPage() {
 
   // Set page title
   usePageTitle(searchTerm ? `Search: ${searchTerm}` : 'Search Results');
+
+  // Calculate pagination
+  const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
+  const offset = (currentPage - 1) * RESULTS_PER_PAGE;
 
   useEffect(() => {
     async function fetchResults() {
@@ -46,7 +54,8 @@ export default function SearchResultsPage() {
           query: searchTerm,
           country: region || 'gb',
           products: knowledgebaseCollection ? [knowledgebaseCollection] : undefined,
-          limit: 50
+          limit: RESULTS_PER_PAGE,
+          offset
         });
         setResults(searchResponse.results);
         setTotalResults(searchResponse.total);
@@ -58,10 +67,23 @@ export default function SearchResultsPage() {
     }
 
     fetchResults();
-  }, [searchTerm, region, knowledgebaseCollection]);
+  }, [searchTerm, region, knowledgebaseCollection, offset]);
+
+  const goToPage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', page.toString());
+    setSearchParams(params);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  // Generate external KB URL based on region
+  const getKnowledgeBaseUrl = (solutionId: string): string => {
+    const regionPrefix = region || 'gb';
+    return `https://${regionPrefix}-kb.sagedatacloud.com/portal/app/portlets/results/viewsolution.jsp?solutionid=${solutionId}`;
   };
 
   return (
@@ -180,38 +202,93 @@ export default function SearchResultsPage() {
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {results.map((result) => (
-                <Link
-                  key={result.id}
-                  to={`/${region}${result.url}`}
-                  className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
-                >
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600">
-                    {result.title}
-                  </h2>
-                  <p className="text-gray-600 leading-relaxed">
-                    {result.summary}
-                  </p>
-                  <div className="mt-4 flex items-center text-blue-600 text-sm font-medium">
-                    <span>Read more</span>
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+            <>
+              <div className="space-y-4">
+                {results.map((result) => (
+                  <a
+                    key={result.id}
+                    href={getKnowledgeBaseUrl(result.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
+                  >
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600">
+                      {result.title}
+                    </h2>
+                    <p className="text-gray-600 leading-relaxed">
+                      {result.summary}
+                    </p>
+                    <div className="mt-4 flex items-center text-blue-600 text-sm font-medium">
+                      <span>View article</span>
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
+                      </svg>
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-8 flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex gap-1">
+                    {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                      let pageNum: number;
+
+                      if (totalPages <= 7) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 4) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 3) {
+                        pageNum = totalPages - 6 + i;
+                      } else {
+                        pageNum = currentPage - 3 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => goToPage(pageNum)}
+                          className={`px-4 py-2 rounded-md border transition-colors ${
+                            currentPage === pageNum
+                              ? 'bg-blue-600 text-white border-blue-600'
+                              : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
                   </div>
-                </Link>
-              ))}
-            </div>
+
+                  <button
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
