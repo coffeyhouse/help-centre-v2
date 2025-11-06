@@ -165,14 +165,17 @@ router.post('/', async (req, res) => {
         ? solution.collections[0]
         : undefined;
 
+      // Use the numeric id field (e.g., "210322142713950") not templateSolutionID
+      const solutionId = solution.id || solution.templateSolutionID;
+
       // Generate URL based on solution ID
-      const url = `/articles/${solution.templateSolutionID || solution.id}`;
+      const url = `/articles/${solutionId}`;
 
       // Extract taxonomy from categoryCode
       const taxonomy = solution.categoryCode ? [solution.categoryCode] : [];
 
       return {
-        id: solution.templateSolutionID || solution.id,
+        id: solutionId,
         title: solution.title,
         summary: solution.summary,
         productId,
@@ -183,7 +186,8 @@ router.post('/', async (req, res) => {
           solutionType: solution.solutionType,
           categoryCode: solution.categoryCode,
           keywords: solution.keywords,
-          collections: solution.collections
+          collections: solution.collections,
+          templateSolutionID: solution.templateSolutionID // Store template ID for reference
         },
         language: language || 'en', // Use requested language or default to 'en'
         relevanceScore: solution.score
