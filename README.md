@@ -4,6 +4,7 @@ A modern, multi-region customer support portal built with React, TypeScript, and
 
 ## Features
 
+- **Admin Panel**: Password-protected CMS for managing JSON content files with form-based editing and visual preview
 - **Region-Based Data Architecture**: Shared content across geographic regions (UK-Ireland, North America, etc.) with country-level filtering
 - **Country-Specific Content**: Flexible item-level country filtering for localized information
 - **Persona-Based Navigation**: Tailored content for customers, accountants, partners, and developers
@@ -136,9 +137,32 @@ npm run preview
 ## Available Scripts
 
 - `npm run dev` - Start development server with hot module replacement
+- `npm run dev:server` - Start Express API server for admin panel
+- `npm run dev:all` - Start both frontend and backend servers
 - `npm run build` - Create optimized production build (TypeScript check + Vite build)
+- `npm run start` - Start production server (serves built app + API)
 - `npm run lint` - Run ESLint to check code quality
 - `npm run preview` - Preview production build locally
+
+## Admin Panel
+
+The application includes a password-protected admin panel for managing JSON content files.
+
+**Access:** http://localhost:5173/admin/login
+
+**Features:**
+- Form-based editing for products, articles, topics, etc.
+- JSON editor with real-time validation
+- Visual preview of changes
+- Automatic backups before saving
+- Password protection
+
+**Setup:**
+1. Copy `.env.example` to `.env` and set `ADMIN_PASSWORD`
+2. Run `npm run dev:server` (backend) and `npm run dev` (frontend)
+3. Navigate to `/admin/login` and enter your password
+
+For detailed documentation, see [ADMIN_README.md](./ADMIN_README.md)
 
 ## Data Architecture
 

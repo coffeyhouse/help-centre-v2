@@ -18,9 +18,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  maxWidth?: string;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl' }: ModalProps) {
   // Handle ESC key press
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -62,7 +63,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       {/* Modal content container */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl transform transition-all"
+          className={`relative bg-white rounded-lg shadow-xl w-full ${maxWidth} transform transition-all`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
