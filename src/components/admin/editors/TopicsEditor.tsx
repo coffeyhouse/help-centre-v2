@@ -4,6 +4,7 @@ import ConfirmModal from '../ConfirmModal';
 import DraggableListItem from '../DraggableListItem';
 import Modal from '../../common/Modal';
 import Card from '../../common/Card';
+import IconSelector from '../IconSelector';
 import { useDragAndDrop } from '../../../hooks/useDragAndDrop';
 import { useFormChangeTracking } from '../../../hooks/useFormChangeTracking';
 
@@ -545,15 +546,12 @@ function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSa
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Icon <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
+          <IconSelector
             value={formData.icon}
-            onChange={(e) => handleChange('icon', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="e.g., download, bank, calendar"
+            onChange={(value) => handleChange('icon', value)}
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Icon name for UI display</p>
+          <p className="text-xs text-gray-500 mt-1">Select an icon for this topic</p>
         </div>
 
         <div className="space-y-3">

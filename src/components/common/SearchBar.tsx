@@ -107,7 +107,7 @@ export default function SearchBar({
         />
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition-colors"
+          className="absolute right-2 top-[24px] -translate-y-1/2 p-2 text-gray-400 hover:text-white transition-colors"
           aria-label="Search"
         >
           <svg

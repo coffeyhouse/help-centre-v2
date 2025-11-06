@@ -14,7 +14,6 @@ import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { loadProducts, loadTopics } from '../utils/dataLoader';
-import Breadcrumb from '../components/layout/Breadcrumb';
 import TopNavigation from '../components/pages/ProductLanding/TopNavigation';
 import Hero from '../components/common/Hero';
 import SupportHubsGrid from '../components/pages/ProductLanding/SupportHubsGrid';
@@ -107,13 +106,6 @@ export default function ProductLanding() {
 
       {/* Main Content */}
       <div className="container-custom py-8">
-        {/* Breadcrumb */}
-        <Breadcrumb
-          items={[
-            { label: productName, current: true },
-          ]}
-        />
-
         {/* Support Hubs Grid */}
         {topicsData && productId && (
           <SupportHubsGrid
