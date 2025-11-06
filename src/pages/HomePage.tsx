@@ -99,7 +99,7 @@ export default function HomePage() {
       </div>
 
       {/* Resources Section - Full width with darker background */}
-      {productsData && productsData.quickAccessCards && (
+      {productsData && productsData.quickAccessCards && productsData.quickAccessCards.length > 0 && (
         <div className="bg-gray-100 py-12">
           <div className="container-custom">
             <QuickAccessCards cards={productsData.quickAccessCards} />
