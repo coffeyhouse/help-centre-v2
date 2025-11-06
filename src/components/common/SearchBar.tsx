@@ -12,16 +12,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { SearchResult } from '../../types';
-import { searchArticles } from '../../utils/mockSearchAPI';
+import { search } from '../../utils/mockSearchAPI';
 
 interface SearchBarProps {
   placeholder?: string;
   productId?: string;
+  knowledgebaseCollection?: string;
 }
 
 export default function SearchBar({
   placeholder = 'Search for answers...',
   productId,
+  knowledgebaseCollection,
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -42,14 +44,14 @@ export default function SearchBar({
     setIsLoading(true);
     const timer = setTimeout(async () => {
       try {
-        const searchResults = await searchArticles(
+        const searchResponse = await search({
           query,
-          region || 'gb',
-          productId,
-          5 // Limit to 5 results for dropdown
-        );
-        setResults(searchResults);
-        setIsOpen(searchResults.length > 0);
+          country: region || 'gb',
+          products: knowledgebaseCollection ? [knowledgebaseCollection] : undefined,
+          limit: 5 // Limit to 5 results for dropdown
+        });
+        setResults(searchResponse.results);
+        setIsOpen(searchResponse.results.length > 0);
         setIsLoading(false);
       } catch (error) {
         console.error('Search error:', error);
@@ -58,7 +60,7 @@ export default function SearchBar({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, region, productId]);
+  }, [query, region, knowledgebaseCollection]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -60,6 +60,7 @@ export interface Product {
   categories: ProductCategory[];
   icon: string;
   countries?: string[];
+  knowledgebase_collection?: string; // Collection ID for search API (e.g., "custom_gb_en_fifty_accounts")
 }
 
 export interface ProductsData {
@@ -284,6 +285,7 @@ export interface HeroProps {
   searchBar?: boolean;
   searchPlaceholder?: string;
   productId?: string;
+  knowledgebaseCollection?: string;
 }
 
 // ==================== Context Types ====================

@@ -102,6 +102,7 @@ export default function ProductLanding() {
         searchBar={true}
         searchPlaceholder="Search for answers..."
         productId={productId}
+        knowledgebaseCollection={product?.knowledgebase_collection}
       />
 
       {/* Main Content */}
