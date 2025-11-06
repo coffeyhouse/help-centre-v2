@@ -53,6 +53,23 @@ export default function TopicPage() {
   const loading = regionLoading || productsLoading || topicsLoading || articlesLoading;
   const error = regionError || productsError || topicsError || articlesError;
 
+  // Find the current product and topics (before early returns to maintain hook order)
+  const product = productsData?.products.find((p) => p.id === productId);
+
+  // Determine which topic we're viewing (parent or subtopic)
+  const currentTopicId = subtopicId || topicId;
+  const parentTopic = topicsData?.supportHubs.find((t) => t.id === topicId && t.productId === productId);
+  const currentTopic = subtopicId
+    ? topicsData?.supportHubs.find((t) => t.id === subtopicId && t.productId === productId)
+    : parentTopic;
+
+  // Get names for display with fallbacks
+  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+  const topicName = currentTopic?.title || currentTopicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
+
+  // Set page title (must be before any early returns to maintain hook order)
+  usePageTitle(topicName, productName);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -73,23 +90,6 @@ export default function TopicPage() {
       </div>
     );
   }
-
-  // Find the current product and topics
-  const product = productsData?.products.find((p) => p.id === productId);
-
-  // Determine which topic we're viewing (parent or subtopic)
-  const currentTopicId = subtopicId || topicId;
-  const parentTopic = topicsData?.supportHubs.find((t) => t.id === topicId && t.productId === productId);
-  const currentTopic = subtopicId
-    ? topicsData?.supportHubs.find((t) => t.id === subtopicId && t.productId === productId)
-    : parentTopic;
-
-  // Get names for display with fallbacks
-  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
-  const topicName = currentTopic?.title || currentTopicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
-
-  // Set page title
-  usePageTitle(topicName, productName);
 
   // Check if product is available for the current country
   const isProductAvailable = product && (!product.countries || product.countries.includes(region));

@@ -41,6 +41,15 @@ export default function ProductLanding() {
   const loading = regionLoading || productsLoading || topicsLoading;
   const error = regionError || productsError || topicsError;
 
+  // Find the current product (before early returns to maintain hook order)
+  const product = productsData?.products.find((p) => p.id === productId);
+
+  // Get product name for display
+  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+
+  // Set page title (must be before any early returns to maintain hook order)
+  usePageTitle(productName);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -61,15 +70,6 @@ export default function ProductLanding() {
       </div>
     );
   }
-
-  // Find the current product
-  const product = productsData?.products.find((p) => p.id === productId);
-
-  // Get product name for display
-  const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
-
-  // Set page title
-  usePageTitle(productName);
 
   // Check if product is available for the current country
   const isProductAvailable = product && (!product.countries || product.countries.includes(region));
