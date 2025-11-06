@@ -85,6 +85,26 @@ export default function TopicPage() {
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
   const topicName = currentTopic?.title || currentTopicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
 
+  // Check if product is available for the current country
+  const isProductAvailable = product && (!product.countries || product.countries.includes(region));
+
+  // Show error if product is not available in this country
+  if (!isProductAvailable) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-900">Content Not Available</p>
+          <p className="text-gray-600 mt-2">
+            {productName} is not available in your selected region.
+          </p>
+          <p className="text-gray-500 mt-4">
+            Please select a different region or choose another product.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Get all items (articles and subtopics) for the current topic
   const items = articlesData?.articles[productId || '']?.[currentTopicId || ''] || [];
 

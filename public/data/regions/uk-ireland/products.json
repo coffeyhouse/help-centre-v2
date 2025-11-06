@@ -6,6 +6,7 @@
       "description": "Desktop accounting software",
       "type": "desktop",
       "personas": ["customer", "accountant"],
+      "countries": ["gb", "ie"],
       "icon": "icon-a"
     },
     {
@@ -14,6 +15,7 @@
       "description": "Cloud-based accounting",
       "type": "cloud",
       "personas": ["customer", "accountant"],
+      "countries": ["gb", "ie"],
       "icon": "icon-b"
     },
     {
@@ -22,6 +24,7 @@
       "description": "Payroll software",
       "type": "cloud",
       "personas": ["customer"],
+      "countries": ["gb"],
       "icon": "icon-c"
     },
     {
@@ -30,6 +33,7 @@
       "description": "Tax management",
       "type": "desktop",
       "personas": ["accountant"],
+      "countries": ["gb", "ie"],
       "icon": "icon-d"
     },
     {
@@ -38,6 +42,7 @@
       "description": "Invoice management",
       "type": "cloud",
       "personas": ["customer", "accountant"],
+      "countries": ["ie"],
       "icon": "icon-e"
     },
     {
@@ -46,6 +51,7 @@
       "description": "Expense tracking",
       "type": "desktop",
       "personas": ["customer"],
+      "countries": ["gb", "ie"],
       "icon": "icon-f"
     }
   ],

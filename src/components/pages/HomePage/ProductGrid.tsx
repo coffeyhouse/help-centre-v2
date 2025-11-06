@@ -25,12 +25,19 @@ export default function ProductGrid({ products }: ProductGridProps) {
   const { persona } = usePersona();
   const { region } = useRegion();
 
-  // Filter products by selected persona
+  // Filter products by selected persona and country
   const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
-      product.personas.includes(persona)
-    );
-  }, [products, persona]);
+    return products.filter((product) => {
+      // Check if product is available for the selected persona
+      const matchesPersona = product.personas.includes(persona);
+
+      // Check if product is available for the current country
+      // If countries array doesn't exist, show the product (backwards compatibility)
+      const matchesCountry = !product.countries || product.countries.includes(region);
+
+      return matchesPersona && matchesCountry;
+    });
+  }, [products, persona, region]);
 
   // Show first 6 products
   const visibleProducts = filteredProducts.slice(0, 6);

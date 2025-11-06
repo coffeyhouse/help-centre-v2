@@ -67,6 +67,26 @@ export default function ProductLanding() {
   // Get product name for display
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
 
+  // Check if product is available for the current country
+  const isProductAvailable = product && (!product.countries || product.countries.includes(region));
+
+  // Show error if product is not available in this country
+  if (!isProductAvailable) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-900">Product Not Available</p>
+          <p className="text-gray-600 mt-2">
+            {productName} is not available in your selected region.
+          </p>
+          <p className="text-gray-500 mt-4">
+            Please select a different region or choose another product.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
