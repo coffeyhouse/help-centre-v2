@@ -41,8 +41,20 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get region from URL params or use default
-  const urlRegion = params.region || initialRegion;
+  // Extract region from URL pathname (e.g., "/ie/products/..." -> "ie")
+  const getRegionFromPath = (): string => {
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const firstPart = pathParts[0];
+    // Check if first part is a valid region code
+    if (firstPart && ['gb', 'ie'].includes(firstPart)) {
+      return firstPart;
+    }
+    // Fall back to params or initial region
+    return params.region || initialRegion;
+  };
+
+  // Get region from URL or use default
+  const urlRegion = getRegionFromPath();
 
   const [region, setRegion] = useState<string>(urlRegion);
   const [regionConfig, setRegionConfig] = useState<RegionConfig | null>(null);
@@ -51,10 +63,11 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
 
   // Sync region state with URL parameters
   useEffect(() => {
-    if (urlRegion && urlRegion !== region) {
-      setRegion(urlRegion);
+    const currentUrlRegion = getRegionFromPath();
+    if (currentUrlRegion && currentUrlRegion !== region) {
+      setRegion(currentUrlRegion);
     }
-  }, [urlRegion]);
+  }, [location.pathname]); // Re-run when pathname changes
 
   // Load region configuration when region changes
   useEffect(() => {
