@@ -48,13 +48,17 @@
           "id": "vat-returns-uk",
           "title": "Submit VAT returns to HMRC",
           "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
-          "countries": ["gb"]
+          "countries": [
+            "gb"
+          ]
         },
         {
           "id": "vat-returns-ie",
           "title": "Submit VAT returns to Revenue",
           "description": "Irish-specific guidance for submitting VAT returns through ROS.",
-          "countries": ["ie"]
+          "countries": [
+            "ie"
+          ]
         },
         {
           "id": "vat-rates",
@@ -65,13 +69,17 @@
           "id": "vat-rates-uk",
           "title": "UK VAT rates (20%, 5%, 0%)",
           "description": "Detailed breakdown of standard, reduced, and zero-rated VAT in the UK.",
-          "countries": ["gb"]
+          "countries": [
+            "gb"
+          ]
         },
         {
           "id": "vat-rates-ie",
           "title": "Irish VAT rates (23%, 13.5%, 9%, 0%)",
           "description": "Detailed breakdown of Irish VAT rates including the second reduced rate.",
-          "countries": ["ie"]
+          "countries": [
+            "ie"
+          ]
         },
         {
           "id": "vat-reporting",
@@ -204,13 +212,17 @@
           "id": "vat-returns-uk",
           "title": "Submit VAT returns to HMRC",
           "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
-          "countries": ["gb"]
+          "countries": [
+            "gb"
+          ]
         },
         {
           "id": "vat-returns-ie",
           "title": "Submit VAT returns to Revenue",
           "description": "Irish-specific guidance for submitting VAT returns through ROS.",
-          "countries": ["ie"]
+          "countries": [
+            "ie"
+          ]
         }
       ],
       "banking": [

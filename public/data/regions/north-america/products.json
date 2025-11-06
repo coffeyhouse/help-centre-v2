@@ -4,7 +4,15 @@
       "id": "sage-50",
       "name": "Sage 50",
       "description": "testing ",
-      "type": "cloud"
+      "type": "cloud",
+      "icon": "download",
+      "personas": [
+        "customer",
+        "accountant"
+      ],
+      "countries": [
+        "us"
+      ]
     }
   ],
   "hotTopics": [],

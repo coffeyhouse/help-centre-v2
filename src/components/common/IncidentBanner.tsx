@@ -72,12 +72,12 @@ export default function IncidentBanner({ banner }: IncidentBannerProps) {
 
   return (
     <div
-      className={`${config.bgColor} border-b ${config.borderColor} sticky top-16 z-30`}
+      className={`${config.bgColor} border-b ${config.borderColor} sticky top-[70px] z-30`}
       role="alert"
       aria-live="polite"
     >
       <div className="container-custom py-3">
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           {/* Icon */}
           <div className={`flex-shrink-0 ${config.iconColor}`}>
             <IconComponent className="w-5 h-5" aria-hidden="true" />
