@@ -19,6 +19,7 @@ const FILE_PATHS = {
   'uk-ireland-articles': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'articles.json'),
   'uk-ireland-topics': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'topics.json'),
   'uk-ireland-incidents': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'incidents.json'),
+  'uk-ireland-popups': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'popups.json'),
   'uk-ireland-contact': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'contact.json'),
   'uk-ireland-release-notes': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'release-notes.json'),
 };
