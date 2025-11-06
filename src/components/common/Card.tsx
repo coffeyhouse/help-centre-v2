@@ -23,27 +23,24 @@ export default function Card({ title, description, type, icon, onClick, href }: 
       {/* Left side: Content */}
       <div className="flex-1">
         {/* Icon */}
-        <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-4">
+        <div className={`w-12 h-12 rounded flex items-center justify-center mb-4 ${
+          type === 'Topic' ? 'bg-blue-100' : 'bg-gray-100'
+        }`}>
           {icon ? (
             <Icon name={icon} className="w-7 h-7 text-gray-700" />
+          ) : type === 'Topic' ? (
+            <FolderIcon className="w-7 h-7 text-blue-600" />
+          ) : type === 'Article' ? (
+            <DocumentTextIcon className="w-7 h-7 text-gray-600" />
           ) : (
             <CubeIcon className="w-7 h-7 text-gray-400" />
           )}
         </div>
 
-        <div className="flex items-center gap-2 mb-2">
-          {/* Type Icon */}
-          {type === 'Topic' ? (
-            <FolderIcon className="w-5 h-5 text-blue-600" />
-          ) : type === 'Article' ? (
-            <DocumentTextIcon className="w-5 h-5 text-gray-600" />
-          ) : null}
-
-          {/* Title */}
-          <h3 className="text-lg font-semibold text-gray-900">
-            {title}
-          </h3>
-        </div>
+        {/* Title */}
+        <h3 className="text-lg font-semibold mb-2 text-gray-900">
+          {title}
+        </h3>
 
         {/* Description */}
         {description && (
