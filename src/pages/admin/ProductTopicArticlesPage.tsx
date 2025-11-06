@@ -1,24 +1,28 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
-import { BookOpenIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
-import TopicsEditor from '../../components/admin/editors/TopicsEditor';
+import JSONEditor from '../../components/admin/editors/JSONEditor';
 
 interface Product {
   id: string;
   name: string;
 }
 
-export default function ProductTopicsListPage() {
-  const { region, productId } = useParams<{ region: string; productId: string }>();
+interface Topic {
+  id: string;
+  title: string;
+}
+
+export default function ProductTopicArticlesPage() {
+  const { region, productId, topicId } = useParams<{ region: string; productId: string; topicId: string }>();
   const { token } = useAdminAuth();
   const { regions } = useAdminRegion();
-  const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
-  const [articlesData, setArticlesData] = useState<any>(null);
   const [product, setProduct] = useState<Product | null>(null);
+  const [topic, setTopic] = useState<Topic | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -29,7 +33,7 @@ export default function ProductTopicsListPage() {
 
   useEffect(() => {
     loadData();
-  }, [region, productId]);
+  }, [region, productId, topicId]);
 
   const loadData = async () => {
     try {
@@ -56,7 +60,7 @@ export default function ProductTopicsListPage() {
 
       setProduct(foundProduct);
 
-      // Load topics
+      // Load topic details
       const topicsResponse = await fetch(`/api/files/${region}-topics`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -68,7 +72,13 @@ export default function ProductTopicsListPage() {
       }
 
       const topicsResult = await topicsResponse.json();
-      setData(topicsResult.data);
+      const foundTopic = topicsResult.data.supportHubs?.find((t: Topic) => t.id === topicId);
+
+      if (!foundTopic) {
+        throw new Error('Topic not found');
+      }
+
+      setTopic(foundTopic);
 
       // Load articles
       const articlesResponse = await fetch(`/api/files/${region}-articles`, {
@@ -77,21 +87,19 @@ export default function ProductTopicsListPage() {
         },
       });
 
-      if (articlesResponse.ok) {
-        const articlesResult = await articlesResponse.json();
-        setArticlesData(articlesResult.data);
+      if (!articlesResponse.ok) {
+        throw new Error('Failed to load articles');
       }
+
+      const articlesResult = await articlesResponse.json();
+      setData(articlesResult.data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
       setError(errorMessage);
-      console.error('Error loading topics:', err);
+      console.error('Error loading articles:', err);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleNavigateToArticles = (topicId: string) => {
-    navigate(`/admin/${region}/products/${productId}/topics/${topicId}/articles`);
   };
 
   const handleSave = async () => {
@@ -100,7 +108,7 @@ export default function ProductTopicsListPage() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(`/api/files/${region}-topics`, {
+      const response = await fetch(`/api/files/${region}-articles`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +118,7 @@ export default function ProductTopicsListPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save topics');
+        throw new Error('Failed to save articles');
       }
 
       setSuccessMessage('Changes saved successfully');
@@ -118,11 +126,13 @@ export default function ProductTopicsListPage() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save data';
       setError(errorMessage);
-      console.error('Error saving topics:', err);
+      console.error('Error saving articles:', err);
     } finally {
       setSaving(false);
     }
   };
+
+  const articleCount = data?.articles?.[productId]?.[topicId]?.length || 0;
 
   return (
     <AdminLayout
@@ -130,12 +140,19 @@ export default function ProductTopicsListPage() {
         { label: regionName || '', path: `/admin/${region}/menu` },
         { label: 'Products', path: `/admin/${region}/products` },
         { label: product?.name || productId || '', path: `/admin/${region}/products/${productId}` },
-        { label: 'Topics' },
+        { label: 'Topics', path: `/admin/${region}/products/${productId}/topics` },
+        { label: topic?.title || topicId || '', path: `/admin/${region}/products/${productId}/topics` },
+        { label: 'Articles' },
       ]}
     >
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">Topics for {product?.name}</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Articles for {topic?.title}</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              {articleCount} {articleCount === 1 ? 'article' : 'articles'}
+            </p>
+          </div>
           <button
             onClick={handleSave}
             disabled={saving || loading}
@@ -145,7 +162,7 @@ export default function ProductTopicsListPage() {
           </button>
         </div>
         <p className="text-gray-600">
-          Manage support topics and their articles
+          Manage articles for this topic. Articles are displayed in the order they appear in the array.
         </p>
       </div>
 
@@ -164,17 +181,18 @@ export default function ProductTopicsListPage() {
       {loading ? (
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading topics...</p>
+          <p className="mt-4 text-gray-600">Loading articles...</p>
         </div>
       ) : data ? (
-        <div className="bg-white rounded-lg shadow">
-          <TopicsEditor
-            data={data}
-            onChange={setData}
-            filterByProductId={productId}
-            articlesData={articlesData}
-            onNavigateToArticles={handleNavigateToArticles}
-          />
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+            <strong>Note:</strong> Currently using JSON editor. Navigate to{' '}
+            <code className="bg-blue-100 px-1 py-0.5 rounded">
+              articles &gt; {productId} &gt; {topicId}
+            </code>{' '}
+            to edit articles for this topic.
+          </div>
+          <JSONEditor data={data} onChange={setData} />
         </div>
       ) : null}
     </AdminLayout>

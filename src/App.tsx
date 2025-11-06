@@ -42,6 +42,7 @@ import RegionSettingsPage from './pages/admin/RegionSettingsPage';
 import ProductsListPage from './pages/admin/ProductsListPage';
 import ProductDetailPage from './pages/admin/ProductDetailPage';
 import ProductTopicsListPage from './pages/admin/ProductTopicsListPage';
+import ProductTopicArticlesPage from './pages/admin/ProductTopicArticlesPage';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 
 function App() {
@@ -137,6 +138,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProductTopicsListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/products/:productId/topics/:topicId/articles"
+              element={
+                <ProtectedRoute>
+                  <ProductTopicArticlesPage />
                 </ProtectedRoute>
               }
             />

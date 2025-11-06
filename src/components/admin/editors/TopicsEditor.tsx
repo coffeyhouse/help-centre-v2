@@ -23,9 +23,11 @@ interface TopicsEditorProps {
   };
   onChange: (data: any) => void;
   filterByProductId?: string; // Optional: filter to show only this product's topics
+  articlesData?: any; // Optional: articles data to show article counts
+  onNavigateToArticles?: (topicId: string) => void; // Optional: callback for navigating to articles
 }
 
-export default function TopicsEditor({ data, onChange, filterByProductId }: TopicsEditorProps) {
+export default function TopicsEditor({ data, onChange, filterByProductId, articlesData, onNavigateToArticles }: TopicsEditorProps) {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(filterByProductId || null);
   const [selectedTopicIndex, setSelectedTopicIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -209,34 +211,60 @@ export default function TopicsEditor({ data, onChange, filterByProductId }: Topi
             </div>
 
             <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
-              {currentProductTopics.map((topic: any, localIndex: number) => (
-                <DraggableListItem
-                  key={topic.originalIndex}
-                  index={localIndex}
-                  isSelected={selectedTopicIndex === topic.originalIndex}
-                  isDragging={draggedIndex === localIndex}
-                  isDragOver={dragOverIndex === localIndex}
-                  onDragStart={handleDragStart}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onDragEnd={handleDragEnd}
-                  onClick={() => handleSelectTopic(topic.originalIndex)}
-                >
-                  <div className="flex items-center justify-between flex-1">
-                    <div className="flex-1">
-                      <div className="font-medium text-sm text-gray-900">{topic.title}</div>
-                      <div className="text-xs text-gray-500 mt-1">{topic.id}</div>
-                      {topic.parentTopicId && (
-                        <div className="text-xs text-gray-400 mt-1">
-                          ↳ Child of: {topic.parentTopicId}
+              {currentProductTopics.map((topic: any, localIndex: number) => {
+                // Calculate article count for this topic
+                const articleCount = articlesData?.articles?.[selectedProductId]?.[topic.id]?.length || 0;
+
+                return (
+                  <DraggableListItem
+                    key={topic.originalIndex}
+                    index={localIndex}
+                    isSelected={selectedTopicIndex === topic.originalIndex}
+                    isDragging={draggedIndex === localIndex}
+                    isDragOver={dragOverIndex === localIndex}
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => handleSelectTopic(topic.originalIndex)}
+                  >
+                    <div className="flex items-center justify-between flex-1 gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-gray-900">{topic.title}</div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-gray-500">{topic.id}</span>
+                          {articlesData && (
+                            <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+                              {articleCount} {articleCount === 1 ? 'article' : 'articles'}
+                            </span>
+                          )}
                         </div>
-                      )}
+                        {topic.parentTopicId && (
+                          <div className="text-xs text-gray-400 mt-1">
+                            ↳ Child of: {topic.parentTopicId}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {onNavigateToArticles && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onNavigateToArticles(topic.id);
+                            }}
+                            className="px-2 py-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+                            title="Manage articles"
+                          >
+                            Manage Articles
+                          </button>
+                        )}
+                        <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                      </div>
                     </div>
-                    <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0 ml-2" />
-                  </div>
-                </DraggableListItem>
-              ))}
+                  </DraggableListItem>
+                );
+              })}
             </div>
           </>
         ) : (
