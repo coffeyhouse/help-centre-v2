@@ -8,6 +8,7 @@ interface Product {
   description: string;
   type: string;
   personas: string[];
+  countries?: string[];
   icon: string;
 }
 
@@ -243,6 +244,14 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
                               {persona}
                             </span>
                           ))}
+                          {product.countries && product.countries.map((country) => (
+                            <span
+                              key={country}
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"
+                            >
+                              {country.toUpperCase()}
+                            </span>
+                          ))}
                         </div>
                       </div>
                       <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
@@ -319,6 +328,7 @@ interface ProductFormProps {
 
 function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductFormProps) {
   const availablePersonas = ['customer', 'accountant', 'partner', 'developer'];
+  const [availableCountries, setAvailableCountries] = useState<Array<{ code: string; name: string }>>([]);
 
   const [formData, setFormData] = useState<Product>(
     product || {
@@ -327,11 +337,31 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
       description: '',
       type: 'cloud',
       personas: [],
+      countries: [],
       icon: '',
     }
   );
   const [originalData, setOriginalData] = useState<Product>(formData);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  // Load available countries from regions.json
+  useEffect(() => {
+    const loadCountries = async () => {
+      try {
+        const response = await fetch('/data/regions.json');
+        const regions = await response.json();
+        setAvailableCountries(regions);
+      } catch (error) {
+        console.error('Failed to load countries:', error);
+        // Fallback to common countries
+        setAvailableCountries([
+          { code: 'gb', name: 'United Kingdom' },
+          { code: 'ie', name: 'Ireland' },
+        ]);
+      }
+    };
+    loadCountries();
+  }, []);
 
   useEffect(() => {
     if (product) {
@@ -344,6 +374,7 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
         description: '',
         type: 'cloud',
         personas: [],
+        countries: [],
         icon: '',
       };
       setFormData(defaultData);
@@ -365,6 +396,17 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
         ? prev.personas.filter((p) => p !== persona)
         : [...prev.personas, persona];
       return { ...prev, personas: newPersonas };
+    });
+  };
+
+  const handleCountryToggle = (country: string) => {
+    setFormData((prev) => {
+      const countries = prev.countries || [];
+      const isSelected = countries.includes(country);
+      const newCountries = isSelected
+        ? countries.filter((c) => c !== country)
+        : [...countries, country];
+      return { ...prev, countries: newCountries };
     });
   };
 
@@ -499,6 +541,30 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
           ))}
         </div>
         <p className="text-xs text-gray-500 mt-2">Select all applicable personas</p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Countries
+        </label>
+        <div className="space-y-2">
+          {availableCountries.map((country) => (
+            <label key={country.code} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={(formData.countries || []).includes(country.code)}
+                onChange={() => handleCountryToggle(country.code)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">
+                {country.name} ({country.code.toUpperCase()})
+              </span>
+            </label>
+          ))}
+        </div>
+        <p className="text-xs text-gray-500 mt-2">
+          Select countries where this product is available. Leave empty for all countries.
+        </p>
       </div>
 
         <div className="flex gap-3 pt-4 border-t border-gray-200">
