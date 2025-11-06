@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { loadRegions } from '../utils/dataLoader';
 import type { Region } from '../types';
 
@@ -14,6 +15,9 @@ export default function CountrySelector() {
   const navigate = useNavigate();
   const [regions, setRegions] = useState<RegionGroup[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Set page title
+  usePageTitle('Select Your Region');
 
   useEffect(() => {
     loadCountryData();

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import ArticlesEditor from '../../components/admin/editors/ArticlesEditor';
@@ -18,6 +19,8 @@ interface Topic {
 
 export default function ProductTopicArticlesPage() {
   const { region, productId, topicId } = useParams<{ region: string; productId: string; topicId: string }>();
+
+  usePageTitle('Articles', 'Admin');
   const { token } = useAdminAuth();
   const { regions } = useAdminRegion();
   const [data, setData] = useState<any>(null);

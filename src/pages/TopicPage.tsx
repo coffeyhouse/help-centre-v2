@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { loadProducts, loadTopics, loadArticles } from '../utils/dataLoader';
 import Breadcrumb from '../components/layout/Breadcrumb';
 import Hero from '../components/common/Hero';
@@ -86,6 +87,9 @@ export default function TopicPage() {
   // Get names for display with fallbacks
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
   const topicName = currentTopic?.title || currentTopicId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Topic';
+
+  // Set page title
+  usePageTitle(topicName, productName);
 
   // Check if product is available for the current country
   const isProductAvailable = product && (!product.countries || product.countries.includes(region));

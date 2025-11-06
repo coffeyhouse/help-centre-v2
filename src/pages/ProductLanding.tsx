@@ -12,6 +12,7 @@
 import { useParams } from 'react-router-dom';
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { loadProducts, loadTopics } from '../utils/dataLoader';
 import Breadcrumb from '../components/layout/Breadcrumb';
 import TopNavigation from '../components/pages/ProductLanding/TopNavigation';
@@ -66,6 +67,9 @@ export default function ProductLanding() {
 
   // Get product name for display
   const productName = product?.name || productId?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Product';
+
+  // Set page title
+  usePageTitle(productName);
 
   // Check if product is available for the current country
   const isProductAvailable = product && (!product.countries || product.countries.includes(region));

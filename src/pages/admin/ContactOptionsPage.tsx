@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import AdminLayout from '../../components/admin/AdminLayout';
 import JSONEditor from '../../components/admin/editors/JSONEditor';
 
@@ -14,6 +15,8 @@ export default function ContactOptionsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  usePageTitle('Contact Options', 'Admin');
 
   const currentRegion = regions.find((r) => r.id === region);
   const regionName = currentRegion?.name || region;

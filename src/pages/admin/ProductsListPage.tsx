@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { CubeIcon, ArrowRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AddProductModal from '../../components/admin/AddProductModal';
@@ -23,6 +24,8 @@ export default function ProductsListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  usePageTitle('Products', 'Admin');
 
   const currentRegion = regions.find((r) => r.id === region);
   const regionName = currentRegion?.name || region;

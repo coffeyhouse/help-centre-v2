@@ -11,6 +11,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { SearchResult } from '../types';
 import { searchArticles } from '../utils/mockSearchAPI';
 import Breadcrumb from '../components/layout/Breadcrumb';
@@ -25,6 +26,9 @@ export default function SearchResultsPage() {
 
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Set page title
+  usePageTitle(searchTerm ? `Search: ${searchTerm}` : 'Search Results');
 
   useEffect(() => {
     async function fetchResults() {

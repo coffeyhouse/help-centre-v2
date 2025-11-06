@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { BookOpenIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import TopicsEditor from '../../components/admin/editors/TopicsEditor';
@@ -18,6 +19,8 @@ export default function ProductTopicsListPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
   const [articlesData, setArticlesData] = useState<any>(null);
+
+  usePageTitle('Topics', 'Admin');
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

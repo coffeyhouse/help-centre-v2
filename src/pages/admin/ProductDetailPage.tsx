@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import {
   BookOpenIcon,
   PhoneIcon,
@@ -36,6 +37,8 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  usePageTitle(product?.name || 'Product', 'Admin');
 
   const currentRegion = regions.find((r) => r.id === region);
   const regionName = currentRegion?.name || region;

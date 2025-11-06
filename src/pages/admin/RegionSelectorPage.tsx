@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { GlobeAltIcon, PlusIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AddRegionModal from '../../components/admin/AddRegionModal';
@@ -9,6 +10,8 @@ export default function RegionSelectorPage() {
   const { regions, selectRegion, loading, error } = useAdminRegion();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  usePageTitle('Select Region', 'Admin');
 
   const handleSelectRegion = (regionId: string) => {
     selectRegion(regionId);

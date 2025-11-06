@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import AdminLayout from '../../components/admin/AdminLayout';
 import IncidentsEditor from '../../components/admin/editors/IncidentsEditor';
 
@@ -14,6 +15,8 @@ export default function IncidentsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  usePageTitle('Incidents', 'Admin');
 
   const currentRegion = regions.find((r) => r.id === region);
   const regionName = currentRegion?.name || region;

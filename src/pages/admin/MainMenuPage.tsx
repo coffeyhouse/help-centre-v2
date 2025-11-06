@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAdminRegion } from '../../context/AdminRegionContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import {
   CubeIcon,
   ExclamationTriangleIcon,
@@ -23,6 +24,8 @@ export default function MainMenuPage() {
   const { region } = useParams<{ region: string }>();
   const { regions } = useAdminRegion();
   const navigate = useNavigate();
+
+  usePageTitle('Admin Menu');
 
   // Get region name for breadcrumbs
   const currentRegion = regions.find((r) => r.id === region);
