@@ -25,6 +25,7 @@ interface Product {
   icon?: string;
   personas?: string[];
   countries?: string[];
+  knowledgebase_collection?: string;
 }
 
 interface SubSection {
@@ -318,6 +319,11 @@ export default function ProductDetailPage() {
                       <div className="flex-1">
                         <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
                         <p className="text-gray-600 mb-2">{product.description}</p>
+                        {product.knowledgebase_collection && (
+                          <p className="text-sm text-gray-500 mb-2">
+                            <span className="font-medium">KB Collection:</span> {product.knowledgebase_collection}
+                          </p>
+                        )}
                         <div className="flex flex-wrap gap-2 items-center">
                           <span className={`inline-block px-3 py-1 text-sm font-medium rounded ${
                             product.type === 'cloud'
@@ -448,6 +454,22 @@ export default function ProductDetailPage() {
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         Select an icon for this product
+                      </p>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Knowledgebase Collection ID
+                      </label>
+                      <input
+                        type="text"
+                        value={editedProduct?.knowledgebase_collection || ''}
+                        onChange={(e) => handleFieldChange('knowledgebase_collection', e.target.value)}
+                        placeholder="e.g., custom_gb_en_fifty_accounts"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        The collection ID used for filtering search results for this product
                       </p>
                     </div>
 

@@ -17,6 +17,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     description: '',
     type: 'cloud' as 'cloud' | 'desktop',
     icon: '',
+    knowledgebase_collection: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -30,6 +31,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
         description: '',
         type: 'cloud',
         icon: '',
+        knowledgebase_collection: '',
       });
       setError('');
     }
@@ -121,6 +123,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
         description: formData.description,
         type: formData.type,
         icon: formData.icon || undefined,
+        knowledgebase_collection: formData.knowledgebase_collection || undefined,
         personas: ['customer', 'accountant'], // Default to all personas
       };
 
@@ -284,6 +287,24 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
                   placeholder="e.g., /images/product-icon.svg"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+              </div>
+
+              {/* Knowledgebase Collection (optional) */}
+              <div>
+                <label htmlFor="knowledgebase_collection" className="block text-sm font-medium text-gray-700 mb-1">
+                  Knowledgebase Collection ID (optional)
+                </label>
+                <input
+                  type="text"
+                  id="knowledgebase_collection"
+                  value={formData.knowledgebase_collection}
+                  onChange={(e) => setFormData({ ...formData, knowledgebase_collection: e.target.value })}
+                  placeholder="e.g., custom_gb_en_fifty_accounts"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  The collection ID used for filtering search results
+                </p>
               </div>
             </div>
 
