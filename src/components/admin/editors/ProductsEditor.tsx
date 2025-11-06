@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon, Bars3Icon, EyeIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import ConfirmModal from '../ConfirmModal';
-import Modal from '../../common/Modal';
-import Icon from '../../common/Icon';
 
 interface Product {
   id: string;
@@ -45,7 +43,6 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   const [itemToDelete, setItemToDelete] = useState<{ name: string; index: number } | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
 
   const handleSelectProduct = (index: number) => {
     setSelectedProductIndex(index);
@@ -144,45 +141,36 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   return (
     <div className="space-y-6">
       {/* Section Tabs */}
-      <div className="flex items-center gap-2 border-b border-gray-200">
-        <div className="flex gap-2 flex-1">
-          <button
-            onClick={() => setActiveSection('products')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeSection === 'products'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Products ({data.products.length})
-          </button>
-          <button
-            onClick={() => setActiveSection('hotTopics')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeSection === 'hotTopics'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Hot Topics ({data.hotTopics.length})
-          </button>
-          <button
-            onClick={() => setActiveSection('quickAccessCards')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeSection === 'quickAccessCards'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Quick Access Cards ({data.quickAccessCards.length})
-          </button>
-        </div>
+      <div className="flex gap-2 border-b border-gray-200">
         <button
-          onClick={() => setPreviewOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+          onClick={() => setActiveSection('products')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeSection === 'products'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
         >
-          <EyeIcon className="h-4 w-4" />
-          Preview
+          Products ({data.products.length})
+        </button>
+        <button
+          onClick={() => setActiveSection('hotTopics')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeSection === 'hotTopics'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Hot Topics ({data.hotTopics.length})
+        </button>
+        <button
+          onClick={() => setActiveSection('quickAccessCards')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeSection === 'quickAccessCards'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Quick Access Cards ({data.quickAccessCards.length})
         </button>
       </div>
 
@@ -313,16 +301,6 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
         cancelText="Cancel"
         confirmStyle="danger"
       />
-
-      {/* Preview Modal */}
-      <Modal
-        isOpen={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        title="Products Preview"
-        maxWidth="max-w-6xl"
-      >
-        <ProductsPreview products={data.products} />
-      </Modal>
     </div>
   );
 }
@@ -721,134 +699,6 @@ function QuickAccessCardsSection({
         cancelText="Cancel"
         confirmStyle="danger"
       />
-    </div>
-  );
-}
-
-// Products Preview Component
-type Persona = 'customer' | 'accountant' | 'partner' | 'developer';
-
-function ProductsPreview({ products }: { products: Product[] }) {
-  const [selectedPersona, setSelectedPersona] = useState<Persona>('customer');
-
-  const personas: Array<{ id: Persona; label: string }> = [
-    { id: 'customer', label: 'Customer' },
-    { id: 'accountant', label: 'Accountant' },
-    { id: 'partner', label: 'Partner' },
-    { id: 'developer', label: 'Developer' },
-  ];
-
-  // Filter products by selected persona
-  const filteredProducts = products.filter((product) =>
-    product.personas.includes(selectedPersona)
-  );
-
-  // Show first 6 products (like homepage)
-  const visibleProducts = filteredProducts.slice(0, 6);
-
-  return (
-    <div className="space-y-6">
-      {/* Persona Tabs */}
-      <div className="border-b border-gray-200">
-        <div className="flex gap-2">
-          {personas.map((persona) => {
-            const isActive = selectedPersona === persona.id;
-            return (
-              <button
-                key={persona.id}
-                onClick={() => setSelectedPersona(persona.id)}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                  isActive
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                }`}
-              >
-                {persona.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Products Grid */}
-      {visibleProducts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visibleProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer min-h-[120px] flex items-center"
-            >
-              <div className="flex items-center gap-4 w-full">
-                {/* Left side: Content */}
-                <div className="flex-1">
-                  {/* Icon */}
-                  {product.icon && (
-                    <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-4">
-                      <Icon
-                        name={product.icon}
-                        className="w-7 h-7 text-gray-700"
-                      />
-                    </div>
-                  )}
-
-                  {/* Type Badge */}
-                  {product.type && (
-                    <div className="mb-2">
-                      <span className="inline-block px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-blue-100 text-blue-800">
-                        {product.type}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Title */}
-                  <h3 className="text-lg font-semibold mb-2 text-gray-900">
-                    {product.name}
-                  </h3>
-
-                  {/* Description */}
-                  {product.description && (
-                    <p className="text-sm text-gray-600 leading-relaxed">
-                      {product.description}
-                    </p>
-                  )}
-                </div>
-
-                {/* Right side: Arrow indicator */}
-                <div className="flex-shrink-0 text-gray-400">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">
-            No products available for this persona.
-          </p>
-        </div>
-      )}
-
-      {/* "See more" indicator */}
-      {filteredProducts.length > 6 && (
-        <div className="text-center">
-          <div className="inline-block px-4 py-2 bg-gray-100 text-gray-600 rounded-md text-sm">
-            + {filteredProducts.length - 6} more products not shown
-          </div>
-        </div>
-      )}
     </div>
   );
 }

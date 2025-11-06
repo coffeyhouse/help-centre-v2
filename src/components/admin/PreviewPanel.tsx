@@ -1,53 +1,83 @@
+import { useState } from 'react';
+import { PersonaContext } from '../../context/PersonaContext';
+import ProductGrid from '../pages/HomePage/ProductGrid';
+import type { PersonaId } from '../../types';
+
 interface PreviewPanelProps {
   fileId: string;
   data: any;
+}
+
+// Simple persona tabs for preview (doesn't rely on region config)
+function PreviewPersonaTabs({ currentPersona, onPersonaChange }: {
+  currentPersona: PersonaId;
+  onPersonaChange: (persona: PersonaId) => void;
+}) {
+  const personas: Array<{ id: PersonaId; label: string }> = [
+    { id: 'customer', label: 'Customer' },
+    { id: 'accountant', label: 'Accountant / Bookkeeper' },
+    { id: 'partner', label: 'Partner' },
+    { id: 'developer', label: 'Developer' },
+  ];
+
+  return (
+    <div className="border-b border-gray-200 mb-8">
+      <div className="flex gap-8">
+        {personas.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => onPersonaChange(p.id)}
+            className={`pb-4 px-2 text-sm font-medium transition-colors relative ${
+              currentPersona === p.id
+                ? 'text-gray-900'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {p.label}
+
+            {/* Green underline for active tab */}
+            {currentPersona === p.id && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Products preview wrapper component
+function ProductsPreview({ products }: { products: any[] }) {
+  const [currentPersona, setCurrentPersona] = useState<PersonaId>('customer');
+
+  return (
+    <PersonaContext.Provider value={{ persona: currentPersona, setPersona: setCurrentPersona }}>
+      <div className="space-y-6">
+        <div>
+          <h3 className="font-semibold text-gray-900 mb-4">Products Preview</h3>
+          <p className="text-sm text-gray-600 mb-6">
+            This shows how products will appear on the homepage. Switch between personas to see different filtered views.
+          </p>
+
+          {/* Persona Tabs */}
+          <PreviewPersonaTabs
+            currentPersona={currentPersona}
+            onPersonaChange={setCurrentPersona}
+          />
+
+          {/* Product Grid - exactly as it appears on homepage */}
+          <ProductGrid products={products} />
+        </div>
+      </div>
+    </PersonaContext.Provider>
+  );
 }
 
 export default function PreviewPanel({ fileId, data }: PreviewPanelProps) {
   const renderPreview = () => {
     switch (fileId) {
       case 'uk-ireland-products':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Products ({data.products?.length || 0})</h3>
-              <div className="grid gap-3">
-                {data.products?.map((product: any) => (
-                  <div key={product.id} className="p-3 bg-gray-50 rounded border border-gray-200">
-                    <div className="font-medium">{product.name}</div>
-                    <div className="text-sm text-gray-600">{product.description}</div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {product.type} • {product.personas?.join(', ')}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Hot Topics ({data.hotTopics?.length || 0})</h3>
-              <div className="space-y-2">
-                {data.hotTopics?.map((topic: any) => (
-                  <div key={topic.id} className="p-2 bg-blue-50 rounded text-sm">
-                    {topic.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Quick Access Cards ({data.quickAccessCards?.length || 0})</h3>
-              <div className="space-y-2">
-                {data.quickAccessCards?.map((card: any) => (
-                  <div key={card.id} className="p-3 bg-green-50 rounded border border-green-200">
-                    <div className="font-medium text-sm">{card.title}</div>
-                    <div className="text-xs text-gray-600 mt-1">{card.description}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
+        return data.products && <ProductsPreview products={data.products} />;
 
       case 'uk-ireland-incidents':
         return (
