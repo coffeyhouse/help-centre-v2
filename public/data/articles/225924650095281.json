@@ -1,0 +1,58 @@
+{
+  "author": "legacyauthor",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1682703525000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\" data-mce-style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\"><p>1) License Administration has been unable to contact the Sage entitlement services to verify entitlement. Sage 300 CRE activation is generally valid for 12-month periods; if your server is unable to successfully communicate with the Sage entitlement server after 10 months, warnings will begin to appear with 60 days remaining and count down from that day.</p><p>2) All users must exit out of Sage in order to allow the Screen files to be updated.</p></div>"
+    },
+    {
+      "name": "Resolution",
+      "content": "<span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\"><span class=\"ra-content-caution\" style=\"color: #b94a48;\"><img src=\"https://internal-kb.sage.com/portal/app/images/content_caution.gif\" alt=\"\" /> <strong>CAUTION:</strong>&nbsp;</span><span style=\"box-sizing: border-box; margin: 0px; padding: 0px;\"><span style=\"color: #b94a48;\">Sage support can't assist with third-party products, hardware, report customizations, or state and federal tax questions. Refer to our </span>[[<span style=\"color: #0906fa;\">Scope of Support</span>|221924150011251]]<span style=\"color: #b94a48;\"> for more info. Contact your Sage business partner, network administrator, or accountant for assistance.</span></span></span><br><p></p><p><strong style=\"font-family: &quot;open sans&quot;; font-size: 11pt; letter-spacing: 0.2px;\"><span class=\"ra-content-note-2\" style=\"color: #468847;\" data-mce-style=\"color: #468847;\"><span class=\"mceNonEditable\"><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" data-mce-src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span></span></strong><span class=\"ra-content-note-2\" data-mce-style=\"color: #468847;\" style=\"font-family: &quot;open sans&quot;; letter-spacing: 0.2px; color: rgb(70, 136, 71);\"><span class=\"ra-att-desc\">Issue fixed in <strong>version 22.2 Update 2</strong>. Download the latest version of Sage 300 Construction and Real Estate at [[Sage 300 Construction and Real Estate: Download Portal|230612211654783]].</span></span><br></p><div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\" data-mce-style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\"><p><strong><span style=\"font-family: 'open sans'; font-size: 11pt; color: #000000;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt; color: #000000;\"><span class=\"ra-content-note-2\"><span class=\"ra-att-desc\">For versions earlier than 22.2, follow the procedure below.</span></span></span></strong></p><p><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\"><strong>Section 1 </strong>– Update Entitlement on your Sage Server</span></p><ol><li><span style=\"font-size: 11pt; letter-spacing: 0.2px; display: inline !important; font-family: 'open sans';\" data-mce-style=\"font-size: 11pt; letter-spacing: 0.2px; display: inline !important; font-family: 'open sans';\">Ensure the server has internet access. <span class=\"ra-content-note-1\" style=\"color: #468847;\" data-mce-style=\"color: #468847;\"><span class=\"mceNonEditable\"><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" data-mce-src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span>If you cannot access the internet from the server, <span style=\"letter-spacing: 0.2px; display: inline !important;\" data-mce-style=\"letter-spacing: 0.2px; display: inline !important;\">contact Sage Support.</span></span></span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Ensure all users exit Sage 300 CRE.</span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">At the Sage file server, use the keyboard shortcut <strong>Windows logo key + R</strong> to open the <strong>Run</strong> command.</span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">In the <strong>Open</strong> field, type <strong>services.msc</strong> and select <strong>OK</strong> to open the <strong>Services </strong>interface<strong>.</strong></span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Right-click the <strong>Sage 300 CRE Hosting Framework (xx.x.x)</strong> service, select <strong>Restart</strong>, and then close <strong>Services</strong>.</span><br><span class=\"ra-content-note-4\" style=\"color: #468847; font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"color: #468847; font-family: 'open sans'; font-size: 11pt;\"><span class=\"mceNonEditable\"><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" data-mce-src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span><span class=\"ra-att-desc\">xx.x.x stands for the version of Sage 300 CRE currently installed</span></span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Open License Administration by selecting <strong>Start, All Programs, Sage Administration, </strong>and<strong> License Administration</strong>. </span><br><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\"><span class=\"ra-content-note-5\" style=\"color: #468847;\" data-mce-style=\"color: #468847;\"><span class=\"mceNonEditable\"><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" data-mce-src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span><span class=\"ra-att-desc\">Also located at C:\\Program Files (x86)\\Timberline Office\\Shared\\LicenseAdministration.exe</span></span>&nbsp;</span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Click <strong>Update</strong> on the center-right side of the window</span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Close License Administration</span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Open Sage and verify that the error message no longer occurs. <br><span class=\"ra-content-note-8\" style=\"color: #468847;\" data-mce-style=\"color: #468847;\"><span class=\"mceNonEditable\"><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" data-mce-src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span><span class=\"ra-att-desc\"><span>If the error message continues after updating the Entitlement server and updating the Screen files with a current Date and Time stamp, have an admin user mark the box <strong>In the future, do not show me this dialogue box</strong> to stop displaying the message for the rest of the users.</span></span></span>&nbsp;</span></li></ol><p><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\"><strong>Section 2 </strong>– Troubleshooting Connectivity</span></p><ul><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Verify the server has internet access.</span></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Temporarily disable firewalls, anti-virus, or other security software on your server or add exclusions for Sage.</span><ul><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Refer to article [[What Sage 300 Construction and Real Estate and Sage Estimating files and folders should I exclude from my antivirus software scan?|222924150017258]]</span></li></ul></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Ensure that Windows Permissions are set correctly for Sage</span><ul><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Refer to article [[Sage 300 Construction and Real Estate and Sage Estimating Required Windows Permissions|222924350018211]]</span></li></ul></li><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Ping <strong>suaes-V2.sagecre.com</strong> from a command prompt on the server to verify communication with Sage</span><ul><li><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\">Refer to article [[How do I use the PING command to troubleshoot network connectivity or slowness?|223924250031213]]</span></li></ul></li></ul></div><p><br><span style=\"font-family: 'open sans'; font-size: 11pt;\" data-mce-style=\"font-family: 'open sans'; font-size: 11pt;\"><div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div></span><br><br></p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": ""
+    }
+  ],
+  "id": "225924650095281",
+  "language": "English",
+  "lastModifiedDate": 1682703525000,
+  "minorModifiedDate": 1712772775000,
+  "keywords": "License",
+  "question": null,
+  "renewDate": 1679875200000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Data//Data management"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Error: \"License will expire in XX Days since all recent attempts to contact Sage have failed.\"",
+  "translations": [],
+  "viewCount": 7282,
+  "solvedCount": 439,
+  "unsolvedCount": 4,
+  "summary": "When launching Sage Desktop, the warning \"License will expire in XX days since all recent attempts to contact Sage have failed\" displays.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2170759"
+}

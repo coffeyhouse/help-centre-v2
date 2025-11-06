@@ -1,0 +1,58 @@
+{
+  "author": "angie.gwalchmai@sage.com",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683224746000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<div id=\"dl-informationandconsiderations1939\" class=\"expand-collapse\"><a href=\"#\" data-toggle=\"collapse\" data-target=\"#ec-1752096148192\"><em class=\"icon-arrow-up\"></em><em class=\"icon-arrow-down\"></em><span>Information and considerations</span></a> <div id=\"ec-1752096148192\" class=\"collapse in\" style=\"height: auto;\"> <h3>Information and considerations</h3> <p>When you move all employees, Sage deletes the original master file.</p> <p>Sage won't move employees if that employee ID already exists in the archive folder. A message prints on the summary report, and the Sage 300 CRE System Log file records an error.</p> <h4>Access to archived employees</h4> <p>To access terminated employee records in the archive data folder, the archive data folder must contain certain files. This includes the Ts.ctl, System.prs, Master.glm, Master.jcm, and Master.prm files. If these files aren't already in the data folder, you can [[copy them using File Tools|222924150017216]].</p> <h4>Dates used for moving</h4> <p>Employees with both a rehire date and a termination date only move if the termination date is later than the rehire date.</p> <p>When archiving your employees, you can use a condition of&nbsp;<strong>Last Check Date</strong>. This field writes to the&nbsp;<strong>Employee Misc info/Last Check date</strong> when you post a check. The system maintains this field.</p> <p>For example, you want to move employees who haven't worked since 2021, but keep newly hired employees that haven't received a check yet.</p> <ul> <li><span style=\"letter-spacing: 0.2px;\">Add condition </span><strong style=\"font-size: 11pt; letter-spacing: 0.2px;\">Last Check Date Less than or equal to 12-31-2020</strong><span style=\"letter-spacing: 0.2px;\"> to move employees no longer working</span></li> <li><span style=\"letter-spacing: 0.2px;\">Add condition </span><strong style=\"font-size: 11pt; letter-spacing: 0.2px;\">Last Check Date Not equal to \"\"</strong><span style=\"letter-spacing: 0.2px;\"> to keep newly hired employees</span></li> </ul> <h4>Terminated employees</h4> <p>Don't move terminated employees before you print W-2s if the employee worked during the year and requires a W-2. If you move them before printing W-2s, you'll have to move them back to live data to print the forms.</p> <h4>Custom fields</h4> <p>If the data folder contains employee record with custom fields,&nbsp;[[make the custom fields available in the destination file|223924750042388]] before you move employees.</p> <h4>Transfer employees between companies</h4> <p>See [[considerations for moving an employee|223924850044366]] from one live company folder to another.&nbsp;</p> <h4>Archive folder periods</h4> <p>When you move employees between data folders, confirm both folders are in the same current period. Verify by going to <strong>File</strong>, <strong>Company</strong> <strong>Settings</strong>, <strong>PR Settings</strong>, <strong>Current Month</strong>, and <strong>Year end date</strong>. The period in your archive data folder must match with the current period in your live data folder. This means the employee totals are correct if you move employees back later.</p> <p>If the folders are in different periods, the accumulated totals won't be current for the employees that you move back into the live data. This applies to year, quarter, month, and prior period <span style=\"letter-spacing: 0.2px; font-size: 14.6667px;\">amounts.</span></p> <p>If the periods don't match, close the month or year to update the period in your archive data folder. You can close multiple months at a time by using the drop-down to select the month. See Related Solutions below for information on closing Payroll periods and moving employees back from archive in Payroll. We recommend you keep the two data files in the same period prior.</p> </div> </div> <div id=\"dl-moveemployees1114\" class=\"expand-collapse\"><a href=\"#\" data-toggle=\"collapse\" data-target=\"#ec-1752096163417\"><em class=\"icon-arrow-up\"></em><em class=\"icon-arrow-down\"></em><span>Move employees</span></a> <div id=\"ec-1752096163417\" class=\"collapse in\" style=\"height: auto;\"> <h3>Move employees</h3> <ol> <li>[[Create a new data folder for archived employees|222924750022458]]. If you have archived employees in the past, you can skip this step.</li> <li>Have all users exit the Payroll application.</li> <li>Use <strong>File Tools </strong>to create a backup of your Payroll files.</li> <li>Go to <strong>Tools</strong>, <strong>Move</strong>, <strong>Employees</strong>.</li> <li>Select a destination folder for the transferred employees and click <strong>Open</strong>.<br><strong><span class=\"ra-content-note-1 mceNonEditable\" style=\"color: #468847;\"><span><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" width=\"18px\" height=\"17px\" data-x-coordinate=\"72\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span></span></strong><span class=\"ra-content-note-1 mceNonEditable\" style=\"color: #468847;\"><span class=\"ra-att-desc mceEditable\"> If you use named files, select the source master file you're moving employees from and click <strong>Open</strong>. Then select the destination master file that you want to move employees to and click <strong>Open</strong>. To create a new master file, type the new file name in the <strong>Destination File</strong>.</span></span></li> <li>Click <strong>Yes</strong> when prompted to create a Payroll Master if it doesn't<strong> </strong>exist in the destination folder.</li> <li>Verify you're moving employees to a data folder to have access to the records in the future.&nbsp;</li> <li>Move only terminated employees: <ul> <li>Select this box to move only employees with a termination date</li> <li>Clear the box to move employees based on Ranges or Conditions<br><strong><span class=\"ra-content-note-1 mceNonEditable\" style=\"color: #468847;\"><span><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" width=\"18px\" height=\"17px\" data-x-coordinate=\"112\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span></span></strong><span class=\"ra-content-note-1 mceNonEditable\" style=\"color: #468847;\"><span class=\"ra-att-desc mceEditable\">See the date considerations above for conditions you can use when moving</span></span><strong>&nbsp;</strong></li> </ul> </li> <li>Click <strong>Ranges</strong> or <strong>Conditions </strong>to select the employees to move (optional but recommended). Otherwise, all employees’ records move.</li> <li>Click <strong>Start</strong>.</li> <li>If you print to file, enter a name for the move employee journal and click <strong>Save</strong>.</li> <li>Review the journal to verify that you moved the correct records.</li> <li>After you move information from a file,&nbsp;[[use File Doctor to compact the originating file|222924550020400]]. Select the <strong>Compact Good</strong> box while running.&nbsp;</li> </ol> </div> </div> <p class=\"expand-collapse-p-tag\">&nbsp;</p> <p>[[|230808142253893]]<br><br><br></p> <div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div> <p><br><br><br><br></p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[How do I access folders containing archived data?|222924650021792]]</p> <p>[[How do I get back employees that I moved to an archive file?|230808142253893]]</p>"
+    }
+  ],
+  "id": "222924650021791",
+  "language": "English",
+  "lastModifiedDate": 1752100225000,
+  "minorModifiedDate": 1753225450000,
+  "keywords": "PR archive-employees archive-payroll",
+  "question": null,
+  "renewDate": 1891209600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Payroll and HR//Payroll year end"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Move employees in Payroll",
+  "translations": [],
+  "viewCount": 1594,
+  "solvedCount": 72,
+  "unsolvedCount": 0,
+  "summary": "What are the considerations and steps for moving employees in Sage 300 CRE Payroll?",
+  "revisionID": null,
+  "templateSolutionID": "PRE2158000"
+}

@@ -1,0 +1,58 @@
+{
+  "author": "sageadmin",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683147893000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\"> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>Important: </strong>[[Sage Expert Services|241202230647740]]<span style=\"font-size: 10.5pt;\"><span><span style=\"color: black;\"> can perform this task as a billable service.</span></span></span></p> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>These are the requirements for changing the billing method on a job:</strong><br><strong>Note:</strong> These steps can be used even if the job was created through ProCore</p> <ol> <li style=\"margin-right: 0in; margin-left: 0in;\">The operator must be the Application Administrator.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">You must turn on Audit Setup Activity.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">There must be no JTD Billed Amounts on the job.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">There must be no Contract Values on the job.</li> </ol> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>Note:</strong> If you use security, only a Sage 300 Application Administrator can complete the steps.</p> <ul> <li style=\"margin-right: 0in; margin-left: 0in;\">Use <strong>Option 1</strong> when you have set up the job, but receivables or contracts have no entries posted</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Use<strong> Option 2</strong> when you have posted receivables and contract entries to the job and are converting Quick Bill jobs to contracts</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Use <strong>Option 3</strong> when you have posted receivables and contract entries to a job and are converting the contract job to a Quick bill job</li> </ul> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>Option 1: No receivables or contract values are posted.</strong></p> <ol> <li style=\"margin-right: 0in; margin-left: 0in;\">In <strong>Job Cost</strong>, <strong>Tools</strong>, <strong>Options</strong>, click the box for <strong>Audit setup activity</strong>. If using Desktop, go to <strong>Common Tasks</strong>, <strong>Options</strong>.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">From <strong>Setup</strong>, select Jobs and enter the <strong>job ID</strong>.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">On the <strong>Billing info</strong> tab, select the correct <strong>Billing Method</strong>. If you do not see these options, check your security access.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Click <strong>Save</strong>, then <strong>Close</strong>.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Turn off Audit setup activity. See [[How do I use Audit setup activity?|222924150017021]]. <ul> <li style=\"margin-right: 0in; margin-left: 0in;\"><strong>Note: </strong>If you do not turn off Audit setup activity, the totals fields are unprotected. This is a global setting that affects all workstations.</li> </ul> </li> </ol> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>Option 2: Receivables or original schedule of values/contract amount entries are posted to the job, and you are changing the setting from Use Quick Bill to Use Contracts.<br>(Job to Date Billed and Revised Contract amounts need to be blank)</strong></p> <ol> <li style=\"margin-right: 0in; margin-left: 0in;\">Void any invoices for this job. See [[How do I void an invoice in Accounts Receivable?|222924350018498]].</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Reverse any contract amounts for this job. If it is currently set to Use Quickbill see [[How do I reverse or correct contract schedule of value amounts for my quickbill job in Job Cost?|223924250029824]].</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Reverse any change order amounts. <ul> <li style=\"margin-right: 0in; margin-left: 0in;\">If you use Project Management change management for this job, delete all change orders and change requests before changing the billing method.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">When deleting change orders and change requests, reversals for all prior entries use the correct method. The program removes line items with old data.</li> </ul> </li> <li style=\"margin-right: 0in; margin-left: 0in;\">Follow <strong>Option 1</strong> to change the billing method.</li> </ol> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>Note:</strong> If you are using Contracts and have multiple jobs that need to convert to Use Contract, you can use the Convert Jobs tool. Previously billed amounts for this job don’t update on the contract that you create. To include previously billed amounts, void the billings and re-enter them as contract-based invoices. If billed amounts on the job contain retainage held amounts, void these invoices before changing the billing method. If you do not void them, you may have incorrect retainage amounts billings.</p> <p style=\"margin-right: 0in; margin-left: 0in;\"><strong>Option 3: The job has receivables, original schedule of values/contract amount, or change orders posted and you are changing the setting from Use Contracts to Use Quick Bill.</strong></p> <ol> <li style=\"margin-right: 0in; margin-left: 0in;\">In <strong>Job Cost</strong>, turn on Audit setup activity. See [[How do I use Audit setup activity?|222924150017021]].</li> <li style=\"margin-right: 0in; margin-left: 0in;\">If the job has any receivable values posted, void those invoices in Accounts Receivable. You may need to un-apply cash receipts in Accounts Receivable first.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">If you use Project Management change management for this job, you must delete all existing change orders and change requests before changing the billing method. When you delete change orders and change requests, reversals for all prior entries use the correct method. Line items that contain old data will no longer exist. See related resources.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">If you use Contracts for your change orders, enter reversing change orders on the contract.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Contracts must be unapproved to remove the contract values from the job and then deleted. You must reverse all change orders, void all invoices, and un-apply all cash receipts first. See [[How do I delete a contract or a contract item?|222924450019252]].</li> <li style=\"margin-right: 0in; margin-left: 0in;\">From <strong>Setup</strong>, select <strong>Jobs </strong>and enter the job ID.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">On the <strong>Billing info</strong> tab, select the correct <strong>Billing Method</strong>. If you do not see these options, check your security access.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Click <strong>Save</strong>, then <strong>Close</strong>.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Turn off Audit setup activity. See [[How do I use Audit setup activity?|222924150017021]]. <ul> <li style=\"margin-right: 0in; margin-left: 0in;\"><strong>Note:</strong> If you do not turn off Audit setup activity, the totals fields are unprotected. This is a global setting that affects all workstations.</li> </ul> </li> <li style=\"margin-right: 0in; margin-left: 0in;\">If your job uses PJ Change Management and you deleted these items before you changed the job method, re-enter change requests and change orders in Project Management.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Re-enter contract values using <strong>Enter Misc Worksheet</strong>s in Job Cost.</li> <li style=\"margin-right: 0in; margin-left: 0in;\">Re-enter invoices as Quick Bill invoices for any invoices that were voided before you changed the job method. Reapply cash receipts.</li> </ol> </div> <p>&nbsp;</p> <div class=\"col-xs-12 col-sm-7\"> <h4>Need more help?</h4> <p style=\"margin-bottom: 8px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p> </div> <p><br><br></p> <p>&nbsp;</p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[How do I add contract or schedule of value amounts on a Quick Bill job, or when the Contracts application is not installed?|222924450018949]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I use Convert Jobs in Job Cost?|222924450019013]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I unapprove a contract item with change orders, billings or payments?|222924450019054]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I delete a change request in Project Management?|222924450019207]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I delete or void a change order in Project Management?|222924450019251]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I set up a new contract?|222924450019256]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I unapprove a contract item that has no change orders, billings, or payments / cash receipts?|222924450019636]]</p>"
+    }
+  ],
+  "id": "222924450019250",
+  "language": "English",
+  "lastModifiedDate": 1689363703000,
+  "minorModifiedDate": 1753304738000,
+  "keywords": "JC SES",
+  "question": null,
+  "renewDate": 1847145600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Transactions"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "How do I change the billing method in Job Cost on an existing job?",
+  "translations": [],
+  "viewCount": 1999,
+  "solvedCount": 201,
+  "unsolvedCount": 1,
+  "summary": "Change the billing method on an existing job in Sage 300 CRE Job Cost.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2157017"
+}

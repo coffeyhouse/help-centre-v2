@@ -1,0 +1,58 @@
+{
+  "author": "sageadmin",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1663073788000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14;\" data-mce-style=\"font-family: Arial, Verdana, sans-serif; font-size: 14;\"><br></div>"
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\">Review this chart to determine which applications have a close task. Sometimes, the task wording may be different from the wording in the chart. For example, in General Ledger, you run <strong>Task,</strong> <strong>Close Fiscal Year</strong> rather than <strong>Task</strong>, <strong>Close Year</strong>.<br>Always make a backup of your data before performing closing processes. <p>&nbsp;</p> <table class=\"subtable\" style=\"border-collapse: collapse;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"> <tbody> <tr> <th style=\"border: 1px solid black;\">Application</th> <th style=\"border: 1px solid black;\">Close Period</th> <th style=\"border: 1px solid black;\">Close Month</th> <th style=\"border: 1px solid black;\">Close Year</th> <th style=\"border: 1px solid black;\">Future Period Limit</th> <th style=\"border: 1px solid black;\">Comments</th> </tr> <tr> <td style=\"border: 1px solid black;\">Accounts Payable</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black;\">&nbsp;</td> <td style=\"border: 1px solid black;\">Also run <strong>Tasks,</strong> <strong>Close 1099 Year</strong>.</td> </tr> <tr> <td style=\"border: 1px solid black;\">Accounts Receivable</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black;\"> <p>1 year</p> </td> <td style=\"border: 1px solid black;\">&nbsp;</td> </tr> <tr> <td style=\"border: 1px solid black;\">Cash Management</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black;\"> <p>N/A</p> </td> <td style=\"border: 1px solid black;\">&nbsp;</td> </tr> <tr> <td style=\"border: 1px solid black;\">Contracts</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black; text-align: center;\"> <p>&nbsp;</p> </td> <td style=\"border: 1px solid black;\"> <p>1 month</p> </td> <td style=\"border: 1px solid black;\">Close on the first business day of each month. If the date in CN Settings gets more than one month behind, it will affect totals in the Billing module for Contract-Based Invoices. Use this task to close the year as well.</td> </tr> <tr> <td style=\"border: 1px solid black;\">General Ledger</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black;\"> <p>6 periods</p> </td> <td style=\"border: 1px solid black;\">You can reopen periods in the current or prior fiscal year to make entries. Prior year entries require additional steps of closing prior year adjustments.</td> </tr> <tr> <td style=\"border: 1px solid black; text-align: left;\">Equipment</td> <td style=\"border: 1px solid black;\"> <p style=\"text-align: center;\">x</p> <p style=\"text-align: left;\">See comments</p> </td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black;\"> <p>1 month</p> </td> <td style=\"border: 1px solid black;\">Verify the period type in EQ Settings.</td> </tr> <tr> <td style=\"border: 1px solid black;\">Job Cost</td> <td style=\"border: 1px solid black;\"> <p style=\"text-align: center;\">x</p> <p style=\"text-align: left;\">See comments</p> </td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black;\"> <p>1 period or 1 months</p> </td> <td style=\"border: 1px solid black;\">Verify the period type in JC Settings. Use this task to close the year as well.</td> </tr> <tr> <td style=\"border: 1px solid black;\">Payroll</td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black;\"> <p>0 months</p> </td> <td style=\"border: 1px solid black;\">You must close the month before processing the first check with a check date in the next month. Example: The Period End Date is 10/28/2024, the Check Date will be 11/02/2024. You have to close the month of October before processing payroll for the check dated in November.</td> </tr> <tr> <td style=\"border: 1px solid black;\">Property Management</td> <td style=\"border: 1px solid black;\"> <p style=\"text-align: center;\">x</p> <p style=\"text-align: left;\">See comments</p> </td> <td style=\"border: 1px solid black; text-align: center;\">&nbsp;</td> <td style=\"border: 1px solid black; text-align: center;\"> <p>x</p> </td> <td style=\"border: 1px solid black;\">&nbsp;</td> <td style=\"border: 1px solid black;\">Use this task to close the year as well.</td> </tr> </tbody> </table> <p><br><br><strong>N</strong><strong><span style=\"font-size: 10.5pt;\"><span style=\"line-height: 107%;\"><span><span style=\"color: black;\">ote:</span></span></span></span></strong><span style=\"font-size: 10.5pt;\"><span style=\"line-height: 107%;\"><span><span style=\"color: black;\"> You can use the <strong>Monthly Tasks Workflow Center</strong> in the Sage Desktop to perform common monthly tasks from one location. Follow these steps to access:</span></span></span></span></p> <p><strong>For versions 16.1 and later:</strong></p> <ol> <li>Launch <strong>Sage Desktop</strong>.</li> <li>Go to <strong>Applications</strong>, <strong>Additional Tools</strong>.</li> <li>Launch the <strong>Monthly Tasks Workflow Center</strong>.</li> </ol> <p>&nbsp;</p> <div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div> <br><br><br> <p>&nbsp;</p> </div>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[How do I close the month in General Ledger and open a new period?|222924550020014]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the month in Contracts?|222924550020500]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the fiscal year in General Ledger?|222924650021626]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the year in Cash Management?|222924650021628]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the year or the 1099 year in Accounts Payable?|222924650021730]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the year in Accounts Receivable?|222924750022299]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the current period in Property Management?|222924750023011]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the year in Property Management?|222924750023013]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the month in Payroll?|223924350034163]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I close the month in Job Cost?|223924650037745]]<br>[[FAQ (US) - Timing of year-end tasks: What should I do when?|222924650021690]]</p>"
+    }
+  ],
+  "id": "222924550020585",
+  "language": "English",
+  "lastModifiedDate": 1711544021000,
+  "minorModifiedDate": 1733852862000,
+  "keywords": "post future closing",
+  "question": null,
+  "renewDate": 1866931200000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Payroll and HR//Payroll year end"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Which applications have a close period, month, or year task?",
+  "translations": [],
+  "viewCount": 2551,
+  "solvedCount": 143,
+  "unsolvedCount": 0,
+  "summary": "Below you’ll find a chart outlining what each application has for a closing process.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2157551"
+}

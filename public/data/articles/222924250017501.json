@@ -1,0 +1,58 @@
+{
+  "author": "sageadmin",
+  "approver": "Sartaj.Sahota@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683223727000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\"> <ul> <li>If you decide to not pay a vendor the open retainage amount of a previously paid Accounts Payable invoice, follow Option 1.</li> <li>If you want to remove retainage held from an invoice and keep the invoice amount unchanged, follow Option 2.</li> <li>If you have retainage for multiple invoices from the same vendor that you don’t wish to pay, follow Option 3.</li> </ul> <strong>Note:</strong> Before you begin, decide if you want any invoice changes to affect a prior accounting period in General Ledger. If you don’t want the changes to affect a prior period, see DocLink: [[How do I change an Accounts Payable invoice without affecting a prior period?|222924150017495]] before proceeding with the solution. <p>&nbsp;</p> <p><strong>Option 1: Reduce the open retainage and balance of a previously paid Accounts Payable invoice, write off the invoice balance<br>Note:</strong> When reducing a partially paid invoice by the amount of open retainage, create negative lines of distribution to reverse the retainage. If you reduce the existing retainage amounts directly instead of creating negative lines of distribution, the retainage won’t remove correctly.</p> <ol> <li>In <strong>Accounts Payable</strong>, go to <strong>Tasks</strong>, <strong>Change Invoices</strong>.</li> <li>Enter the <strong>Vendor </strong>and <strong>Invoice </strong>to change.</li> <li>Reduce the invoice <strong>Amount </strong>to reflect the new invoice amount (the new amount should be the original amount less retainage).</li> <li>Press the Tab <strong>key </strong>until the cursor moves to the distribution grid.</li> <li>Create a new distribution line. <ol> <li>Enter the commitment and/or job information.</li> <li>For the <strong>Amount</strong>, enter a negative amount equal to the amount that you reduced the invoice by (the retainage amount).</li> <li>Enter the same negative amount in the <strong>Retainage </strong>column.</li> </ol> </li> <li>If the invoice has distribution lines for several jobs with open retainage amounts to remove, repeat step 5.</li> <li>Accept distributions and invoice changes.<br><strong>Tip: </strong>If you track tax amounts on each distribution, error messages may appear. Change the tax tracking setting (<strong>File</strong>, <strong>Company Settings</strong>, <strong>AP Settings</strong>, <strong>Invoice Settings</strong>, <strong>Tax Settings</strong>), make corrections to the invoice, and return the AP Settings to their original state.</li> <li>Click <strong>Finish </strong>and Start to print your journal.</li> <li>Pay the invoice. <ol> <li>Paying the invoice is necessary for the invoice and all distribution lines to have a <strong>Status </strong>of <strong>Fully Paid</strong>.</li> <li>If you pay the invoice by itself, the check amount is zero.</li> <li>When using <strong>Select invoices to pay</strong> (SITP), be sure to select the <strong>Retainage </strong>invoices only box for the retainage to be paid instead of being held.</li> <li>If you use <strong>Record Manual Checks</strong> to pay this invoice, type <strong>0.00 </strong>in <strong>Retainage Held </strong>for each distribution that is retainage only.<br><strong>Note:</strong> If you don't zero out Retainage Held amounts you will get an error about the amounts.</li> </ol> </li> </ol> <p><strong>Option 2: Remove retainage held from an invoice and keep the invoice as Open and unpaid</strong></p> <ol> <li>In <strong>Accounts Payable</strong>, go to <strong>Tasks</strong>, <strong>Change Invoices</strong>.</li> <li>Enter the <strong>Vendor </strong>and Invoice to change.</li> <li>Press the <strong>Tab </strong>key until the cursor moves to the distribution grid.</li> <li>Create a new line of distribution to remove the retainage amount. <ol> <li>Enter the commitment and/or job information.</li> <li>For the <strong>Amount</strong>, enter a negative amount equal to the amount of unpaid retainage.</li> <li>Enter the same negative amount in the <strong>Retainage </strong>column. This reduces the retainage portion of the invoice.</li> </ol> </li> <li>Create a new line of distribution to add back the retainage that was removed. This will recreate the non-retainage portion of the invoice. <ol> <li>Enter the commitment and/or job information.</li> <li>For the <strong>Amount</strong>, enter a positive amount.</li> <li>Don’t enter an amount in the <strong>Retainage </strong>column.</li> </ol> </li> <li>If the invoice has several distribution lines for several jobs with open retainage amounts you would like to remove, repeat steps 4 and 5.</li> <li>Accept distributions and invoice changes.<br><strong>Tip:</strong> If you track tax amounts on each distribution, error messages may appear. Change the tax tracking setting (<strong>File</strong>, <strong>Company Settings</strong>, <strong>AP Settings</strong>, <strong>Invoice Settings</strong>, <strong>Tax Settings</strong>), make corrections to the invoice, and return the AP Settings to their original state.</li> <li>Click <strong>Finish </strong>then <strong>Start </strong>to print your journal.</li> <li>Pay the invoice. <ol> <li>Paying the invoice is necessary for the invoice to correctly show the amount of retainage.</li> <li>If you pay the invoice by itself, the check amount is zero.</li> <li>When using <strong>Select invoices to pay (SITP)</strong>, be sure to select the <strong>Retainage invoices only</strong> box for the retainage to be paid instead of being held.</li> <li>If you use <strong>Record Manual Checks</strong> to pay this invoice, type<strong> 0.00</strong> in <strong>Retainage Held </strong>for each distribution that is retainage only.</li> </ol> </li> </ol> <p><strong>Option 3: Have retainage left to pay for multiple invoices for the same vendor that you don’t wish to pay</strong></p> <ol> <li>In <strong>Accounts Payable</strong>, go to <strong>Tasks</strong>, <strong>Enter Invoices </strong>to enter a credit invoice</li> <li>Select the <strong>Vendor </strong>and enter an <strong>Invoice number</strong>.</li> <li>Enter a negative <strong>Amount </strong>(the total of all the invoice amounts that are to be reduced or removed).</li> <li>Add a line of distribution with the commitment and/or job information and enter a negative amount in the <strong>Amount </strong>and the <strong>Retainage </strong>columns.</li> <li>If there are multiple accounts, commitments or jobs affected, add a negative line of distribution for each. This should total to the Invoice negative amount.</li> <li><strong>Accept </strong>your distributions and <strong>Accept </strong>your invoice.</li> <li>Click <strong>Finish </strong>and <strong>Start </strong>to print your journal.</li> <li>Pay the invoice. <ul> <li>Paying the invoice is necessary for the invoices and distribution lines to have a <strong>Status </strong>of <strong>Fully Paid</strong>.</li> <li>If you pay the credit invoice and the outstanding invoices together, the check amount is zero.</li> <li>When using <strong>Select invoices to pay (SITP)</strong>, select the<strong> Retainage invoices only</strong> box for the retainage to be paid instead of being held. The message, \"There is more than just retainage to be paid on this item. Pay retainage along with remaining amount?\" may appear. Click <strong>Yes</strong>.</li> <li>If you use <strong>Record Manual Checks </strong>to pay this invoice, type <strong>0.00 </strong>in <strong>Retainage Held </strong>for each distribution that is retainage only.</li> </ul> </li> </ol> <p><strong>Notes:</strong> Invoice changes post to the accounting date of the invoice. If that period is closed and you don’t want to post any entries to the original accounting date of the invoice, change the accounting date of the invoice to your current period. After you accept your invoice changes in <strong>Change Invoices</strong>, you can select the accounting date of the reversing entries. Select the <strong>Revised accounting date</strong>.</p> </div> <div class=\"col-xs-12 col-sm-7\"><h4>Need more help?</h4> <p style=\"margin-bottom: 8px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p> </div> <p>&nbsp;</p> <div class=\"col-xs-12 col-sm-7\"> <p style=\"margin-bottom: 8px;\"></p> </div> <p><br><br></p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[﻿How do I change an Accounts Payable invoice without affecting a prior period?|222924150017495]]</p>"
+    }
+  ],
+  "id": "222924250017501",
+  "language": "English",
+  "lastModifiedDate": 1683223727000,
+  "minorModifiedDate": 1722551856000,
+  "keywords": "Invoices AP retainage",
+  "question": null,
+  "renewDate": 1680566400000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Transactions//Corrections"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "How do I reduce retainage held on an Accounts Payable invoice?",
+  "translations": [],
+  "viewCount": 1927,
+  "solvedCount": 133,
+  "unsolvedCount": 1,
+  "summary": "How can you remove or reduce retainage held on an Accounts Payable invoice or commitment for retainage that no longer needs to be paid?",
+  "revisionID": null,
+  "templateSolutionID": "PRE2156267"
+}

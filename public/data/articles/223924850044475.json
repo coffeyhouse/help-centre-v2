@@ -1,0 +1,58 @@
+{
+  "author": "char.ferguson@sage.com",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1670942773000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": "<p><span style=\"font-size: 14px;\">You may also see the following:</span></p> <ul> <li><span style=\"font-size: 14px;\">Garbage characters when looking at printout in Excel</span></li> <li>The system log will show Message: \"File not created, because it is too large. An Excel worksheet cannot contain more than 65,536 rows.\"</li> <li>Report is unreadable</li> <li>Top of file opened in Notepad shows \"PDF\"</li> <li>XLS file is a misnamed PDF file</li> <li>Background task flashes orange when it fails to save to an XLS file</li> <li>Error: \"The file format and extensions of '[filename].xls' don't match. The file could be corrupted or unsafe. Unless you trust its source, don't open it. Do you want to open it anyway?\"</li> </ul>"
+    },
+    {
+      "name": "Cause",
+      "content": "<ul><li>TS PDF creator is corrupt</li><li><span style=\"letter-spacing: 0.2px; display: inline !important;\" data-mce-style=\"letter-spacing: 0.2px; display: inline !important;\">TS PDF Generator is using the wrong printer driver version</span><br></li></ul><p><span style=\"letter-spacing: 0.2px; display: inline !important;\" data-mce-style=\"letter-spacing: 0.2px; display: inline !important;\"></span></p><p><span style=\"letter-spacing: 0.2px; display: inline !important;\" data-mce-style=\"letter-spacing: 0.2px; display: inline !important;\">In some cases with customers who have the third-party program </span><span style=\"color: rgb(0, 0, 0); font-size: 14px; letter-spacing: 0.2px; display: inline !important;\">Copitrack, it was found that Copitrack was interferring with the print job.</span></p>"
+    },
+    {
+      "name": "Resolution",
+      "content": "<p>IMPORTANT:</p><ul> <li>Only the 32bit version of office is compatible with Sage 300CRE Accounting. To verify if you are running a 32-bit or 64-bit version of office open any Office application and navigate to File Office Account About The end of the first line in the About window will either say 32-bit or 64-bit.</li> <li>Microsoft Office Excel has a limitation that will not allow for more than 65,536 rows. If your worksheet exceeds this limitation, use conditions to reduce the report output to less than 65,536 rows per print job (Use a date range, condition on a specific cost code, etc).</li> <li>Otherwise, Print to Plain Text (*.txt) file instead and separate it into several files for importing into multiple spreadsheets. If you are within this row limitation and still receive the error. <span style=\"letter-spacing: 0.2px; font-size: 14.6667px; display: inline !important;\">See&nbsp;</span>[[How do I save a report as an Excel spreadsheet?|222924250017704]]<span style=\"letter-spacing: 0.2px; font-size: 14.6667px; display: inline !important;\">&nbsp;</span><span style=\"letter-spacing: 0.2px; font-size: 14.6667px; display: inline !important;\">for instructions on how to print to *.txt file.</span></li> </ul><p>&nbsp;</p><p><strong>Temporary Workaround: Use Print to file</strong></p><ol> <li>In the <strong>Inquiry</strong> window, click <strong>Printer</strong>.</li> <li>Click the <strong>Printer Setup</strong> button.</li> <li>Check the <strong>Print to file</strong> option.</li> <li>Click the <strong>Select File</strong> button.</li> <li>Change the <strong>Save as type</strong> to <strong>Microsoft Office Excel Workbook</strong>.</li> <li>Type a <strong>File</strong> name.</li> <li>Click <strong>Save</strong>.</li> <li>Click <strong>OK</strong>.</li> <li>Click<strong> Start</strong>.</li> </ol><p>&nbsp;</p><p style=\"letter-spacing: 0.2px;\"><span style=\"font-weight: bold;\">Quick Fix 1: Print directly to printer</span></p><p style=\"letter-spacing: 0.2px;\">(This will not always resolve and may require Administrator permissions to perform.)</p><ol style=\"letter-spacing: 0.2px;\"> <li>Type&nbsp;<span style=\"font-weight: bold;\">Control</span>&nbsp;in the Windows Search bar and press&nbsp;<span style=\"font-weight: bold;\">Enter</span>&nbsp;to open the Control Panel.</li> <li>Open&nbsp;<span style=\"font-weight: bold;\">Devices and Printers</span>.</li> <li>Right click&nbsp;<span style=\"font-weight: bold;\">TS PDF Generator</span>.</li> <li>Select&nbsp;<span style=\"font-weight: bold;\">Printer Properties</span>.</li> <li>Select the&nbsp;<span style=\"font-weight: bold;\">Advanced</span>&nbsp;tab and set&nbsp;<span style=\"font-weight: bold;\">Print directly to printer</span>.</li> <li>Click&nbsp;<span style=\"font-weight: bold;\">APPLY</span>.</li> <li>Click&nbsp;<span style=\"font-weight: bold;\">Close</span>.</li> </ol><p>&nbsp;</p><p><strong>Quick Fix 2: Remove\\Reinstall TS PDF Generator</strong></p><p>(This will not always resolve and requires Administrator permissions to perform.)</p><ol> <li>Close completely out of Sage and any Office apps you may have open.</li> <li>In the Windows search bar type <strong>Printers</strong> and select <strong>Printers &amp; Scanners</strong>.</li> <li>Select <strong>TS PDF Generator</strong> and choose to remove the device.</li> <li>Open <strong>File Explorer </strong>and navigate to: \\\\YourSageServerName\\Timberline Office\\9.5\\ACCOUNTING\\WinInst\\Prerequisites\\PDF Converter</li> <li>Right click on <strong>RunAmyuniInst.exe</strong> and run as administrator.</li> <li>Open 300CRE and try to export again.</li> </ol><p>&nbsp;</p><p><strong>Solution for 32-bit Office:</strong></p><ol> <li>Close completely out of Sage and any Office apps you may have open.</li> <li>In the Windows search bar type <strong>Printers</strong> and select <strong>Printers &amp; Scanners</strong>.</li> <li>Select <strong>TS PDF Generator</strong> and choose to remove the device.</li> <li>In the Windows search bar, type <strong>appwiz.cpl</strong> and press <strong>Enter</strong>.</li> <li>Locate your Microsoft Office Install.</li> <li>Right click on the Office install in the program list and select <strong>Change</strong>.</li> <li>Select <strong>Online Repair </strong>then wait for the process to complete. Quick Repair does not work.</li> <li>After the process completes open <strong>File Explorer</strong> and navigate to: \\\\YourSageServerName\\Timberline Office\\9.5\\ACCOUNTING\\WinInst\\Prerequisites\\PDF Converter</li> <li>Right click on <strong>RunAmyuniInst.exe</strong> and run as administrator.</li> <li>Open Sage and attempt to export again.</li> </ol><p>&nbsp;</p><p><strong>Solution for 64-bit Office:</strong></p><p><strong>IMPORTANT:</strong></p><ul> <li>You will need to have administrative access and the 32-bit version of your Office product to perform the following steps.</li> <li>Just uninstalling and reinstalling Office WILL NOT RESOLVE this issue.</li> <li>Please follow the steps below closely.</li> <li>If possible, it is recommended that you have your IT person\\company complete these steps.</li> </ul><p>&nbsp;</p><ol> <li><strong>UNINSTALL</strong> <ol> <li>Close completely out of Sage and any Office apps you may have open.</li> <li>In the Windows search bar, type <strong>appwiz.cpl</strong> and press <strong>Enter</strong>.</li> <li>Locate Sage 300 Construction and Real Estate Client and click <strong>Uninstall</strong>.</li> <li>Open your internet browser and paste the following link: https://support.microsoft.com/en-au/office/uninstall-office-from-a-pc-9dd49b83-264a-477a-8fcc-2fdf5dbf61d8</li> <li>Expand <strong>Option 2</strong> and download the Microsoft 365 Uninstall Support Tool.</li> <li>Right click and download the tool and <strong>Run as administrator</strong>.</li> <li>Follow the prompts to completely uninstall Microsoft Office.</li> <li>Reboot the workstation.</li> </ol> </li> <li><strong style=\"font-size: 11pt; letter-spacing: 0.2px;\">REINSTALL</strong> <ol> <li>Install the 32-bit version of Microsoft Office.</li> <li>Once Office is installed open <strong>File Explorer</strong> and browse to your server Timberline Office share: \\\\YourServerName\\Timberline Office</li> <li>Right click on the Sage300CRE ACCT Client install shortcut in the Timberline Office folder.</li> <li>Select <strong>Run as administrator</strong> then follow the prompts to install.</li> <li>Toward the end of the 300CRE installation you will be required to reboot. Make sure you login with the same account you used for the first half of the install.</li> <li>Open Sage and attempt your export again.</li> </ol> </li> </ol>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": ""
+    }
+  ],
+  "id": "223924850044475",
+  "language": "English",
+  "lastModifiedDate": 1670942773000,
+  "minorModifiedDate": 1725565583000,
+  "keywords": "SYS",
+  "question": null,
+  "renewDate": 1852502400000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Reporting//Printing//Email"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Error: \"Completed with errors. See system log.\" (Printing to Excel spreadsheet)",
+  "translations": [],
+  "viewCount": 1015,
+  "solvedCount": 139,
+  "unsolvedCount": 0,
+  "summary": "Error: \"Completed with errors. See system log.\" (Printing to Excel spreadsheet)",
+  "revisionID": null,
+  "templateSolutionID": "PRE2163198"
+}

@@ -1,0 +1,58 @@
+{
+  "author": "LegacyAuthorUS",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683210810000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": "<p></p><ul> </ul> <p>&nbsp;</p>"
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<h3>Before you begin</h3> <ul> <li>This process applies if you're doing an in-place upgrade on an existing server (don't use these steps for a server migration)</li> <li>Upgrade the server before upgrading the workstations</li> <li>Confirm your server meets the <a rel=\"noopener\" href=\"https://cdn.na.sage.com/docs/en/customer/300cre/Documentation.htm\" target=\"_blank\">new version system requirements</a></li> <li>Contact vendors of any third-party programs you use to make sure they're compatible with the 300 CRE version you're upgrading to</li> <li>Know the <strong>location of your company data</strong></li> </ul> <h3>Back-Up</h3> <ol> <li>Have all users exit leave Sage.</li> <li>[[Stop your SQL Replicator, if using|225924350086272]].</li> <li>[[Use System Administrator to back up|225924350086274]] the Timberline Office folder and any other folders that contain your company data.</li> <li>Check the amount of&nbsp;available disk space&nbsp;you'll have before continuing with the upgrade. File Doctor requires disk space that is twice as large as the files you'll be fixing.</li> </ol> <h3>Run File Doctor</h3> <p>File Doctor finds and fixes errors before you upgrade. Data loss is possible. Ensure that you have your backup files. <span style=\"letter-spacing: 0.2px;\">File Doctor can check and fix 1-2 GB of data per hour (depending on server speed). If you have large company files, we recommend running it after hours or overnight.&nbsp;</span></p> <ol> <li>Open the 300CRE Desktop as an Application Administrator.</li> <li>Choose <strong>Applications</strong>, <strong>Common Tasks</strong>, <strong>Tools</strong>, <strong>File Doctor</strong>.</li> <li>In the Print Selection window, choose <strong>All data folders</strong>, <strong>Compact good files</strong>, and <strong>Fix and compact bad files</strong>.</li> <li>Select <strong>Print to File</strong>.&nbsp;</li> <li>Click <strong>Start</strong>.</li> <li>The Print File Selection window lets you choose the name and location for your File Doctor report (log). Use <strong>.prn</strong>, the default format.</li> <li>Click <strong>Save</strong>.</li> <li>When File Doctor finishes, review your report using <strong>File</strong>, <strong>Printouts</strong>.</li> <li>You can <strong>disregard</strong> these File Doctor messages:<br> <ul> <li>Unprintable characters value/radio/list/combo out of range</li> <li>\"Record rebuilding complete\" or \"fixing file complete\" at the end of the file</li> </ul> </li> <li>These File Doctor messages indicate problems. <ul> <li>\"Record deleted\" - Review this entry; if it's important, you can re-enter it</li> <li>\"File deleted\" - You may need to restore from the backup and determine why it was deleted</li> <li>\"File in use\" - File Doctor didn't check this file; see [[steps to unlock the file|222924750023883]] and then run File Doctor again</li> </ul> </li> </ol> <p>If you need assistance with File Doctor errors, contact Sage Support. Provide the support analyst with a copy of your File Doctor report for review.</p> <h3>Download Software</h3> <p>Log in to the <a rel=\"noopener\" href=\"https://us-kb.sage.com/portal/ss/?tabid=3&amp;searchaliases=custom_us_threehundred_construction\" target=\"_blank\">Sage Customer Portal</a> and search for the [[Sage 300 Construction and Real Estate: Download Portal|230612211654783]]. This page provides links to the latest versions of your software and their system requirements.</p> <p>If you're not upgrading from the most recent prior version, see [[information about your required upgrade paths for Sage 300 CRE|222924750023783]].</p> <h3>Install Sage 300 CRE</h3> <p style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">If your IT person is performing the upgrade and needs assistance, Sage Support can help if you meet one of the following conditions:</p> <ul style=\"font-size: 14.6667px; letter-spacing: 0.2px;\"> <li>The contact person is an authorized contact on your account with Sage</li> <li>You contact Sage and open a support ticket and include the contact details of the person you're authorizing to work with Sage support</li> </ul> <h4>Versions 24.2 and later</h4> <p>Versions 24.2 and higher have different installation steps than earlier versions. See Chapter 2 of the <a style=\"background-color: #ffffff; font-size: 14.6667px; letter-spacing: 0.2px;\" title=\"User Guide\" rel=\"noopener\" href=\"https://cdn.na.sage.com/docs/en/customer/300cre/24/open/UserGuide_24.pdf\" target=\"_blank\">User Guide</a> for the install process.</p> <h4>Versions 24.1 and earlier</h4> <ol> <li>Temporarily disable your antivirus software.</li> <li>Right-click on the downloaded file and choose <strong>Extract All</strong>.</li> <li>Check the box <strong>Show extracted files when complete</strong> and click <strong>Extract</strong>.</li> <li>Click down through the folders until you see<strong> install.exe</strong>.</li> <li>Right-click on install.exe and choose<strong> Run as administrator</strong>.</li> <li>To complete the installation, follow the prompts. This includes rebooting the server.</li> <li>Log back into the server using the same account.</li> <li>The installation requires a few more minutes. You may see the Sage System Verifier running.</li> </ol> <h3>Upgrade data files</h3> <ol> <li>Open the 300 CRE Desktop as an Application Administrator.</li> <li>Select <strong>Applications, Common Tasks, Tools, Upgrade Files</strong>.</li> <li>Choose the data you want to upgrade. <ul> <li>To update data for all companies: <ol> <li>Choose the <strong>All data folders</strong>&nbsp;option.</li> <li>Click <strong>Start</strong>.</li> </ol> </li> <li>To update data for just one company: <ol> <li>Choose the <strong>Current data folder</strong>&nbsp;option.</li> <li>Click <strong>All </strong>(meaning all files in that folder).</li> <li>Click <strong>Start</strong>.&nbsp;</li> </ol> </li> </ul> </li> <li>Don't choose<strong> Force file upgrades</strong>. It upgrades all files, not just the ones that you need to upgrade.</li> <li>Once you've confirmed the installation was successful, re-activate your antivirus software.</li> </ol> <h3>Upgrade workstations</h3> <p>Update the client software for the end users with one of the following methods.</p> <ul> <li>[[Sage 300 CRE client install for workstation or Citrix/terminal server (24.2 and later)|250115174402510]]</li> <li>[[Sage 300 CRE client install for workstation or Citrix/terminal server (24.1 and earlier)|223924150028468]]</li> <li>[[How to install Sage 300 CRE client using a script (Silent Install)|225924350083952]]</li> </ul> <h3>Troubleshooting&nbsp;</h3> <ol> <li>If you experience errors during this process, write down their exact wording.</li> <li>Open the <a rel=\"noopener\" href=\"https://us-kb.sage.com/portal/ss/?tabid=3&amp;searchaliases=custom_us_threehundred_construction\" target=\"_blank\">Knowledgebase for 300 CRE</a>.</li> <li>In the search box, enter part of the error EXACTLY as displayed.</li> <li>If you find too many results, narrow them down by adding a little more of the error and running the search again.</li> <li>Other resources include manuals on the <a rel=\"noopener\" href=\"https://cdn.na.sage.com/docs/en/customer/300cre/Documentation.htm\" target=\"_blank\">300 CRE documentation hub</a>. You can also reach it from <strong>Desktop, Help, Product Documents</strong>.</li> <li>Contact Sage Support if you still need assistance. Call 1-800-858-7095 or use the chat link below.&nbsp;</li> </ol> <h3>Exclusions for Antivirus and Malware Protection Software</h3> <p>See [[information about required exclusions|222924150017258]]. If you don't store your company data in the default ServerName\\Timberline Office folder, include your company folder in the exclusions.</p> <p>&nbsp;</p> <p>&nbsp;</p> <div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div> <p>&nbsp;</p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[How to use the Migration Tool for Sage 300 Construction and Real Estate|222924350018234]]</p> <p>[[My customization is missing after migrating to a new Server/Host.|230719163232867]]</p> <p>[[How do I manually migrate/move Sage 300 CRE products 9.5 and later to a Windows 2008 server, Windows 7 or later? (Manual Migration)|222924350018500]]</p> <p>[[How do I update File Locations after moving to a new server?|224924750069466]]</p> <p>[[What are the Sage 300 Construction and Real Estate recommended backup procedures?|222924750023166]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[|222924750023217]]</p> <p>[[What files and folders do I need to back up for Sage 300 CRE Accounting Products 9.5 and later?|222924750023217]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[|222924750023783]]</p> <p>[[How do I install MyAssistant?|223924350033770]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[|224924250053806]]</p> <p>[[How do I upgrade custom crystal reports using the Upgrade Crystal Reports Tool?|224924250053806]]</p>"
+    }
+  ],
+  "id": "223924950048168",
+  "language": "English",
+  "lastModifiedDate": 1689351296000,
+  "minorModifiedDate": 1747168154000,
+  "keywords": "upgrade in-place existing-server",
+  "question": null,
+  "renewDate": 1847145600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Installation//Install full program//Latest version"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Perform an in-place upgrade of Sage 300 CRE",
+  "translations": [],
+  "viewCount": 6695,
+  "solvedCount": 571,
+  "unsolvedCount": 0,
+  "summary": "How do I upgrade Sage 300 CRE in place on an existing server?",
+  "revisionID": null,
+  "templateSolutionID": "PRE2163809"
+}

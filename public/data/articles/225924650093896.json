@@ -1,0 +1,58 @@
+{
+  "author": "angie.gwalchmai@sage.com",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1664885276000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<span class=\"ra-content-caution\" style=\"color: #b94a48;\"><img src=\"https://internal-kb.sage.com/portal/app/images/content_caution.gif\" alt=\"\" /> <strong>CAUTION:</strong> <span>Use caution when working with the below product functionality. Always create a backup of your data before proceeding with advanced solutions. If necessary, seek the assistance of a qualified Sage business partner, network administrator, or Sage customer support analyst.</span></span> <p>&nbsp;</p> <p>See the [[steps to use to complete this process in versions 15.1 and earlier|222924150017240]].</p> <p>&nbsp;</p> <h3>Create a new company</h3> <ol> <li>Go to <strong>Sage Desktop</strong>, <strong>Options</strong>, <strong>Open Company</strong>.</li> <li>Select the company you want to copy.<br><strong>Note:</strong> It’s important that you begin in the company folder you want to copy. This allows you to copy the same settings stored in the ts.ctl file to the new folder. See [[information about what \"Use current setup\" does when creating a folder|222924450019031]].</li> <li>Select <strong>Options</strong>, <strong>New Company</strong>.</li> <li>In the <strong>Company Name </strong>box, type a unique name for this company folder and press <strong>Enter</strong>. Don’t use the exact name as your live company.</li> <li>The <strong>Data Folder Path Name</strong> prefills with the <strong>Company Name</strong> you entered.</li> <li>Write down the destination location from the <strong>Data Folder Path Name</strong> box for reference in subsequent steps.</li> <li>Enter a <strong>Data Folder Description</strong>. For example, \"20xx COPY of DATA DO NOT MAKE ENTRIES\".</li> <li>Leave <strong>Use Current Setup</strong> selected.</li> <li>Click <strong>OK</strong>.</li> <li>Select <strong>Options</strong>, <strong>Open Company</strong>&nbsp;and Select the original company you’re copying.</li> </ol> <h3>Copy files</h3> <ol> <li>Go to <strong>Sage Desktop</strong>, <strong>Applications</strong>, <strong>Common Tasks</strong>, <strong>Tools</strong>, <strong>File Tools</strong>.</li> <li>Select <strong>Copy</strong>.</li> <li>Click <strong>Next</strong>.</li> <li>Click <strong>Add Files</strong>.</li> <li>Select all files by using <strong>Ctrl+A</strong>.</li> <li>Hold down <strong>Ctrl</strong>, and deselect <strong>Ts.ctl</strong>,<strong> Master.qym</strong>, and<strong> Tswin.ini</strong>.</li> <li>Release the <strong>Ctrl </strong>key once done.</li> <li>Click Open after selecting all files except <strong>Ts.ctl</strong>, <strong>Master.qym</strong>, and <strong>Tswin.ini</strong>.<br><strong>Tip:</strong> Excluding **.PRN, **.PDF, **.TXT, **.TSZIP2, **.XLS, and **.XLSX files will improve processing speed and reduce the size of the new company. See Additional information for details.</li> <li>Select the <strong>Destination folder </strong>location from Step 6 of the <strong>Create a new company</strong>&nbsp;section.</li> <li>Click <strong>Next</strong> four times in response to the prompts.</li> <li>Click <strong>Finish</strong>.</li> </ol> <h3>Optional: Purchasing, Inventory, Service Management</h3> <p>If you need Purchasing and Inventory (PO/IV) or Service Management (SM) data, copy the folder directly to your test company.</p> <ol> <li>Go to <strong>Sage Desktop</strong>, <strong>Applications</strong>, <strong>Common Tasks</strong>, <strong>Tools</strong>, <strong>File Tools</strong>.</li> <li>Select <strong>Copy</strong>.</li> <li>Click <strong>Next</strong>.</li> <li>Click <strong>Add Folder</strong>.</li> <li>Select the <strong>POIVData</strong> folder and/or <strong>SMData </strong>folder from your live data folder, then click <strong>OK</strong>.</li> <li>Select the Destination folder location from&nbsp;Step 6 of the <strong>Create a new company</strong>&nbsp;section.</li> <li>Click <strong>Next</strong> four times in response to the prompts.</li> <li>Click <strong>Finish</strong>.</li> </ol> <h3>Open your newly created test Company</h3> <ol> <li>Go to <strong>Sage Desktop</strong>, <strong>Options</strong>, <strong>Open Company </strong>and select your new company.</li> <li>Go to <strong>Applications</strong>, <strong>Common Tasks</strong>, <strong>File</strong>, <strong>Company Settings</strong>, <strong>File Locations</strong>.</li> <li>Clear paths in the <strong>Data Folder </strong>column so you don't affect live data. Don't clear the <strong>Reports</strong> and <strong>PR Tax</strong> paths.</li> <li>Grant access to the folder by going to <strong>Options</strong>, <strong>Security Administration</strong>, <strong>Security Permission </strong>by <strong>Type</strong>, <strong>Company</strong>.</li> <li>Verify that test data settings are correct. For example, formatting, posting settings, accounting methods, etc.</li> <li>If you copied PO, IV, or SM data: <ul> <li>Open the corresponding applications within the test company from the file server</li> <li>Do this so the client workstations can access these applications properly</li> </ul> </li> </ol> <p>&nbsp;</p> <h3>Additional information</h3> <p>When you back up, copy, move, or delete folders and files, you can use advanced filters. Click <strong>Advanced </strong>to use wildcard and exclusion patterns to the files. The <strong>Wildcard </strong>option allows you to refine the selection of folders and files that you want to include. The <strong>Exclusion </strong>option does the same for folders and files that you want to exclude.</p> <h4>Add Wildcard or Exclusion Options</h4> <ol> <li>From the <strong>Backup</strong>, <strong>Copy</strong>, <strong>Move</strong>, or <strong>Delete </strong>window, click <strong>Advanced</strong>.</li> <li>Select <strong>Add Wildcard </strong>or <strong>Add Exclusions </strong>to set patterns to refine your file search.</li> <li>Enter or select the path for the folder and files to which you want to apply the pattern.</li> <li>Place your cursor at the end of the path and enter a backslash.</li> <li>Click <strong>Append </strong>to select a pattern or enter the pattern. Enter the file information before or after the append characters. <ul> <li>You can use the <strong>Recursive</strong>, <strong>Match Any</strong>, and <strong>Match Character </strong>pattern options separately or in combinations. <ul> <li><strong>Recursive (**)</strong><br>Select recursive to include all files and folders that match the criteria that you enter. This includes all folders and subfolders.</li> <li><strong>Match Any (*)</strong><br>Select this pattern to include or exclude all files that have a character that matches this character.</li> <li><strong>Match Character (?)</strong><br>Select this pattern to include or exclude all files that have this single character in a folder name or path.</li> </ul> </li> <li>Examples apply to selected folders and subfolders: <ul> <li>*.<strong>prn </strong>will include or exclude all files with the extension .prn</li> <li>**.<strong>prn </strong>will include or exclude all files with the extension .prn</li> <li><strong>Invoice*</strong> will include or exclude all files beginning with Invoice</li> <li><strong>*Invoice*</strong> will include or exclude all files containing the Invoice</li> <li><strong>**Invoice* </strong>will include or exclude all files containing Invoice</li> <li><strong>Invoice ?1.Prn</strong> will include or exclude all files with the name Invoice ?1.prn where you replace the ? by any single character <ul> <li>Example: Includes files with the names of Invoice 11.Prn, Invoice 21.Prn, or Invoice 31.Prn</li> <li>Example: Doesn't include files with the names of Invoice 12.Prn or Invoice 22.Prn</li> </ul> </li> <li><strong>**Invoice*.???</strong> will include or exclude all files beginning with Invoice and ending with a three character extension <ul> <li>Example: Includes files with the names of Invoice12.prn, Invoice1.txt, or Invoice504.doc</li> <li>Example: Doesn't include files with the names of TestInvoice.prn or Invoice9.jpeg</li> </ul> </li> </ul> </li> </ul> </li> <li>Click <strong>OK </strong>to return to the operation window.</li> <li>The selected path with the selected patterns appears on the list.</li> </ol> <p>&nbsp;</p> <div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div> <p><br><br><br></p> <p>&nbsp;</p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[How do I restore from a backup to a new data folder for prior year reporting?|224924150051000]]</p>"
+    }
+  ],
+  "id": "225924650093896",
+  "language": "English",
+  "lastModifiedDate": 1664885276000,
+  "minorModifiedDate": 1736546519000,
+  "keywords": "company sandbox historical sand playground test-company",
+  "question": null,
+  "renewDate": 1715212800000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Data//Backup or restore data"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Copy files to another folder for testing or historical reporting",
+  "translations": [],
+  "viewCount": 2819,
+  "solvedCount": 329,
+  "unsolvedCount": 0,
+  "summary": "Steps to copy files to a new data folder for testing or historical reporting.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2170548"
+}

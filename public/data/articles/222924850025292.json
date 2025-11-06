@@ -1,0 +1,58 @@
+{
+  "author": "LegacyAuthorUS",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1682718600000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": "<p>Variances print on the report when the balance derived from the transactions doesn’t match the balance on the bank in <strong>Setup</strong>, <strong>Bank Accounts</strong>. See [[more information about the different Bank Account balances|224924350055050]].</p> <p>The report calculates balances based on the status of the transactions, <strong>Open</strong>, <strong>Cleared</strong>, or<strong> Reco</strong><strong>nciled</strong>. It compares the calculated or derived balances to the bank's running totals in the master file.</p>"
+    },
+    {
+      "name": "Cause",
+      "content": "<p>The variances occur when the bank totals don’t reconcile to the transactions that are open or cleared.</p> <h3>Possible causes</h3> <ul> <li>Changes to reconciliation status of a transaction</li> <li>Errors during auditing</li> <li>Error updating totals while posting</li> </ul>"
+    },
+    {
+      "name": "Resolution",
+      "content": "<h3>Before running this report</h3> <ol> <li>Complete any bank reconciliation tasks that are in progress.</li> <li>Verify the Last Statement is correct. <ol> <li>Go to Cash Management (CM), Setup, Bank Accounts, General tab.</li> <li>Confirm the Last reconciled Date and the Last reconciled balance match the bank statement from the bank.</li> <li>See [[additional information when the Last Reconciled Balance is incorrect|222924850025242]]. See [[information for an incorrect statement ending date|222924850023970]].</li> </ol> </li> <li>Verify outstanding or open items are correct. Look for outstanding/open transactions from a previous statement that don't have a Reconciliation Status of (R): <ol> <li>Use <strong>CM</strong>, <strong>Inquiry</strong>, <strong>Bank Register</strong>.</li> <li>Drill down on the bank account to the transactions.</li> <li>Add a condition for the Reconciliation Status equal to O to see outstanding/open items.</li> <li class=\"text wrap-text\">If you find items with an incorrect Reconciliation Status, see [[steps to change the reconciliation status of the CM transaction|222924750022176]].</li> </ol> </li> <li>Verify Cleared transactions are correct. Check for Cleared transactions from a previous statement that don't have a Reconciliation Status of (R): <ol> <li>Use <strong>CM</strong>,<strong> Inquiry</strong>, <strong>Bank Register</strong>.</li> <li>Drill down on the bank account to the transactions.</li> <li>Add a condition for the Reconciliation Status equal to C to see outstanding/open items.</li> <li>If you find items with an incorrect Reconciliation Status, see [[steps to change the reconciliation status of a CM transaction|222924750022176]].</li> </ol> </li> <li>[[Record and re-reconcile any reconciled entries deleted or voided for error correction|224924750070860]].[[|222924750022176]]</li> </ol> <p><strong><span class=\"ra-content-caution-1 mceNonEditable\" style=\"color: #b94a48;\"><span><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_caution.gif\" alt=\"\" width=\"18px\" height=\"17px\" data-x-coordinate=\"22\">&nbsp;<strong class=\"ra-att-title\">CAUTION:</strong>&nbsp;</span></span></strong><span class=\"ra-content-caution-1 mceNonEditable\" style=\"color: #b94a48;\"><span class=\"ra-att-desc mceEditable\">The Derived totals on the report won’t calculate correctly if any of the ABOVE items are incorrect.</span></span><strong><span class=\"ra-content-caution-1 mceNonEditable\" style=\"color: #b94a48;\"></span></strong></p> <p>&nbsp;</p> <h3>Run the report and correct variances</h3> <ol> <li>From Cash Management <strong>Reports</strong>, select <strong>Reconciliation</strong>, <strong>Bank Acct Bal Verification</strong> report.</li> <li>Select the <strong>Register </strong>file. Click <strong>OK</strong>.</li> <li>Select<strong> Print Preview</strong>.</li> <li>When the preview opens, select the bank account from the list on the left.</li> <li>Review for variances.</li> <li>If the report returns variances, have users exit all Sage 300 CRE applications that access CM Bank Accounts.<br><span class=\"ra-content-note-1 mceNonEditable\" style=\"color: #468847;\"><span><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" width=\"18px\" height=\"17px\" data-x-coordinate=\"62\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span><span class=\"ra-att-desc mceEditable\">This includes Accounts Payable, Accounts Receivable, Payroll, Job Cost, and Property Management.</span></span></li> <li>[[Turn on&nbsp;the Audit Setup Activity setting|222924150017021]].</li> <li>Select&nbsp;<strong>Setup</strong>,&nbsp;<strong>Bank Account</strong>.</li> <li>Choose the bank from the&nbsp;<strong>Bank Account List</strong>.</li> <li>Follow the steps below for any section of the report that shows variances.</li> <li>When you've completed the changes, print the verification report to confirm there are no longer variances.</li> <li>[[Turn off the Audit Setup Activity setting|222924150017021]].</li> </ol> <p>&nbsp;</p> <h4>Bank Balance Verification</h4> <p>Variances in the <strong>Bank Balance Verification</strong> section:</p> <ol> <li>Go to the<strong> General</strong> tab.</li> <li>Change the <strong>Bank Balance</strong> field to match the report's&nbsp;<strong>Derived Bank Balance</strong>.</li> </ol> <p>&nbsp;</p> <h4>CM Posted Balance Verification</h4> <p>Variances in the <strong>CM Posted Balance Verification</strong> section:</p> <ol> <li>Go to the <strong>Totals by GL Cash Acct</strong> tab.</li> <li>Replace the <strong>Posted (CM) Balance</strong>&nbsp;and&nbsp;<strong>Amount&nbsp;</strong>with the report’s&nbsp;<strong>Derived Posted CM Balance</strong>.</li> <li>If you use multiple cash accounts with your bank account, you may have multiple lines on the <strong>Totals by GL Cash Acct</strong> tab. <ol> <li>Determine the correct amount for each cash account and adjust the amounts for each.</li> <li>Delete any lines with blank cash accounts.</li> <li>When you finish, the amounts for each cash account should sum to the <strong>Derived Posted (CM) Balance</strong>.</li> </ol> </li> </ol> <p>&nbsp;</p> <h4>Register Balance Verification</h4> <p>Variances in the <strong>Register Balance Verification</strong> section:</p> <ol> <li>Go to the <strong>General&nbsp;</strong>tab.</li> <li>Change the <strong>Register balance</strong> to match the report’s <strong>Derived Register Balance</strong>.</li> </ol> <p>&nbsp;</p> <h4>Bank Account Totals Verification</h4> <ol> <li>Check for variances in&nbsp;<strong>Bank Account Totals Verification</strong>: <ol> <li>Verify the<strong>&nbsp;Open Derived</strong>&nbsp;<strong>amounts&nbsp;</strong>equal the&nbsp;<strong>Open from Bank Account</strong>&nbsp;<strong>amounts&nbsp;</strong>for each line item. For example, the derived open amount for&nbsp;<strong>Checks&nbsp;</strong>equals the open from bank account for&nbsp;<strong>Checks</strong>.</li> <li>Verify the&nbsp;<strong>Unreconciled Derived amounts</strong>&nbsp;equal the&nbsp;<strong>Unreconciled from Bank Account amounts</strong>. For example, the unreconciled derived&nbsp;<strong>Deposits&nbsp;</strong>equal the unreconciled from bank account for <strong>Deposits</strong>.</li> </ol> </li> <li>If you identified variances: <ol> <li>On the&nbsp;<strong>Totals&nbsp;</strong>tab, replace each of the open amounts with the report’s&nbsp;<strong>Open Derived</strong>&nbsp;amounts.</li> <li>Replace each of the various unreconciled amounts with the correct report’s&nbsp;<strong>Unreconciled Derived</strong>&nbsp;amounts.</li> <li>After you correct the open and unreconciled amounts, press Enter to update the<strong>&nbsp;Open total&nbsp;</strong>and&nbsp;<strong>Unreconciled total</strong>.</li> </ol> </li> </ol> <p>&nbsp;</p> <p>&nbsp;</p> <p>&nbsp;</p> <div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div> <p>&nbsp;</p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[Can the CM Bank Account Balance Verification report be ran for one bank instead of all of them?|220924460106085]]</p> <p>[[CM Register Balance is incorrect after canceling a Split Deposit or Split Withdrawal entry|220924660108493]]</p> <p>[[Reconciling Cash Management to Cash Management|222924650022089]]</p> <p>[[Deleted transactions in Edit Register don't update bank balances|222924850024345]]</p>"
+    }
+  ],
+  "id": "222924850025292",
+  "language": "English",
+  "lastModifiedDate": 1689365935000,
+  "minorModifiedDate": 1751582246000,
+  "keywords": "BABV CM balance-verification",
+  "question": null,
+  "renewDate": 1847145600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Transactions//Bank//Reconciliation"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "The Cash Management Bank Account Balance Verification report has variances",
+  "translations": [],
+  "viewCount": 3511,
+  "solvedCount": 523,
+  "unsolvedCount": 2,
+  "summary": "The Bank Account Balance Verification report in Sage 300 CRE prints variances.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2158803"
+}

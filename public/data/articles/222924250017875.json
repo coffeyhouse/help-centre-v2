@@ -1,0 +1,58 @@
+{
+  "author": "sageadmin",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683070257000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<p><strong>Important Considerations:</strong></p><p>Use caution when performing the following actions:</p><ul style=\"letter-spacing: 0.2px;\"> <li>Renaming the New.glt while it contains unposted batches</li> <li>Moving batches that don't net to zero by account and date</li> </ul><p>Performing either of those can make General Ledger not balance with interfacing applications, or can make reconciling between applications difficult. Contact your Sage Business Partner for help with reconciliation issues.</p><p><strong>Additional considerations:</strong></p><ul><li></li><li>If the transactions were entered in General Ledger, they can be removed even if they do not net to zero, if you have verified that the batch is not partially posted</li><li>Make the correcting entries in the application of origin before attempting to move/rename, and confirm the in/out washing entries both exist in the new.glt</li><li>If the entries cannot post (out of balance batch or dates outside of GL posting dates), and a journal entry has been made, then the batch may be removed, but the interfacing application may appear out of balance</li></ul><p>&nbsp;</p><p><strong>To remove General Ledger transactions from the New.glt file:</strong></p><p>&nbsp;</p><ol> <li><strong>Make a backup of your data:</strong> <ol> <li>Always make a backup of your data before starting this process. See [[How to Back up Company data with System Administrator including SQL Replicator|225924350086274]].</li> </ol> </li> <li><strong>Confirm entries to rename:</strong> <ol> <li>Have other operators exit all Sage 300 CRE applications.</li> <li>In General Ledger, from <strong>Tasks</strong>, select <strong>Post Entries</strong>.</li> <li>Click <strong>Ranges</strong>, select the batches you want to keep. Click <strong>OK</strong>. <ul> <li><strong>Note:</strong> You must post all batches you want to keep. Don't select batches you don't want to post. If all batches you see are ones you want to remove, click <strong>Cancel </strong>twice and skip to step 6.</li> </ul> </li> <li>Click <strong>Start </strong>to post entries and print your journal.</li> <li>Review the journal. Verify all entries you want to keep posted successfully.</li> <li>Review the contents of your new file: <ol> <li>From <strong>Reports</strong>, select <strong>Entries</strong>, <strong>Entries by Batch</strong>.</li> <li>Select <strong>New</strong>. Click <strong>OK</strong>.</li> <li>Preview the entries in the new file. Confirm you want to remove all of them.</li> <li>Print the report if desired. Click <strong>Close</strong>.</li> </ol> </li> </ol> </li> <li><strong>Rename the General Ledger New File using File Tools:</strong> <ol> <li>From the <strong>General Ledger Tools</strong> menu, select <strong>File Tools</strong>. In any estimating application, from <strong>File</strong>, select <strong>File Tools</strong>.</li> <li>Select <strong>Rename</strong>. Click <strong>Next</strong>.</li> <li>Next to the <strong>File to rename</strong> box, click <strong>Browse</strong>.</li> <li>Browse to and select <strong>New.glt</strong>. Click <strong>Open</strong>.</li> <li>In the <strong>New file name</strong> box, type the new name. For example, if you want to change the name the New.glt file to Old.glt, type <strong>Old</strong>. The system adds the correct file extension to the name <span style=\"font-size: 10.5pt;\"><span style=\"line-height: 107%;\"><span><span style=\"color: black;\">entered</span></span></span></span>.</li> <li>Click <strong>Next </strong>to begin the validation process. The following validation occurs: <ul> <li><strong>Scan file system to build file list</strong> - Uses the selected folders and files to build a list of files to rename.</li> <li><strong>Validate data files</strong> - Scans the selected files and folders to verify that the data structure is intact, and all required data components are present.</li> <li><strong>Check for files that might be overwritten</strong> - Verifies if any files in the file list already exist.</li> <li><strong>Ensure files are not in use</strong> - Verifies if any files in the file list are in use.</li> <li><strong>Verify space is available for the operation</strong> - Verifies if enough disk space is available.</li> <li><strong>Note:</strong> A green circle indicates the validation completed successfully. A red circle indicates the validation completed with exceptions. Any exceptions appear in the window so that you can fix the issue prior to continuing the process. You can only rename one file at a time, so these validation processes are generally more applicable to other File Tools operations such as backing up data files.</li> </ul> </li> <li>Click <strong>Next</strong>.</li> <li>Review the file that you are about to rename. The <strong>State </strong>column indicates whether you decided to include or skip the file. You can include or skip files: <ul> <li>Select a file and click <strong>Skip </strong>to exclude the file and change the <strong>State </strong>to <strong>Skip</strong>.</li> <li>Select a file and click <strong>Include </strong>to include the file and change the <strong>State </strong>to <strong>Include</strong>.</li> <li>Click<strong> Include All</strong> to include all files and change their <strong>State </strong>to <strong>Include</strong>.</li> <li>Click <strong>Skip All</strong> to skip all files and change their <strong>State </strong>to <strong>Skip</strong>.</li> </ul> </li> <li>Click <strong>Next</strong>.</li> <li>Verify that the information in the Execution Summary window is correct. If not, click <strong>Back </strong>to make corrections.</li> <li>Click <strong>Next </strong>to rename your files.</li> <li>Review the Operation Journal window.</li> <li>If you want to print your journal, select <strong>Summary </strong>or <strong>Detail </strong>from the list depending on the details needed. Click <strong>Save </strong>to save your journal to a text file. Click <strong>Print </strong>to print your journal to a printer.</li> <li>Click <strong>Finish</strong>.</li> </ol> </li> </ol><p>Notes:</p><ul> <li>If you use <strong>File Locations</strong> (<strong>File</strong>, <strong>Company Settings</strong>,<strong> File Locations)</strong>, your New.glt file may have a different name. If you see multiple new files but cannot see the .glt extension, your workstation is set to hide file extensions. Click <strong>Cancel</strong>. Verify your settings and then repeat steps 6 through 8.</li> <li>Create a blank new.glt by going to Tasks, Record Entries. Say Y<strong>es </strong>to the pop-up message \"The new.glt file does not exist, do you want to create it?\". If you don't do this, the next person in a task that will affect the new file will get the pop up.</li> </ul><p>&nbsp;</p><p>Sage My Assistant can notify you when there are unposted entries in your GL New file. Whether it's scheduled or on-demand, the system can email you when those entries are unposted and give you the details about those entries. Contact our Sales team at 1-800-858-7095 or by email at&nbsp;<a style=\"background-color: #ffffff; font-family: Arial, Verdana, sans-serif; letter-spacing: 0.2px;\" href=\"mailto:cresales@sage.com\">cresales@sage.com</a>&nbsp;for more information.<br><br></p><div class=\"col-xs-12 col-sm-7\"> <h4>Need more help?</h4> <p style=\"margin-bottom: 8px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p> </div><p>&nbsp;</p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[How do I move unposted and unwanted transactions out of my General Ledger new file using the Move option?|222924250017877]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\" data-mce-style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[How do I rename a file using File Tools?|222924250017891]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\" data-mce-style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[I need to post transactions in General Ledger after renaming the New file|223924750039828]]<br style=\"font-size: 14.6667px; letter-spacing: 0.2px;\" data-mce-style=\"font-size: 14.6667px; letter-spacing: 0.2px;\">[[﻿Can I still use File Tools to make a backup in 17.1 and later?|225924550091014]]</p>"
+    }
+  ],
+  "id": "222924250017875",
+  "language": "English",
+  "lastModifiedDate": 1689363600000,
+  "minorModifiedDate": 1722293425000,
+  "keywords": "rejected GL",
+  "question": null,
+  "renewDate": 1847145600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Transactions"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "How do I remove unposted and unwanted transactions from the General Ledger new file using File Tools?",
+  "translations": [],
+  "viewCount": 2598,
+  "solvedCount": 156,
+  "unsolvedCount": 2,
+  "summary": "This article provides steps to remove unposted and unwanted transactions from the General Ledger new file using File Tools.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2156451"
+}

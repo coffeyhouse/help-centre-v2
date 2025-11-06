@@ -1,0 +1,58 @@
+{
+  "author": "sageadmin",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1670332502000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\"></div>"
+    },
+    {
+      "name": "Resolution",
+      "content": "<p><span class=\"ra-content-caution\" style=\"color: #b94a48;\"><img src=\"https://internal-kb.sage.com/portal/app/images/content_caution.gif\" alt=\"\" /> <strong>CAUTION:</strong> <span>This solution needs advanced Operating System knowledge. Consult your system administrator for help. Sage isn't liable for issues caused by improper changes to the Windows Registry. Always back up your data before applying advanced solutions.</span></span></p> <h3>Important information</h3> <p>Don't follow these steps if you plan to uninstall and re-install Sage 300 Construction and Real Estate on a server or stand-alone computer. See the [[correct steps to follow for Sage 300 CRE on a file server|223924850043227]]<span style=\"letter-spacing: 0.2px;\">.</span></p> <p>Third-party and integrating products such as Sage Paperless Construction and Sage MyAssistant can stop working if you remove Sage 300 CRE from the workstation.</p> <h3>Process to remove Sage 300 CRE client</h3> <p>Follow all the steps outlined below to remove Sage 300 CRE completely from a workstation.</p> <h4>Uninstall the software and related components</h4> <ol> <li>Exit all Sage 300 Construction and Real Estate applications on the workstation.</li> <li>Go to Windows<strong> Control Panel</strong>, <strong>Programs and Features</strong>.</li> <li>If you have<strong> Sage Estimating</strong> installed, remove Estimating first: <ol> <li>Select <strong>Sage 300 Construction and Real Estate Estimating</strong> from the program list.</li> <li>Click <strong>Uninstall</strong>.</li> </ol> </li> <li>Remove Sage 300 Construction and Real Estate client software: <ol> <li>Select <strong>Sage 300 Construction and Real Estate Accounting Client</strong> from the program list.</li> <li>Click <strong>Uninstall</strong>.</li> </ol> </li> <li>If no other software uses the Pervasive or Actian PSQL Workgroup Engine, uninstall it next: <ol> <li>Select one of the following depending on version: <ul> <li>Pervasive PSQL [version] Workgroup Engine (for version 15.1 and earlier)</li> <li>Actian PSQL [version] Workgroup Engine (for version 16.1 to 24.1)</li> <li>Actian Zen may not appear depending on your install (for versions 24.2 and later)</li> </ul> </li> <li>Click <strong>Uninstall</strong>.</li> <li>Delete remaining files and registry keys [[related to Pervasive/Actian/Zen with these steps|223924850044894]].</li> <li>Repeat this process for the following other components (if found): <ul> <li>DeployAatrix</li> <li>Event 1 Core Services</li> <li>Event 1 Function Selector</li> <li>Module SDK</li> <li>Office Connector</li> <li>Office Connector (Remove Only)</li> <li>Sage Office Connector Menu Integration</li> <li>Sage.CRE.PJCorrLogExchangeAddinSetup</li> <li>SAP Crystal Reports runtime engine for .NET (32-bit)</li> </ul> </li> </ol> </li> <li>Exit <strong>Programs and Features</strong>.</li> <li>Left over files can interfere with re-installing or upgrading. Rename the following folders if they exist to prevent this. If you're not planning on re-installing, you can delete these folders. If you delete these files or folders, you can lose any settings or documents previously created.</li> </ol> <table id=\"tblInserted\" style=\"border-collapse: collapse;\" border=\"0\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"> <tbody> <tr> <td style=\"border: 1px solid black; vertical-align: top;\"><strong>64-bit Operating System:</strong></td> <td style=\"border: 1px solid black; vertical-align: top;\"><strong>32-bit Operating System:</strong></td> </tr> <tr> <td style=\"border: 1px solid black; vertical-align: top;\"> <ul> <li>C:\\Program Files (x86)\\Timberline Office</li> <li>C:\\Program Files (x86)\\Sage</li> <li>C:\\Program Files (x86)\\Common Files\\Sage</li> <li>C:\\Program Files (x86)\\Pervasive</li> <li>C:\\Program Files (x86)\\Actian</li> <li>C:\\Program Files (x86)\\Event1</li> <li>C:\\ProgramData\\Sage</li> <li>C:\\Users\\[Windows user name]\\AppData\\Local\\Sage_Inc\\Desktop.exe_StrongName_u3jvk0sgav0mxk5qzt023z3d2c5hglex\\18.1.0.0</li> <li>C:\\Users\\[Windows user name]\\AppData\\Roaming\\Timberline</li> <li>C:\\Users\\[Windows user name]\\AppData\\Roaming\\Sage\\Common Desktop\\Version 3.0 <ul> <li>Remove the three Windows user name locations for all profiles on the machines that use Sage. Terminal servers can have many profiles.</li> </ul> </li> </ul> </td> <td style=\"border: 1px solid black; vertical-align: top;\"> <ul> <li>C:\\Program Files\\Timberline Office</li> <li>C:\\Program Files\\Sage</li> <li>C:\\Program Files\\Common Files\\Sage</li> <li>C:\\Program Files\\Pervasive</li> <li>C:\\Program Files\\Actian</li> <li>C:\\Program Files\\Event1</li> <li>C:\\ProgramData\\Sage</li> </ul> </td> </tr> </tbody> </table> <p>&nbsp;</p> <h4>Use the Windows Registry Editor to rename the following subkeys</h4> <p>If you plan on re-installing or upgrading, skip this step.</p> <ul> <li>32-bit Machine <ul> <li>HKEY_LOCAL_MACHINE\\Software\\Pervasive</li> <li>HKEY_LOCAL_MACHINE\\Software\\Sage</li> <li>HKEY_LOCAL_MACHINE\\Software\\Timberline</li> <li>HKEY_CURRENT_USER\\Software\\Timberline</li> </ul> </li> <li>64-bit Machine <ul> <li>HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Actian</li> <li>HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Pervasive</li> <li>HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Sage</li> <li>HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Timberline</li> <li>HKEY_CURRENT_USER\\Software\\Timberline</li> </ul> </li> </ul> <h4>Remove the Timberline path statement in the environment variable path</h4> <p>If you plan on re-installing or upgrading, skip these step.</p> <ol> <li>Select Windows <strong>Start</strong>, right-click <strong>My Computer</strong>, then select <strong>Properties</strong>.</li> <li>Go to <strong>Advanced </strong>tab, <strong>Environment Variables</strong>.</li> <li>In the <strong>System variables</strong> section, select <strong>Path</strong>, then <strong>Edit</strong>.</li> <li>Use the arrow keys on your keyboard to find and delete the entry for<strong> C:\\Program Files\\Timberline Office\\Shared</strong>.<br><span class=\"ra-content-note-1 mceNonEditable\" style=\"color: #468847;\"><span><img class=\"ra-att-img\" src=\"https://internal-kb.sage.com/portal/app/images/content_note.gif\" alt=\"\" width=\"18px\" height=\"17px\" data-x-coordinate=\"62\">&nbsp;<strong class=\"ra-att-title\">NOTE:</strong>&nbsp;</span><span class=\"ra-att-desc mceEditable\">Semi-colons ( ; ) separate path statements for different applications.</span></span></li> <li>Select <strong>OK </strong>three times.</li> <li>You can also delete all remaining Windows Desktop icons or shortcuts for Sage. This includes those in the Windows Start menu.</li> </ol> <p>&nbsp;</p> <p>You have now removed Sage 300 Construction and Real Estate from your computer. You can no longer access Sage 300 Construction and Real Estate applications. If you’re planning to re-install or upgrade the software, follow the appropriate steps below.</p> <ul> <li>[[Sage 300 CRE client install for workstation or Citrix/terminal server (24.1 and earlier)|223924150028468]]</li> <li>[[Sage 300 CRE client install for workstation/Citrix/terminal server (24.2 and later)|250115174402510]]</li> </ul> <p><br><br></p> <div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div> <p><br><br></p>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": ""
+    }
+  ],
+  "id": "222924550020518",
+  "language": "English",
+  "lastModifiedDate": 1689367033000,
+  "minorModifiedDate": 1757091013723,
+  "keywords": "remove-client uninstall-client uninstall-workstation",
+  "question": null,
+  "renewDate": 1847145600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Installation//Download"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Uninstall Sage 300 CRE client from workstation",
+  "translations": [],
+  "viewCount": 2849,
+  "solvedCount": 109,
+  "unsolvedCount": 1,
+  "summary": "How do I remove the Sage 300 Construction and Real Estate client from a workstation?",
+  "revisionID": null,
+  "templateSolutionID": "PRE2157515"
+}

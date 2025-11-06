@@ -1,0 +1,65 @@
+{
+  "author": "sageadmin",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": "Product Details",
+  "attributes": [
+    {
+      "name": "Featured",
+      "values": [
+        "Featured"
+      ]
+    }
+  ],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683222823000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\" data-mce-style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\"><br></div>"
+    },
+    {
+      "name": "Cause",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\" data-mce-style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\">The specific cause of this is unknown. The recommendation is to correct the out of balance condition. If this is occurring frequently, you may need to perform further troubleshooting to determine the root cause.</div>"
+    },
+    {
+      "name": "Resolution",
+      "content": "<div style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\" data-mce-style=\"font-family: Arial, Verdana, sans-serif; font-size: 14px;\">It will take roughly 25 minutes to correct each out of balance job.<br></p><p><strong>Note:</strong> If you use security, you must be an application administrator to complete the correction steps.</p><ol><li>Review the <strong>Close Month Journal</strong>. Identify all jobs with a dollar amount in the <strong>Difference </strong>column. Note the related <strong>Field Out of Balance</strong> and <strong>Record Type</strong>. The Close Month journal compares the category totals to the totals on each of these records: Job, Job Extra, Job Group Cost Codes, Job Cost Code, Extra, Extra Group Cost Codes, Extra Cost Code. If you do not use categories, the accumulated cost code totals compare to Job, Extra, and Group Cost Codes records.</li><li>Verify Job Cost is fully posted and <strong>new.jct file</strong> doesn't have the out of balance job.<br><strong>Note: </strong>Correcting out of balance jobs only compares posted items in the current/history files to the master totals. Posting items in the new file will not correct an out of balance job.</li><li>Print a validation report:<ol><li>Print these reports to locate problems for each out of balance job that appears on the Close Month Journal:<ol><li><strong>Close Month Validation</strong> (<strong>JC Reports</strong>, <strong>Reconciliation</strong>, <strong>Close Month Validation</strong>)<br><strong>Note:</strong> If the Close Month Validation report is not on your Reports menu, add it. See [[How do I save, add, and print a report design?|222924350018607]].<br>If you use extras, see [[The Job Cost Close Month journal shows a job out of balance, but the job is in balance on the Close Month Validation report (Extras are used)|222924550020749]].</li><li><strong>Group Cost Code Reconciliation: </strong>See [[The Job Cost Close Month journal shows that a group cost code is out of balance|222924250018006]]<br><strong>Note: </strong>When correcting an item on the close month validation report, it may cause the group to become out of balance. Make sure to run BOTH reports, otherwise the job may reappear on the next close month report for the out of balance group. If the close month journal shows just a group cost code out of balance, you don’t need to run the close month validation report as it's already in balance.</li></ol></li><li>When you print the validation report:<ol><li>Select the <strong>Amount Type </strong>that matches the close month journal.<br>For example, if the close month journal has Total estimated cost in the Field Out of Balance column, select <strong>Estimate </strong>in the <strong>Amount Type </strong>list when you print the validation report.</li><li>Click <strong>Ranges </strong>and select the job(s) that are out of balance. The validation report compares the Job Cost transaction totals to master file totals on the Job, Extra, Cost Code, and Category records.</li></ol></li></ol></li><li>Review the validation report and identify totals that don’t match. Note which amounts are not correct: Transaction, Job, Extra, Group Cost Code, Cost Code, or Category. The totals for each level of the report should be equal.<br><strong>Note: </strong>When you use extras, add the amount of the job to the amount of the extra and compare the combined total to the remaining columns.</li></ol><p><strong>Correct the problem:</strong></p><p><strong>Note: </strong>If the transaction amount is wrong, transactions may be missing or doubled.</p><ol><li>Turn on <strong>Audit setup activity</strong>. See [[How do I use Audit setup activity?|222924150017021]].<br><strong>Note: </strong>When <strong>Audit setup activity</strong> is on, an <strong>Audit Print Selection</strong> prompt may appear. If prompted, specify the file or printer for your audit journal and click Start.</li><li>If the amount out of balance is an estimate or commitment, it is possible that there may be an original amount and an approved change order amount.<br><strong>To determine the split between these two amount types: </strong><ol><li>Use the Entries by Job report.</li><li>Use range on the job.</li><li>Use condition on the cost code and/or category.</li><li>Use transaction type EQ original estimate.</li><li>Get the total and change the condition to transaction type EQ approved estimate change and get the total.<br><strong>Note:</strong> If commitment, use original commitment and approved committed cost change as the transaction types.</li></ol></li><li>If the job record is out of balance:<ol><li>In <strong>Job Cost</strong>, from <strong>Setup</strong>, select <strong>Jobs</strong>.</li><li>Click <strong>List</strong>, select the out of balance <strong>job ID</strong>, and click <strong>OK</strong>.</li><li>Press <strong>Tab</strong>. Select either the <strong>Estimate Totals</strong> tab or the <strong>Cost Totals</strong> tab.</li><li>Change the <strong>Job to date </strong>totals to match the transaction totals from the validation report. Optional fields to change/include are<strong> Year to Date</strong>, <strong>Quarter to Date</strong>, and <strong>Month to Date </strong>totals.</li><li>Click <strong>Save </strong>and <strong>Close</strong>.</li><li>Examine the audit journal.</li></ol></li><li>If the extra record is out of balance:<ol><li>In Job Cost, from Setup, select Extras.</li><li>Click List, select the out of balance job ID, and click OK.</li><li>Click List, select the out of balance extra ID, and click OK.</li><li>Press <strong>Tab</strong>. Select either the <strong>Estimate Totals</strong> tab or the <strong>Cost Totals</strong> tab.</li><li>Change the <strong>Job to date</strong> totals to match the transaction totals from the validation report. Optional fields to change/include are <strong>Year to Date</strong>, <strong>Quarter to Date</strong>, and <strong>Month to Date </strong>totals.</li><li>Click <strong>Save </strong>and <strong>Close</strong>.</li><li>Examine the audit journal.</li></ol></li><li>If the group cost code or cost code record is out of balance:<br><strong>Tip: </strong>See [[The Job Cost Close Month journal shows that a group cost code is out of balance|222924250018006]] to review steps. It contains a report to determine if group cost codes are out of balance. When Cost Codes are out of balance, the Group Cost Code will usually also be out of balance.<ol><li>In Job Cost, from Setup, select Cost Codes.</li><li>Click List, select the out of balance job ID, and click OK.</li><li>If you use Extras, click List, select the out of balance extra ID, and click OK.</li><li>Click List, select the out of balance cost code ID, and click OK.</li><li>Press the TAB key. Select either the Estimate Totals tab or the Cost Totals tab.</li><li>Change the Job to date totals to match the transaction totals from the validation report. Optional fields you may want to change include are Year to Date, Quarter to Date, and Month to Date totals.</li><li>Click Save and Close. Examine the audit journal.</li></ol></li><li>If the category is out of balance, follow these steps:<ol><li>In Job Cost, from Setup, select Categories.</li><li>Click List, select the out of balance job ID, and click OK.</li><li>If you use Extras, click List, select the out of balance extra ID, and click OK.</li><li>Click List, select the out of balance cost code ID, and click OK.</li><li>Click List, select the out of balance category ID, and click OK.</li><li>Press the TAB key, then select the Totals tab.</li><li>Change the Job to date totals to match the transaction totals from the validation report. Optional fields you may want to change include are Year to Date, Quarter to Date, and Month to Date totals.</li><li>Click Save and Close. Examine the audit journal.</li></ol></li><li>Turn off <strong>Audit setup activity</strong>.</li><li>Verify the corrections. Print the same validation report or reports you printed earlier and compare the totals. Verify the totals are the same.</li><li>If costs codes are sectioned (xx-xxx), run the Group Cost Code Validation report to verify that the group cost codes are in balance. Always run the Group Cost Code Validation report, even if the close month journal does not show a group cost code out of balance.<br>See [[The Job Cost Close Month journal shows that a group cost code is out of balance|222924250018006]] for steps and to download the report if it is not on the menu.</li></ol><p><strong>Notes:</strong></p><ul><li>If you determine that transactions are incorrect on the <strong>Close Month Validation </strong>report (but the Job, Cost Code and Category records are correct), possible causes are:<ul><li>There may be unposted transactions in the <strong>New.JCT f</strong>ile of the client.</li><li>There may be transactions in the history file, and the Close Month Validation report was only printed with the current file selected.</li><li>There are transactions missing for the job in the active data folder. This can <span style=\"font-size: 10.5pt;\" data-mce-style=\"font-size: 10.5pt;\"><span style=\"line-height: 107%;\" data-mce-style=\"line-height: 107%;\"><span><span style=\"color: black;\" data-mce-style=\"color: black;\">occur </span></span></span></span>through a rename of a prior new file or through a move of transactions out of the data folder.</li></ul></li><li>While the exact solution may vary depending on your specific issue, possible solutions to correct missing transactions are:<ul><li>Post all <strong>New.JCT</strong> file transactions related to the out of balance job.</li><li>Select both the current and history transaction files when printing the Close Month Validation report to see if the transactions balance with the Job, Cost Code and Category records. If it does, you may want to move all transactions for the job back from history to current.</li><li>If you have archived or moved transactions from an active data folder to any other data folders recently, check the transaction files in those folder locations to see if transactions for the out of balance job have moved in error. If so, move them back to the active data folder.</li></ul></li><li>The close month validation and group cost code validation reports will only show cost codes and categories with transactions. If no transactions exist but there is a total on the master record, that cost code/category will not show on these reports. If both reports show there are no totals and extras are unused, it may be this scenario.</li></ul></div><p><br><div class=\"col-xs-12 col-sm-7\">\n<h4>Need more help?</h4>\n<p style=\"margin-bottom: 24px;\"><a id=\"limitless-url\" class=\"btn btn-primary\" style=\"color: white; background-color: black; border: black; border-radius: 24px; margin-top: 8px; width: 40%;\" rel=\"noopener\" href=\"https://www.sage300construction.com/chat\" target=\"_blank\">Chat now</a></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</div><br><br><br><br><br>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": "<p>[[﻿How do I read the Close Month Journal in Job Cost?|222924550020755]]</p>"
+    }
+  ],
+  "id": "222924250018005",
+  "language": "English",
+  "lastModifiedDate": 1683222823000,
+  "minorModifiedDate": 1707652578000,
+  "keywords": "division",
+  "question": null,
+  "renewDate": 1680566400000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Transactions//Corrections"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "How do I correct an out of balance job?",
+  "translations": [],
+  "viewCount": 1634,
+  "solvedCount": 147,
+  "unsolvedCount": 0,
+  "summary": null,
+  "revisionID": null,
+  "templateSolutionID": "PRE2156517"
+}

@@ -1,0 +1,58 @@
+{
+  "author": "sageadmin",
+  "approver": "angie.gwalchmai@sage.com",
+  "attributeSetName": null,
+  "attributes": [],
+  "categoryCode": "custom",
+  "collections": [
+    "custom_au_en_threehundredcre",
+    "custom_ca_threehundred_construction",
+    "custom_us_threehundred_construction"
+  ],
+  "createDate": 1683223545000,
+  "diagnosticResponses": [],
+  "fields": [
+    {
+      "name": "Description",
+      "content": ""
+    },
+    {
+      "name": "Cause",
+      "content": ""
+    },
+    {
+      "name": "Resolution",
+      "content": "<p>Only use these processes for batches or transactions that you entered in Job Cost or Estimating (JC/PE). Only use for Estimating if it’s estimates that are incorrect or duplicates that you don't want to post. Interfacing applications require you meet certain criteria.</p> <p>To remove entries that came from another Sage 300 CRE application, correct them in the application of origin first and then use the steps below. This doesn't apply to entries imported from a third-party application. If moving interfacing entries, they should net to zero by Job, Extra, Cost Code, Category, Transaction Type, and Accounting Date before moving new to new. Moving the entries out of Job Cost without fixing them in the application of origin can create an out of balance situation between the applications.</p> <p>To remove all entries from the New file in Job Cost, [[rename the file using File Tools|222924350018119]].&nbsp;</p> <p>Use the steps below to remove any unposted Job Cost transactions from your current data folder to another folder. You have two options to choose from:</p> <ul> <li>Move an entire batch</li> <li>Move individual transactions</li> </ul> <h3><br>Move an entire batch</h3> <h4>Identify the batch to move</h4> <p>(if you know the batch number, skip this step)</p> <ol> <li>Go to <strong>Job Cost</strong>, <strong>Reports</strong>, <strong>Entries</strong>, <strong>Entries by Batch</strong>.</li> <li>Select the <strong>JC Transaction (new)</strong> file and click <strong>OK</strong>.</li> <li>Click <strong>Print Preview</strong>.</li> <li>Make note of the <strong>Batch</strong> number in the far-left column, and the <strong>Application of Origin</strong>, then click <strong>Close</strong>.</li> </ol> <h4>Move the batch</h4> <ol> <li>Go to <strong>Job Cost</strong>,<strong> Tools</strong>, <strong>Move</strong>, <strong>Transactions</strong>, <strong>New to New</strong>.</li> <li>In the <strong>Destination File Selection </strong>window, click the <strong>Look in </strong>box.</li> <li>Select an archive folder for the unwanted transactions or create a \"junk\" folder at the data folder level.</li> <li>Click <strong>Open</strong> to create or open the new.jct file. If message <strong>File not found. Okay to create?</strong> appears, click <strong>Yes</strong>.<br><strong>Notes:</strong> <ul> <li>If a folder doesn’t exist, click in the <strong>Look in</strong> box. Browse to the location where you want to add a new folder, and then click the <strong>Create New Folder</strong> icon. Type a folder name and press the ENTER key to create a new folder. Double-click the new folder to select it.</li> <li>If the destination file does exist and you get an <strong>Error: Destination file is incompatible</strong>, click<strong> Yes </strong>to upgrade the file.</li> </ul> </li> <li>In the Print Selection window, click <strong>Conditions</strong>.<br><strong>Important Note:</strong> If you don’t select conditions, this process moves all transactions in the New file to the selected destination. <ol> <li>In the <strong>Field</strong> column, select <strong>Batch</strong>.</li> <li>In the <strong>Operator</strong> column, select<strong> Equal to</strong>.</li> <li>In the <strong>Value </strong>column, type the batch number.</li> <li>Click <strong>OK</strong>.</li> <li>Select <strong>Add</strong>.</li> <li>Select <strong>And</strong> as the <strong>Connector</strong>.</li> <li>In the <strong>Field</strong> column, select <strong>Application of Origin</strong>.</li> <li>In the <strong>Operator</strong> column, select <strong>Equal</strong> to.</li> <li>In the <strong>Value</strong> column, type the application of origin, for example PR or AP or JC..</li> <li>Click<strong> OK </strong>twice.</li> </ol> </li> <li>Click <strong>Start</strong>.</li> <li>Review the journal to verify that the correct batch moved without errors.</li> </ol> <h3><br>Move individual transactions</h3> <h4>Identify the batch, run, and sequence</h4> <ol> <li>Go to <strong>Job Cost</strong>,<strong> Inquiry</strong>, <strong>Entries</strong>, <strong>Entries by Batch</strong>.</li> <li>Select the <strong>New</strong> file and click <strong>OK</strong>.</li> <li>Double-click the batch.</li> <li>Click the <strong>Select</strong> icon on the inquiry's tool bar.</li> <li>Select <strong>Add</strong> column after this column and click <strong>OK</strong>.</li> <li>From the <strong>JC - Transaction </strong>record, select <strong>Run</strong>&nbsp;and click <strong>OK</strong>.</li> <li>Use step 1.5 to add the <strong>Sequence</strong> to the inquiry.</li> <li>Make note of the <strong>Batch</strong>, <strong>Run</strong> and <strong>Sequence</strong> numbers, and then click <strong>Close</strong>.</li> </ol> <h4>Move the transaction</h4> <ol> <li>Go to <strong>Job Cost</strong>, <strong>Tools</strong>, <strong>Move</strong>, <strong>Transactions</strong>, <strong>New to New</strong>.</li> <li>In the <strong>Destination File Selection </strong>window, in the <strong>Look in </strong>box, select an archive folder for the unwanted transactions.<br><strong>Notes:</strong> <ul> <li>If a folder doesn’t exist, click in the <strong>Look in</strong> box. Browse to the location where you want to add a new folder, and then click the <strong>Create New Folder</strong> icon. Type a folder name and press the ENTER key to create a new folder. Double-click the new folder to select it.</li> <li>If the destination file does exist and you get an <strong>Error: Destination file is incompatible</strong>, click <strong>Yes</strong> to upgrade the file.</li> </ul> </li> <li>Click <strong>Open</strong> to create or open the new.jct file. If message <strong>File not found. Okay to create? </strong>appears, click <strong>Yes</strong>.</li> <li>In the Print Selection window, click <strong>Conditions</strong>.<br><strong>Important Note:</strong> If you don’t select conditions, this process moves all transactions in the New file to the selected destination. <ol> <li>In the <strong>Field</strong> column, select <strong>Batch</strong>.</li> <li>In the <strong>Operator </strong>column, select <strong>Equal</strong> to.</li> <li>In the <strong>Value</strong> column, type the batch number.</li> <li>Click <strong>OK</strong>.</li> <li>Click <strong>Add</strong>.</li> <li>Select <strong>And</strong> as the <strong>Connector</strong>.</li> <li>In the <strong>Field </strong>column, select <strong>Run</strong>.</li> <li>In the <strong>Operator</strong> column, select <strong>Equal</strong> to.</li> <li>In the <strong>Value</strong> column, type the run number.</li> <li>Click <strong>OK</strong>.</li> <li>Click <strong>Add</strong>.</li> <li>Select <strong>And</strong> as the <strong>Connector</strong>.</li> <li>In the <strong>Field </strong>column, select <strong>Sequence</strong>.</li> <li>In the <strong>Operator</strong> column, select<strong> Equal </strong>to.</li> <li>In the <strong>Value</strong> column, type the sequence number.</li> <li>Click <strong>OK </strong>twice.</li> </ol> </li> <li>Click <strong>Start</strong>.</li> <li>Review the journal to verify that the transactions moved without errors.</li> </ol> <p><br>To view the contents of transactions moved, you can enable named files for the Job Cost transaction file as follows:</p> <ol> <li>Go to <strong>Job Cost</strong>, <strong>File</strong>, <strong>Company Settings</strong>,<strong> File Locations</strong>.</li> <li>Select the <strong>Ask Name </strong>check box in the <strong>JC Transaction </strong>file type.</li> <li>Click <strong>OK</strong>.</li> <li>Select <strong>Inquiry</strong>, <strong>Entries</strong>, <strong>Entries by Batch</strong>.</li> <li>In the <strong>File Selection </strong>window, change the <strong>Look in:</strong> path to match the folder you created in the steps above.</li> <li>In the <strong>File name </strong>box, accept the name <strong>NEW </strong>and click <strong>Open</strong>.</li> <li>Click <strong>Yes</strong> if you receive a warning message indicating the data path for the new file is different.</li> <li>After you review the information, turn off the <strong>Ask Name </strong>check box for the <strong>JC Transaction </strong>file in <strong>File</strong>, <strong>Company Settings</strong>, <strong>File Locations</strong>.</li> </ol>"
+    },
+    {
+      "name": "Steps to duplicate",
+      "content": ""
+    },
+    {
+      "name": "Related Solutions",
+      "content": ""
+    }
+  ],
+  "id": "222924250017944",
+  "language": "English",
+  "lastModifiedDate": 1689368597000,
+  "minorModifiedDate": 1737571317000,
+  "keywords": "Job JC new-to-new",
+  "question": null,
+  "renewDate": 1847145600000,
+  "solutionBoost": 1.0,
+  "status": "Published",
+  "type": "Template Solution",
+  "taxonomy": [
+    "Category//Data//Data synchronisation"
+  ],
+  "templateName": "1 - Support Article",
+  "title": "Moving unwanted transactions in the Job Cost New file using the Move option",
+  "translations": [],
+  "viewCount": 2017,
+  "solvedCount": 203,
+  "unsolvedCount": 0,
+  "summary": "How to move rejected, unposted, and unwanted transactions in the Job Cost new file in Sage 300 CRE.",
+  "revisionID": null,
+  "templateSolutionID": "PRE2156480"
+}
