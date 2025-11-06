@@ -62,8 +62,9 @@ function formatRegionName(regionKey) {
 /**
  * Helper function to create default files for a new region
  */
-async function createRegionFiles(regionId) {
+async function createRegionFiles(regionId, regionName, countries) {
   const regionDir = path.join(DATA_DIR, regionId);
+  const countriesDir = path.join(__dirname, '..', '..', 'public', 'data', 'countries');
 
   // Create region directory if it doesn't exist
   try {
@@ -74,7 +75,7 @@ async function createRegionFiles(regionId) {
     }
   }
 
-  // Default file templates
+  // Default file templates for region
   const files = {
     'products.json': { products: [], hotTopics: [], quickAccessCards: [] },
     'topics.json': { supportHubs: [] },
@@ -85,7 +86,7 @@ async function createRegionFiles(regionId) {
     'release-notes.json': { releaseNotes: [] },
   };
 
-  // Create each file
+  // Create each region file
   for (const [filename, content] of Object.entries(files)) {
     const filePath = path.join(regionDir, filename);
     try {
@@ -96,6 +97,68 @@ async function createRegionFiles(regionId) {
       // File doesn't exist, create it
       await fs.writeFile(filePath, JSON.stringify(content, null, 2));
       console.log(`Created ${filename} for region ${regionId}`);
+    }
+  }
+
+  // Create country config files for each country
+  for (const country of countries) {
+    const countryCode = typeof country === 'string' ? country : country.code;
+    const countryName = typeof country === 'string' ? country : country.name;
+    const countryDir = path.join(countriesDir, countryCode.toLowerCase());
+
+    try {
+      await fs.mkdir(countryDir, { recursive: true });
+    } catch (error) {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+    }
+
+    const configPath = path.join(countryDir, 'config.json');
+
+    // Check if config already exists
+    try {
+      await fs.access(configPath);
+      console.log(`Country config for ${countryCode} already exists, skipping`);
+    } catch {
+      // Create default country config
+      const countryConfig = {
+        region: countryCode.toLowerCase(),
+        displayName: countryName,
+        personas: [
+          {
+            id: 'customer',
+            label: "I'm a Customer",
+            default: true
+          },
+          {
+            id: 'accountant',
+            label: "I'm an Accountant or Bookkeeper",
+            default: false
+          }
+        ],
+        navigation: {
+          main: [
+            {
+              label: 'Help Centre',
+              path: `/${countryCode.toLowerCase()}`,
+              icon: 'home'
+            },
+            {
+              label: 'Products',
+              path: `/${countryCode.toLowerCase()}/products`,
+              type: 'dropdown'
+            },
+            {
+              label: 'Contact us',
+              path: `/${countryCode.toLowerCase()}/contact`
+            }
+          ]
+        }
+      };
+
+      await fs.writeFile(configPath, JSON.stringify(countryConfig, null, 2));
+      console.log(`Created config for country ${countryCode}`);
     }
   }
 }
@@ -165,8 +228,8 @@ router.post('/', verifyAuth, async (req, res) => {
     // Write updated regions
     await fs.writeFile(REGIONS_PATH, JSON.stringify(updatedCountries, null, 2));
 
-    // Create region files
-    await createRegionFiles(code);
+    // Create region files and country configs
+    await createRegionFiles(code, name, countries);
 
     res.json({
       success: true,
