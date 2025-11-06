@@ -56,9 +56,17 @@ export default function DraggableListItem({
           : 'border-gray-200'
       }`}
     >
-      <button
+      <div
         onClick={() => onClick(index)}
-        className={`w-full text-left p-4 rounded-lg transition-colors ${
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick(index);
+          }
+        }}
+        className={`w-full text-left p-4 rounded-lg transition-colors cursor-pointer ${
           isSelected
             ? 'bg-blue-50'
             : 'bg-white hover:bg-gray-50'
@@ -72,7 +80,7 @@ export default function DraggableListItem({
             {children}
           </div>
         </div>
-      </button>
+      </div>
     </div>
   );
 }
