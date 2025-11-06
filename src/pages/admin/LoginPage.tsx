@@ -18,7 +18,7 @@ export default function LoginPage() {
     const result = await login(password);
 
     if (result.success) {
-      navigate('/admin/dashboard');
+      navigate('/admin/regions');
     } else {
       setError(result.error || 'Login failed');
     }
