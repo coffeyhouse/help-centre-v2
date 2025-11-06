@@ -6,6 +6,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { CubeIcon, ArrowRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AddProductModal from '../../components/admin/AddProductModal';
+import Icon from '../../components/common/Icon';
 
 interface Product {
   id: string;
@@ -114,7 +115,7 @@ export default function ProductsListPage() {
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-3 rounded-lg flex-shrink-0 group-hover:bg-blue-200 transition-colors">
                   {product.icon ? (
-                    <img src={product.icon} alt="" className="w-8 h-8" />
+                    <Icon name={product.icon} className="w-8 h-8 text-blue-600" />
                   ) : (
                     <CubeIcon className="w-8 h-8 text-blue-600" />
                   )}

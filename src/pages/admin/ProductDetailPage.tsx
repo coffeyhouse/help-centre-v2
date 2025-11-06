@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import ConfirmModal from '../../components/admin/ConfirmModal';
+import Icon from '../../components/common/Icon';
 
 interface Product {
   id: string;
@@ -304,7 +305,7 @@ export default function ProductDetailPage() {
                 <div className="flex items-start gap-4">
                   <div className="bg-blue-100 p-4 rounded-lg flex-shrink-0">
                     {product.icon ? (
-                      <img src={product.icon} alt="" className="w-12 h-12" />
+                      <Icon name={product.icon} className="w-12 h-12 text-blue-600" />
                     ) : (
                       <div className="w-12 h-12 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-xl">
                         {product.name.charAt(0)}
@@ -447,6 +448,9 @@ export default function ProductDetailPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="e.g., icon-a"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Icon name (e.g., icon-a, icon-b, icon-c, icon-d, icon-e, icon-f, star, lock, etc.)
+                      </p>
                     </div>
 
                     <div className="md:col-span-2">
