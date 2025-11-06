@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import ConfirmModal from '../ConfirmModal';
 
 interface Product {
   id: string;
@@ -31,7 +33,15 @@ interface ProductsEditorProps {
   onChange: (data: any) => void;
 }
 
+type DeleteItem = {
+  type: 'product' | 'hotTopic' | 'quickAccessCard';
+  index: number;
+  name: string;
+};
+
 export default function ProductsEditor({ data, onChange }: ProductsEditorProps) {
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<DeleteItem | null>(null);
   const updateProduct = (index: number, field: string, value: any) => {
     const updated = { ...data };
     updated.products[index] = { ...updated.products[index], [field]: value };
@@ -52,9 +62,12 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   };
 
   const removeProduct = (index: number) => {
-    const updated = { ...data };
-    updated.products.splice(index, 1);
-    onChange(updated);
+    setItemToDelete({
+      type: 'product',
+      index,
+      name: data.products[index].name,
+    });
+    setDeleteConfirmOpen(true);
   };
 
   const updateHotTopic = (index: number, field: string, value: any) => {
@@ -74,9 +87,12 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   };
 
   const removeHotTopic = (index: number) => {
-    const updated = { ...data };
-    updated.hotTopics.splice(index, 1);
-    onChange(updated);
+    setItemToDelete({
+      type: 'hotTopic',
+      index,
+      name: data.hotTopics[index].title,
+    });
+    setDeleteConfirmOpen(true);
   };
 
   const updateQuickAccessCard = (index: number, field: string, value: any) => {
@@ -97,9 +113,33 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   };
 
   const removeQuickAccessCard = (index: number) => {
+    setItemToDelete({
+      type: 'quickAccessCard',
+      index,
+      name: data.quickAccessCards[index].title,
+    });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (!itemToDelete) return;
+
     const updated = { ...data };
-    updated.quickAccessCards.splice(index, 1);
+
+    switch (itemToDelete.type) {
+      case 'product':
+        updated.products.splice(itemToDelete.index, 1);
+        break;
+      case 'hotTopic':
+        updated.hotTopics.splice(itemToDelete.index, 1);
+        break;
+      case 'quickAccessCard':
+        updated.quickAccessCards.splice(itemToDelete.index, 1);
+        break;
+    }
+
     onChange(updated);
+    setItemToDelete(null);
   };
 
   return (
@@ -333,6 +373,18 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
           ))}
         </div>
       </section>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title={`Delete ${itemToDelete?.type === 'product' ? 'Product' : itemToDelete?.type === 'hotTopic' ? 'Hot Topic' : 'Quick Access Card'}`}
+        message={`Are you sure you want to delete "${itemToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
     </div>
   );
 }

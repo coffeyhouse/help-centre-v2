@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import ConfirmModal from '../ConfirmModal';
 
 interface SupportHub {
   id: string;
@@ -22,6 +23,8 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedTopicIndex, setSelectedTopicIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [topicToDelete, setTopicToDelete] = useState<{ index: number; title: string } | null>(null);
 
   // Group topics by product for easier viewing
   const topicsByProduct = data.supportHubs.reduce((acc: any, topic, index) => {
@@ -64,11 +67,18 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   };
 
   const handleDeleteTopic = (index: number) => {
-    if (confirm('Are you sure you want to delete this topic?')) {
+    const topic = data.supportHubs[index];
+    setTopicToDelete({ index, title: topic.title });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (topicToDelete) {
       const updated = { ...data };
-      updated.supportHubs.splice(index, 1);
+      updated.supportHubs.splice(topicToDelete.index, 1);
       onChange(updated);
       setSelectedTopicIndex(null);
+      setTopicToDelete(null);
     }
   };
 
@@ -193,6 +203,18 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Topic"
+        message={`Are you sure you want to delete "${topicToDelete?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
     </div>
   );
 }
