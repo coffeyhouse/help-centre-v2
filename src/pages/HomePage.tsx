@@ -5,7 +5,6 @@
  * - Hero section with personalized welcome message
  * - Your products section (for logged-in users)
  * - Products organized by category
- * - Hot topics section
  * - Quick access cards
  */
 
@@ -18,7 +17,6 @@ import { loadProducts } from '../utils/dataLoader';
 import Hero from '../components/common/Hero';
 import CategoryProductGrid from '../components/pages/HomePage/CategoryProductGrid';
 import MyProductsGrid from '../components/pages/HomePage/MyProductsGrid';
-import HotTopics from '../components/pages/HomePage/HotTopics';
 import QuickAccessCards from '../components/pages/HomePage/QuickAccessCards';
 import type { ProductsData } from '../types';
 
@@ -92,11 +90,6 @@ export default function HomePage() {
         {/* Products by Category - Hidden by default when logged in, shown when "Show all products" is clicked or when not logged in */}
         {productsData && (!user || showAllProducts) && (
           <CategoryProductGrid products={productsData.products} />
-        )}
-
-        {/* Hot Topics */}
-        {productsData && productsData.hotTopics && (
-          <HotTopics hotTopics={productsData.hotTopics} />
         )}
 
         {/* Quick Access Cards */}

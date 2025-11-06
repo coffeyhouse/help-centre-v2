@@ -81,18 +81,6 @@
       "icon": "icon-b"
     }
   ],
-  "hotTopics": [
-    {
-      "id": "2fa",
-      "title": "2-factor authentication (2FA)",
-      "icon": "lock"
-    },
-    {
-      "id": "whats-new",
-      "title": "What's new in 2025",
-      "icon": "star"
-    }
-  ],
   "quickAccessCards": [
     {
       "id": "account-mgmt",

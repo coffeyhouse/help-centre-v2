@@ -64,7 +64,6 @@ export interface Product {
 
 export interface ProductsData {
   products: Product[];
-  hotTopics: HotTopic[];
   quickAccessCards: QuickAccessCard[];
 }
 
@@ -86,16 +85,6 @@ export interface ReleaseNotesData {
   releaseNotes: {
     [productId: string]: ReleaseNote[];
   };
-}
-
-// ==================== Hot Topics ====================
-
-export interface HotTopic {
-  id: string;
-  title: string;
-  icon: string;
-  url?: string;
-  countries?: string[];
 }
 
 // ==================== Quick Access Cards ====================
