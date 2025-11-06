@@ -12,26 +12,55 @@ const router = express.Router();
 // Base path to data files
 const DATA_BASE_PATH = path.join(__dirname, '..', '..', 'public', 'data');
 
-// File mappings for valid file types
-const FILE_PATHS = {
-  regions: path.join(DATA_BASE_PATH, 'regions.json'),
-  'uk-ireland-products': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'products.json'),
-  'uk-ireland-articles': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'articles.json'),
-  'uk-ireland-topics': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'topics.json'),
-  'uk-ireland-incidents': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'incidents.json'),
-  'uk-ireland-popups': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'popups.json'),
-  'uk-ireland-contact': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'contact.json'),
-  'uk-ireland-release-notes': path.join(DATA_BASE_PATH, 'regions', 'uk-ireland', 'release-notes.json'),
-};
+// Valid file types for regions
+const VALID_FILE_TYPES = [
+  'products',
+  'articles',
+  'topics',
+  'incidents',
+  'popups',
+  'contact',
+  'release-notes',
+];
 
-// Get list of available files
+/**
+ * Helper function to get file path
+ * Supports both static files (like regions.json) and region-specific files
+ * Format: {region}-{fileType} (e.g., uk-ireland-products, north-america-topics)
+ */
+function getFilePath(fileId) {
+  // Handle special case for regions.json
+  if (fileId === 'regions') {
+    return path.join(DATA_BASE_PATH, 'regions.json');
+  }
+
+  // Parse region-specific file ID
+  // Format: {region}-{fileType}
+  const parts = fileId.split('-');
+  if (parts.length < 2) {
+    return null;
+  }
+
+  // The last part is the file type, everything before is the region
+  const fileType = parts[parts.length - 1];
+  const region = parts.slice(0, -1).join('-');
+
+  // Validate file type
+  if (!VALID_FILE_TYPES.includes(fileType)) {
+    return null;
+  }
+
+  return path.join(DATA_BASE_PATH, 'regions', region, `${fileType}.json`);
+}
+
+// Get list of available files (deprecated - kept for backwards compatibility)
 router.get('/list', verifyAuth, async (req, res, next) => {
   try {
-    const files = Object.keys(FILE_PATHS).map(key => ({
-      id: key,
-      name: key.replace(/-/g, ' ').replace(/uk ireland/i, 'UK-Ireland -'),
-      path: FILE_PATHS[key]
-    }));
+    // This endpoint is deprecated but kept for backwards compatibility
+    // In the new system, file paths are dynamically generated
+    const files = [
+      { id: 'regions', name: 'Regions', path: getFilePath('regions') }
+    ];
 
     res.json({ files });
   } catch (error) {
@@ -43,10 +72,10 @@ router.get('/list', verifyAuth, async (req, res, next) => {
 router.get('/:fileId', verifyAuth, async (req, res, next) => {
   try {
     const { fileId } = req.params;
-    const filePath = FILE_PATHS[fileId];
+    const filePath = getFilePath(fileId);
 
     if (!filePath) {
-      return res.status(404).json({ error: 'File not found' });
+      return res.status(400).json({ error: 'Invalid file ID format' });
     }
 
     const content = await fs.readFile(filePath, 'utf-8');
@@ -70,10 +99,10 @@ router.put('/:fileId', verifyAuth, async (req, res, next) => {
   try {
     const { fileId } = req.params;
     const { data } = req.body;
-    const filePath = FILE_PATHS[fileId];
+    const filePath = getFilePath(fileId);
 
     if (!filePath) {
-      return res.status(404).json({ error: 'File not found' });
+      return res.status(400).json({ error: 'Invalid file ID format' });
     }
 
     if (!data) {

@@ -9,13 +9,28 @@ interface AddRegionModalProps {
   onRegionCreated: (regionId: string) => void;
 }
 
+interface CountryInput {
+  name: string;
+  code: string;
+}
+
+// Helper to get flag emoji from country code
+function getCountryFlag(countryCode: string): string {
+  if (!countryCode || countryCode.length !== 2) return '';
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map(char => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+}
+
 export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: AddRegionModalProps) {
   const { token } = useAdminAuth();
   const { refreshRegions } = useAdminRegion();
   const [formData, setFormData] = useState({
     name: '',
     code: '',
-    countries: [''],
+    countries: [{ name: '', code: '' }] as CountryInput[],
     currency: 'GBP',
     dateFormat: 'DD/MM/YYYY',
     language: 'en-GB',
@@ -29,7 +44,7 @@ export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: Add
       setFormData({
         name: '',
         code: '',
-        countries: [''],
+        countries: [{ name: '', code: '' }],
         currency: 'GBP',
         dateFormat: 'DD/MM/YYYY',
         language: 'en-GB',
@@ -75,7 +90,7 @@ export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: Add
   const handleAddCountry = () => {
     setFormData({
       ...formData,
-      countries: [...formData.countries, ''],
+      countries: [...formData.countries, { name: '', code: '' }],
     });
   };
 
@@ -88,9 +103,14 @@ export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: Add
     }
   };
 
-  const handleCountryChange = (index: number, value: string) => {
+  const handleCountryChange = (index: number, field: 'name' | 'code', value: string) => {
     const newCountries = [...formData.countries];
-    newCountries[index] = value;
+    if (field === 'code') {
+      // Limit country code to 2 characters and uppercase
+      newCountries[index].code = value.slice(0, 2).toUpperCase();
+    } else {
+      newCountries[index].name = value;
+    }
     setFormData({
       ...formData,
       countries: newCountries,
@@ -112,9 +132,16 @@ export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: Add
       return;
     }
 
-    const filledCountries = formData.countries.filter((c) => c.trim());
+    const filledCountries = formData.countries.filter((c) => c.name.trim() && c.code.trim());
     if (filledCountries.length === 0) {
-      setError('At least one country is required');
+      setError('At least one country with name and code is required');
+      return;
+    }
+
+    // Validate country codes are 2 characters
+    const invalidCodes = filledCountries.filter((c) => c.code.length !== 2);
+    if (invalidCodes.length > 0) {
+      setError('All country codes must be exactly 2 characters (e.g., GB, US, IE)');
       return;
     }
 
@@ -241,21 +268,36 @@ export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: Add
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Countries *
                 </label>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {formData.countries.map((country, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={country}
-                        onChange={(e) => handleCountryChange(index, e.target.value)}
-                        placeholder="e.g., United Kingdom"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
+                    <div key={index} className="flex items-start gap-2">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 flex items-center justify-center text-2xl">
+                            {country.code && getCountryFlag(country.code)}
+                          </div>
+                          <input
+                            type="text"
+                            value={country.code}
+                            onChange={(e) => handleCountryChange(index, 'code', e.target.value)}
+                            placeholder="Code (e.g., GB)"
+                            maxLength={2}
+                            className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase"
+                          />
+                          <input
+                            type="text"
+                            value={country.name}
+                            onChange={(e) => handleCountryChange(index, 'name', e.target.value)}
+                            placeholder="Country name (e.g., United Kingdom)"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
+                      </div>
                       {formData.countries.length > 1 && (
                         <button
                           type="button"
                           onClick={() => handleRemoveCountry(index)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-0.5"
                           aria-label="Remove country"
                         >
                           <TrashIcon className="w-5 h-5" />
@@ -272,6 +314,9 @@ export default function AddRegionModal({ isOpen, onClose, onRegionCreated }: Add
                   <PlusIcon className="w-4 h-4" />
                   Add Country
                 </button>
+                <p className="text-xs text-gray-500 mt-1">
+                  Use 2-letter ISO country codes (GB, US, IE, etc.)
+                </p>
               </div>
 
               {/* Currency */}

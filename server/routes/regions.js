@@ -28,7 +28,7 @@ async function getAdminRegions() {
       if (!regionsMap[regionKey]) {
         regionsMap[regionKey] = {
           id: regionKey,
-          name: formatRegionName(regionKey),
+          name: country.regionName || formatRegionName(regionKey), // Use stored name if available
           code: regionKey,
           countries: [],
           currency: country.currency,
@@ -141,14 +141,15 @@ router.post('/', verifyAuth, async (req, res) => {
     }
 
     // Create new country entries for each country in the region
-    const newCountries = countries.map((countryName, index) => ({
-      code: `${code}-${index + 1}`, // Generate unique country code
-      name: countryName,
+    const newCountries = countries.map((country, index) => ({
+      code: typeof country === 'string' ? `${code}-${index + 1}` : country.code,
+      name: typeof country === 'string' ? country : country.name,
       language,
       currency,
       currencySymbol: getCurrencySymbol(currency),
       dateFormat,
       region: code,
+      regionName: name, // Store the actual region name
       default: index === 0, // First country is default
     }));
 

@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
-import { CubeIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { CubeIcon, ArrowRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
+import AddProductModal from '../../components/admin/AddProductModal';
 
 interface Product {
   id: string;
@@ -21,6 +22,7 @@ export default function ProductsListPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const currentRegion = regions.find((r) => r.id === region);
   const regionName = currentRegion?.name || region;
@@ -59,6 +61,11 @@ export default function ProductsListPage() {
     navigate(`/admin/${region}/products/${productId}`);
   };
 
+  const handleProductCreated = () => {
+    setIsAddModalOpen(false);
+    loadProducts();
+  };
+
   return (
     <AdminLayout
       breadcrumbs={[
@@ -66,11 +73,20 @@ export default function ProductsListPage() {
         { label: 'Products' },
       ]}
     >
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Products</h1>
-        <p className="text-gray-600">
-          Select a product to manage its content and settings
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Products</h1>
+          <p className="text-gray-600">
+            Select a product to manage its content and settings
+          </p>
+        </div>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <PlusIcon className="w-5 h-5" />
+          Add Product
+        </button>
       </div>
 
       {error && (
@@ -125,9 +141,24 @@ export default function ProductsListPage() {
       ) : (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <CubeIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">No products found for this region.</p>
+          <p className="text-gray-600 mb-4">No products found for this region.</p>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Create Your First Product
+          </button>
         </div>
       )}
+
+      {/* Add Product Modal */}
+      <AddProductModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onProductCreated={handleProductCreated}
+        region={region!}
+      />
     </AdminLayout>
   );
 }
