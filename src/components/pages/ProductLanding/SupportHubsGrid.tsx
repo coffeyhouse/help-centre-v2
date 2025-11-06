@@ -6,11 +6,11 @@
  * - Filters hubs by current product
  * - Uses Card component
  * - Links to Topic pages
- * - "View all support hubs" button
+ * - Toggle to view all topics
  * - Responsive grid
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRegion } from '../../../hooks/useRegion';
 import Card from '../../common/Card';
 import Button from '../../common/Button';
@@ -23,6 +23,7 @@ interface SupportHubsGridProps {
 
 export default function SupportHubsGrid({ supportHubs, productId }: SupportHubsGridProps) {
   const { region } = useRegion();
+  const [showAllTopics, setShowAllTopics] = useState(false);
 
   // Filter support hubs by current product
   // Exclude subtopics unless they have showOnProductLanding: true
@@ -40,8 +41,8 @@ export default function SupportHubsGrid({ supportHubs, productId }: SupportHubsG
     });
   }, [supportHubs, productId]);
 
-  // Show first 6 hubs
-  const visibleHubs = filteredHubs.slice(0, 6);
+  // Show first 6 hubs or all based on state
+  const visibleHubs = showAllTopics ? filteredHubs : filteredHubs.slice(0, 6);
 
   return (
     <div className="mb-12">
@@ -68,8 +69,14 @@ export default function SupportHubsGrid({ supportHubs, productId }: SupportHubsG
       {/* View all button */}
       {filteredHubs.length > 6 && (
         <div className="text-center">
-          <Button variant="secondary">
-            View all support hubs ({filteredHubs.length - 6} more)
+          <Button
+            variant="secondary"
+            onClick={() => setShowAllTopics(!showAllTopics)}
+          >
+            {showAllTopics
+              ? 'Show fewer topics'
+              : `View all topics (${filteredHubs.length - 6} more)`
+            }
           </Button>
         </div>
       )}
