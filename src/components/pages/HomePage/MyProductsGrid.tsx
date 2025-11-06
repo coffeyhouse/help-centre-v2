@@ -41,19 +41,11 @@ export default function MyProductsGrid({ products, showAllProducts, onToggleShow
 
   return (
     <div className="mb-12">
-      {/* Section Header with Title and Button */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Your products</h2>
-        <Button
-          variant="secondary"
-          onClick={onToggleShowAll}
-        >
-          {showAllProducts ? 'Show only my products' : 'Show all products'}
-        </Button>
-      </div>
+      {/* Section Title */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Your products</h2>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         {ownedProducts.map((product) => (
           <Card
             key={product.id}
@@ -64,6 +56,16 @@ export default function MyProductsGrid({ products, showAllProducts, onToggleShow
             href={`/${region}/products/${product.id}`}
           />
         ))}
+      </div>
+
+      {/* Toggle Button */}
+      <div className="text-center">
+        <Button
+          variant="secondary"
+          onClick={onToggleShowAll}
+        >
+          {showAllProducts ? 'Show only my products' : 'Show all products'}
+        </Button>
       </div>
     </div>
   );
