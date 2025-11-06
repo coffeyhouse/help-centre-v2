@@ -66,8 +66,8 @@ router.post('/', async (req, res) => {
 
     // Get API credentials from environment variables
     const SEARCH_API_URL = process.env.SEARCH_API_URL;
-    const SEARCH_API_KEY = process.env.SEARCH_API_KEY;
-    const SEARCH_API_TOKEN = process.env.SEARCH_API_TOKEN;
+    const SEARCH_API_AUTH_TOKEN = process.env.SEARCH_API_AUTH_TOKEN;
+    const SEARCH_API_COMPANY_CODE = process.env.SEARCH_API_COMPANY_CODE;
 
     if (!SEARCH_API_URL) {
       console.error('SEARCH_API_URL environment variable not configured');
@@ -76,29 +76,55 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Prepare the request to your external search API
-    // Adjust the structure based on your actual API requirements
-    const searchRequest = {
-      query,
-      country,
-      products,
-      taxonomy,
-      attributes,
-      language,
-      limit,
-      offset
-    };
+    if (!SEARCH_API_AUTH_TOKEN) {
+      console.error('SEARCH_API_AUTH_TOKEN environment variable not configured');
+      return res.status(500).json({
+        error: 'Search service authentication not configured'
+      });
+    }
 
-    // Call your external search API
-    const response = await fetch(SEARCH_API_URL, {
-      method: 'POST',
+    // Map country code to imp_group
+    const impGroupMap = {
+      'gb': 'UK - Guest',
+      'ie': 'Ireland - Guest',
+      'us': 'United States - Guest',
+      'ca': 'Canada - Guest'
+    };
+    const impGroup = impGroupMap[country.toLowerCase()] || 'UK - Guest';
+
+    // Calculate page number from offset and limit
+    const page = Math.floor(offset / limit) + 1;
+
+    // Build query parameters
+    const params = new URLSearchParams({
+      companyCode: SEARCH_API_COMPANY_CODE || 'company_name',
+      appInterface: 'ss',
+      imp_group: impGroup,
+      searchType: 'Keyword',
+      queryText: query,
+      page: page.toString(),
+      searchFavoritesOnly: 'false',
+      sortBy: 'relevance',
+      loggingEnabled: 'true',
+      verboseResult: 'false',
+      translateFacets: 'false'
+    });
+
+    // Add collections (products) - multiple collections separated by semicolon
+    if (products && products.length > 0) {
+      params.set('collections', products.join(';'));
+    }
+
+    // Build full URL
+    const fullUrl = `${SEARCH_API_URL}?${params.toString()}`;
+
+    // Call the search API
+    const response = await fetch(fullUrl, {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        // Add authentication headers as required by your API
-        ...(SEARCH_API_KEY && { 'X-API-Key': SEARCH_API_KEY }),
-        ...(SEARCH_API_TOKEN && { 'Authorization': `Bearer ${SEARCH_API_TOKEN}` }),
-      },
-      body: JSON.stringify(searchRequest)
+        'Accept': 'application/json',
+        'Authorization': `Basic ${SEARCH_API_AUTH_TOKEN}`
+      }
     });
 
     if (!response.ok) {
@@ -114,14 +140,13 @@ router.post('/', async (req, res) => {
     // Parse the response from your external API
     const data = await response.json();
 
+    const total = data.totalHits || 0;
+
     // Transform the response to match SearchResponse interface
-    // Adjust this based on your actual API response structure
     const searchResponse = {
-      results: data.results || data.items || data.hits || [],
-      total: data.total || data.totalHits || data.count || 0,
-      hasMore: data.hasMore !== undefined
-        ? data.hasMore
-        : (offset + limit < (data.total || 0)),
+      results: data.solutions || [],
+      total,
+      hasMore: (offset + limit) < total,
       query,
       filters: {
         country,
@@ -133,20 +158,37 @@ router.post('/', async (req, res) => {
       executionTime: Date.now() - startTime
     };
 
-    // Ensure results match SearchResult interface
-    // Transform if necessary based on your API's response structure
-    searchResponse.results = searchResponse.results.map(result => ({
-      id: result.id || result._id || result.articleId,
-      title: result.title || result.name,
-      summary: result.summary || result.description || result.excerpt || '',
-      productId: result.productId || result.product,
-      topicId: result.topicId || result.topic || result.categoryId,
-      url: result.url || result.link || result.path,
-      taxonomy: result.taxonomy || result.categories || result.tags,
-      attributes: result.attributes || result.metadata || {},
-      language: result.language || result.lang,
-      relevanceScore: result.relevanceScore || result.score || result._score
-    }));
+    // Transform each solution to match SearchResult interface
+    searchResponse.results = searchResponse.results.map(solution => {
+      // Use the first collection as productId (simplified for now)
+      const productId = solution.collections && solution.collections.length > 0
+        ? solution.collections[0]
+        : undefined;
+
+      // Generate URL based on solution ID
+      const url = `/articles/${solution.templateSolutionID || solution.id}`;
+
+      // Extract taxonomy from categoryCode
+      const taxonomy = solution.categoryCode ? [solution.categoryCode] : [];
+
+      return {
+        id: solution.templateSolutionID || solution.id,
+        title: solution.title,
+        summary: solution.summary,
+        productId,
+        topicId: solution.categoryCode,
+        url,
+        taxonomy,
+        attributes: {
+          solutionType: solution.solutionType,
+          categoryCode: solution.categoryCode,
+          keywords: solution.keywords,
+          collections: solution.collections
+        },
+        language: language || 'en', // Use requested language or default to 'en'
+        relevanceScore: solution.score
+      };
+    });
 
     res.json(searchResponse);
 

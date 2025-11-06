@@ -60,117 +60,116 @@ VITE_API_URL=http://localhost:3001
 VITE_USE_MOCK_SEARCH=false
 ```
 
-### Step 2: Customize the Server Route for Your API
+### Step 2: How the API Integration Works
 
-Open `/server/routes/search.js` and adjust it for your specific API:
+The server route in `/server/routes/search.js` is configured to work with your search API:
 
 #### Request Format
 
-The route sends this payload to your search API:
+The route builds a GET request with these query parameters:
 
 ```javascript
 {
-  query: string,        // Search query
-  country: string,      // Country code (gb, ie, us, ca)
-  products?: string[],  // Optional: Product IDs to filter
-  taxonomy?: string,    // Optional: Taxonomy category
-  attributes?: object,  // Optional: Key-value filters
-  language?: string,    // Optional: Language code
-  limit?: number,       // Optional: Max results (default: 50)
-  offset?: number       // Optional: Pagination offset (default: 0)
+  companyCode: string,        // From SEARCH_API_COMPANY_CODE env var
+  appInterface: 'ss',         // Static
+  imp_group: string,          // Mapped from country (gb -> "UK - Guest", etc.)
+  searchType: 'Keyword',      // Static
+  queryText: string,          // Search query
+  page: number,               // Calculated from offset/limit
+  collections: string,        // Products joined by semicolon (product_a;product_b)
+  searchFavoritesOnly: false, // Static
+  sortBy: 'relevance',        // Static
+  loggingEnabled: true,       // Static
+  verboseResult: false,       // Static
+  translateFacets: false      // Static
 }
 ```
 
-**Customize the request body** to match your API's expected format:
+#### Country to imp_group Mapping
 
 ```javascript
-// Example: If your API expects different field names
-const searchRequest = {
-  q: query,              // Your API uses 'q' instead of 'query'
-  locale: country,       // Your API uses 'locale' instead of 'country'
-  product_ids: products, // Your API uses snake_case
-  // ... etc
-};
+'gb' -> 'UK - Guest'
+'ie' -> 'Ireland - Guest'
+'us' -> 'United States - Guest'
+'ca' -> 'Canada - Guest'
 ```
 
-#### Authentication Headers
+#### Authentication
 
-The route supports two authentication methods (configure which one you need):
+The route uses Basic authentication:
 
 ```javascript
 headers: {
-  'Content-Type': 'application/json',
-
-  // Option 1: API Key authentication
-  ...(SEARCH_API_KEY && { 'X-API-Key': SEARCH_API_KEY }),
-
-  // Option 2: Bearer token authentication
-  ...(SEARCH_API_TOKEN && { 'Authorization': `Bearer ${SEARCH_API_TOKEN}` }),
+  'Accept': 'application/json',
+  'Authorization': `Basic ${SEARCH_API_AUTH_TOKEN}`
 }
 ```
 
-**Customize the headers** to match your API's authentication:
+The `SEARCH_API_AUTH_TOKEN` should be your base64-encoded credentials (the long token from your curl example).
 
-```javascript
-headers: {
-  'Content-Type': 'application/json',
-  'API-Key': SEARCH_API_KEY,           // Your API's specific header name
-  'X-Custom-Auth': SEARCH_API_TOKEN,   // Or a custom header
-  'X-Client-ID': 'help-centre-app',    // Additional headers if needed
+#### API Response Structure
+
+Your search API returns:
+
+```json
+{
+  "solutions": [
+    {
+      "templateSolutionID": "PRE216701",
+      "title": "VAT registration and VAT schemes",
+      "score": 1,
+      "summary": "An overview of VAT, registration...",
+      "keywords": "VAT vat HMRC...",
+      "collections": ["custom_gb_en_fifty_accounts"],
+      "categoryCode": "custom",
+      "id": "200427112407550",
+      "solutionType": "Template Solution"
+    }
+  ],
+  "totalHits": 775,
+  "browsePaths": [...],
+  "attributes": [...],
+  "collections": [...]
 }
 ```
 
 #### Response Transformation
 
-The route transforms your API's response into the `SearchResponse` format:
+The route transforms this response into the `SearchResponse` format:
 
 ```javascript
-const searchResponse = {
-  results: data.results || data.items || data.hits || [],
-  total: data.total || data.totalHits || data.count || 0,
-  hasMore: data.hasMore !== undefined
-    ? data.hasMore
-    : (offset + limit < (data.total || 0)),
+// Map the API response to SearchResponse format
+{
+  results: data.solutions,               // Array of solutions
+  total: data.totalHits,                 // Total number of hits
+  hasMore: (offset + limit) < data.totalHits,
   query,
-  filters: { country, products, taxonomy, attributes, language },
+  filters: { country, products },
   executionTime: Date.now() - startTime
-};
+}
 ```
 
-**Customize the mapping** based on your API's response structure:
+Each solution is transformed to a `SearchResult`:
 
 ```javascript
-// Example: Your API returns different field names
-const searchResponse = {
-  results: data.data.articles,           // Your results are nested in data.articles
-  total: data.meta.total_count,          // Your total is in meta.total_count
-  hasMore: data.meta.has_next_page,      // Your API provides has_next_page
-  query,
-  filters: { country, products, taxonomy, attributes, language },
-  executionTime: Date.now() - startTime
-};
+{
+  id: solution.templateSolutionID,       // PRE216701
+  title: solution.title,                 // "VAT registration and VAT schemes"
+  summary: solution.summary,             // Article summary
+  productId: solution.collections[0],    // "custom_gb_en_fifty_accounts"
+  topicId: solution.categoryCode,        // "custom"
+  url: `/articles/${solution.id}`,       // Generated URL
+  taxonomy: [solution.categoryCode],     // ["custom"]
+  attributes: {
+    solutionType: solution.solutionType,
+    categoryCode: solution.categoryCode,
+    keywords: solution.keywords,
+    collections: solution.collections    // Original collections array
+  },
+  language: 'en',
+  relevanceScore: solution.score         // 1, 0.98333865, etc.
+}
 ```
-
-#### Result Transformation
-
-Each search result is transformed to match the `SearchResult` interface:
-
-```javascript
-searchResponse.results = searchResponse.results.map(result => ({
-  id: result.id || result._id || result.articleId,
-  title: result.title || result.name,
-  summary: result.summary || result.description || result.excerpt || '',
-  productId: result.productId || result.product,
-  topicId: result.topicId || result.topic || result.categoryId,
-  url: result.url || result.link || result.path,
-  taxonomy: result.taxonomy || result.categories || result.tags,
-  attributes: result.attributes || result.metadata || {},
-  language: result.language || result.lang,
-  relevanceScore: result.relevanceScore || result.score || result._score
-}));
-```
-
-**Customize the result mapping** to match your API's result structure.
 
 ### Step 3: Test the Integration
 
@@ -194,11 +193,45 @@ Test the search endpoint:
 curl -X POST http://localhost:3001/api/search \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "installation",
+    "query": "vat",
     "country": "gb",
-    "products": ["product-a"],
+    "products": ["custom_gb_en_fifty_accounts"],
     "limit": 10
   }'
+```
+
+Expected response:
+
+```json
+{
+  "results": [
+    {
+      "id": "PRE216701",
+      "title": "VAT registration and VAT schemes",
+      "summary": "An overview of VAT, registration and the common VAT schemes...",
+      "productId": "custom_gb_en_fifty_accounts",
+      "topicId": "custom",
+      "url": "/articles/200427112407550",
+      "taxonomy": ["custom"],
+      "attributes": {
+        "solutionType": "Template Solution",
+        "categoryCode": "custom",
+        "keywords": "VAT vat HMRC Customs and Excise VAT scheme",
+        "collections": ["custom_gb_en_fifty_accounts"]
+      },
+      "language": "en",
+      "relevanceScore": 1
+    }
+  ],
+  "total": 775,
+  "hasMore": true,
+  "query": "vat",
+  "filters": {
+    "country": "gb",
+    "products": ["custom_gb_en_fifty_accounts"]
+  },
+  "executionTime": 245
+}
 ```
 
 #### Test from the Client
@@ -224,7 +257,9 @@ During development, you can use mock data instead of calling the real API:
 VITE_USE_MOCK_SEARCH=true
 ```
 
-This will use the existing mock search results from `/public/data/regions/{region}/search-results.json`.
+This will bypass the server API and use the existing mock search results from `/public/data/regions/{region}/search-results.json`.
+
+When `VITE_USE_MOCK_SEARCH=false` (or not set), the client will call your server's `/api/search` endpoint, which then calls your real search API.
 
 ### Step 5: Error Handling
 
