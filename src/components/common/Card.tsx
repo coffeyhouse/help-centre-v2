@@ -37,10 +37,22 @@ export default function Card({ title, description, type, icon, onClick, href }: 
           )}
         </div>
 
-        {/* Title */}
-        <h3 className="text-lg font-semibold mb-2 text-gray-900">
-          {title}
-        </h3>
+        {/* Title with Type Pill */}
+        <div className="flex items-center gap-2 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {title}
+          </h3>
+          {/* Type Pill for cloud/desktop products */}
+          {(type === 'cloud' || type === 'desktop') && (
+            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+              type === 'cloud'
+                ? 'bg-blue-100 text-blue-700'
+                : 'bg-gray-200 text-gray-700'
+            }`}>
+              {type === 'cloud' ? 'Cloud' : 'Desktop'}
+            </span>
+          )}
+        </div>
 
         {/* Description */}
         {description && (
