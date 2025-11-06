@@ -6,10 +6,16 @@ import { useDragAndDrop } from '../../../hooks/useDragAndDrop';
 
 interface Article {
   id: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   type?: 'article' | 'subtopic';
   countries?: string[];
+}
+
+interface Topic {
+  id: string;
+  title: string;
+  description: string;
 }
 
 interface ArticlesEditorProps {
@@ -17,9 +23,10 @@ interface ArticlesEditorProps {
   topicId: string;
   articles: Article[];
   onChange: (articles: Article[]) => void;
+  topicsData?: Topic[];
 }
 
-export default function ArticlesEditor({ productId, topicId, articles, onChange }: ArticlesEditorProps) {
+export default function ArticlesEditor({ productId, topicId, articles, onChange, topicsData }: ArticlesEditorProps) {
   const [selectedArticleIndex, setSelectedArticleIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -170,6 +177,7 @@ export default function ArticlesEditor({ productId, topicId, articles, onChange 
             article={null}
             onSave={handleSaveNew}
             onCancel={handleCancel}
+            topicsData={topicsData}
             isNew
           />
         ) : selectedArticle ? (
@@ -188,6 +196,7 @@ export default function ArticlesEditor({ productId, topicId, articles, onChange 
               article={selectedArticle}
               onSave={handleUpdateArticle}
               onCancel={handleCancel}
+              topicsData={topicsData}
             />
           </>
         ) : (
@@ -217,9 +226,10 @@ interface ArticleFormProps {
   onSave: (article: Article) => void;
   onCancel: () => void;
   isNew?: boolean;
+  topicsData?: Topic[];
 }
 
-function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
+function ArticleForm({ article, onSave, onCancel, isNew, topicsData }: ArticleFormProps) {
   const [formData, setFormData] = useState<Article>(
     article || {
       id: '',
@@ -229,11 +239,16 @@ function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
       countries: [],
     }
   );
+  const [overrideSubtopic, setOverrideSubtopic] = useState(false);
 
   // Update form data when article changes
   useEffect(() => {
     if (article) {
       setFormData(article);
+      // Check if subtopic has explicit title/description (override is enabled)
+      setOverrideSubtopic(
+        article.type === 'subtopic' && !!(article.title || article.description)
+      );
     } else if (!isNew) {
       setFormData({
         id: '',
@@ -242,12 +257,26 @@ function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
         type: 'article',
         countries: [],
       });
+      setOverrideSubtopic(false);
     }
   }, [article, isNew]);
 
+  // Find referenced topic for subtopics
+  const referencedTopic = formData.type === 'subtopic' && formData.id && topicsData
+    ? topicsData.find((t) => t.id === formData.id)
+    : null;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+
+    // For subtopics without override, remove title/description
+    const dataToSave = { ...formData };
+    if (formData.type === 'subtopic' && !overrideSubtopic) {
+      delete dataToSave.title;
+      delete dataToSave.description;
+    }
+
+    onSave(dataToSave);
   };
 
   const handleCountryToggle = (country: string) => {
@@ -256,6 +285,29 @@ function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
       setFormData({ ...formData, countries: countries.filter((c) => c !== country) });
     } else {
       setFormData({ ...formData, countries: [...countries, country] });
+    }
+  };
+
+  const handleOverrideToggle = () => {
+    const newOverride = !overrideSubtopic;
+    setOverrideSubtopic(newOverride);
+
+    // If disabling override, clear title and description
+    if (!newOverride) {
+      setFormData({
+        ...formData,
+        title: '',
+        description: '',
+      });
+    }
+  };
+
+  const handleTypeChange = (newType: 'article' | 'subtopic') => {
+    setFormData({ ...formData, type: newType });
+
+    // When changing to subtopic, disable override by default
+    if (newType === 'subtopic') {
+      setOverrideSubtopic(false);
     }
   };
 
@@ -281,36 +333,80 @@ function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
         )}
       </div>
 
+      {/* Override Checkbox for Subtopics */}
+      {formData.type === 'subtopic' && (
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={overrideSubtopic}
+              onChange={handleOverrideToggle}
+              className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              Override title and description
+            </span>
+          </label>
+          <p className="text-xs text-gray-600 mt-1 ml-6">
+            By default, subtopics use the title and description from the referenced topic
+          </p>
+        </div>
+      )}
+
       {/* Title */}
       <div>
         <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-          Title *
+          Title {formData.type !== 'subtopic' || overrideSubtopic ? '*' : ''}
         </label>
         <input
           type="text"
           id="title"
-          value={formData.title}
+          value={
+            formData.type === 'subtopic' && !overrideSubtopic && referencedTopic
+              ? referencedTopic.title
+              : formData.title || ''
+          }
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-600"
           placeholder="e.g., Install your software"
-          required
+          required={formData.type !== 'subtopic' || overrideSubtopic}
+          disabled={formData.type === 'subtopic' && !overrideSubtopic}
         />
+        {formData.type === 'subtopic' && !overrideSubtopic && (
+          <p className="text-xs text-gray-500 mt-1">
+            {referencedTopic
+              ? 'Showing title from referenced topic'
+              : 'No topic found with this ID'}
+          </p>
+        )}
       </div>
 
       {/* Description */}
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          Description *
+          Description {formData.type !== 'subtopic' || overrideSubtopic ? '*' : ''}
         </label>
         <textarea
           id="description"
-          value={formData.description}
+          value={
+            formData.type === 'subtopic' && !overrideSubtopic && referencedTopic
+              ? referencedTopic.description
+              : formData.description || ''
+          }
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-600"
           placeholder="Brief description of the article"
-          required
+          required={formData.type !== 'subtopic' || overrideSubtopic}
+          disabled={formData.type === 'subtopic' && !overrideSubtopic}
         />
+        {formData.type === 'subtopic' && !overrideSubtopic && (
+          <p className="text-xs text-gray-500 mt-1">
+            {referencedTopic
+              ? 'Showing description from referenced topic'
+              : 'No topic found with this ID'}
+          </p>
+        )}
       </div>
 
       {/* Type */}
@@ -321,7 +417,7 @@ function ArticleForm({ article, onSave, onCancel, isNew }: ArticleFormProps) {
         <select
           id="type"
           value={formData.type || 'article'}
-          onChange={(e) => setFormData({ ...formData, type: e.target.value as 'article' | 'subtopic' })}
+          onChange={(e) => handleTypeChange(e.target.value as 'article' | 'subtopic')}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="article">Article</option>

@@ -21,6 +21,7 @@ export default function ProductTopicArticlesPage() {
   const { token } = useAdminAuth();
   const { regions } = useAdminRegion();
   const [data, setData] = useState<any>(null);
+  const [topicsData, setTopicsData] = useState<any>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [topic, setTopic] = useState<Topic | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,6 +80,7 @@ export default function ProductTopicArticlesPage() {
       }
 
       setTopic(foundTopic);
+      setTopicsData(topicsResult.data.supportHubs || []);
 
       // Load articles
       const articlesResponse = await fetch(`/api/files/${region}-articles`, {
@@ -206,6 +208,7 @@ export default function ProductTopicArticlesPage() {
             topicId={topicId!}
             articles={articles}
             onChange={handleArticlesChange}
+            topicsData={topicsData}
           />
         </div>
       ) : null}
