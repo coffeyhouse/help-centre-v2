@@ -34,6 +34,14 @@ import DashboardPage from './pages/admin/DashboardPage';
 import EditorPage from './pages/admin/EditorPage';
 import RegionSelectorPage from './pages/admin/RegionSelectorPage';
 import MainMenuPage from './pages/admin/MainMenuPage';
+import IncidentsPage from './pages/admin/IncidentsPage';
+import PopupsPage from './pages/admin/PopupsPage';
+import ContactOptionsPage from './pages/admin/ContactOptionsPage';
+import ReleaseNotesManagementPage from './pages/admin/ReleaseNotesManagementPage';
+import RegionSettingsPage from './pages/admin/RegionSettingsPage';
+import ProductsListPage from './pages/admin/ProductsListPage';
+import ProductDetailPage from './pages/admin/ProductDetailPage';
+import ProductTopicsListPage from './pages/admin/ProductTopicsListPage';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 
 function App() {
@@ -61,6 +69,74 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MainMenuPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Region-level content pages */}
+            <Route
+              path="/admin/:region/incidents"
+              element={
+                <ProtectedRoute>
+                  <IncidentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/popups"
+              element={
+                <ProtectedRoute>
+                  <PopupsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/contact"
+              element={
+                <ProtectedRoute>
+                  <ContactOptionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/release-notes"
+              element={
+                <ProtectedRoute>
+                  <ReleaseNotesManagementPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/settings"
+              element={
+                <ProtectedRoute>
+                  <RegionSettingsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Product-level pages */}
+            <Route
+              path="/admin/:region/products"
+              element={
+                <ProtectedRoute>
+                  <ProductsListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/products/:productId"
+              element={
+                <ProtectedRoute>
+                  <ProductDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:region/products/:productId/topics"
+              element={
+                <ProtectedRoute>
+                  <ProductTopicsListPage />
                 </ProtectedRoute>
               }
             />
