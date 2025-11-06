@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import ConfirmModal from '../ConfirmModal';
+import DraggableListItem from '../DraggableListItem';
+import { useDragAndDrop } from '../../../hooks/useDragAndDrop';
+import { useFormChangeTracking } from '../../../hooks/useFormChangeTracking';
 
 interface SupportHub {
   id: string;
@@ -36,6 +39,54 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   }, {});
 
   const products = Object.keys(topicsByProduct).sort();
+  const currentProductTopics = selectedProductId ? topicsByProduct[selectedProductId] : [];
+
+  // Get topics for selected product only (for drag and drop)
+  const currentTopics = currentProductTopics.map((t: any) => data.supportHubs[t.originalIndex]);
+
+  // Drag and drop handlers
+  const {
+    draggedIndex,
+    dragOverIndex,
+    handleDragStart,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop: handleDropRaw,
+    handleDragEnd,
+  } = useDragAndDrop(currentTopics, (reorderedTopics) => {
+    // We need to update the full supportHubs array, not just the current product's topics
+    const otherTopics = data.supportHubs.filter((t) => t.productId !== selectedProductId);
+    onChange({
+      ...data,
+      supportHubs: [...otherTopics, ...reorderedTopics],
+    });
+  });
+
+  // Wrapper to also update selected index on drop
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    if (selectedTopicIndex !== null && draggedIndex !== null) {
+      const selectedTopic = currentTopics[currentTopics.findIndex((_, i) =>
+        data.supportHubs.indexOf(_) === selectedTopicIndex
+      )];
+
+      handleDropRaw(e, dropIndex);
+
+      // Find the new index of the selected topic after reorder
+      if (selectedTopic) {
+        const localSelectedIndex = currentTopics.findIndex((_, i) =>
+          data.supportHubs.indexOf(_) === selectedTopicIndex
+        );
+
+        if (localSelectedIndex === draggedIndex) {
+          // The selected item was dragged - update to new position
+          const newGlobalIndex = data.supportHubs.filter(t => t.productId !== selectedProductId).length + dropIndex;
+          setTimeout(() => setSelectedTopicIndex(newGlobalIndex), 0);
+        }
+      }
+    } else {
+      handleDropRaw(e, dropIndex);
+    }
+  };
 
   const handleSelectProduct = (productId: string) => {
     setSelectedProductId(productId);
@@ -54,16 +105,18 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   };
 
   const handleSaveNew = (topic: SupportHub) => {
-    const updated = { ...data };
-    updated.supportHubs.push(topic);
-    onChange(updated);
+    onChange({
+      ...data,
+      supportHubs: [...data.supportHubs, topic],
+    });
     setIsAddingNew(false);
   };
 
   const handleUpdateTopic = (index: number, updatedTopic: SupportHub) => {
-    const updated = { ...data };
-    updated.supportHubs[index] = updatedTopic;
-    onChange(updated);
+    onChange({
+      ...data,
+      supportHubs: data.supportHubs.map((t, i) => (i === index ? updatedTopic : t)),
+    });
   };
 
   const handleDeleteTopic = (index: number) => {
@@ -74,9 +127,10 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
 
   const confirmDelete = () => {
     if (topicToDelete) {
-      const updated = { ...data };
-      updated.supportHubs.splice(topicToDelete.index, 1);
-      onChange(updated);
+      onChange({
+        ...data,
+        supportHubs: data.supportHubs.filter((_, i) => i !== topicToDelete.index),
+      });
       setSelectedTopicIndex(null);
       setTopicToDelete(null);
     }
@@ -86,8 +140,6 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
     setIsAddingNew(false);
     setSelectedTopicIndex(null);
   };
-
-  const currentProductTopics = selectedProductId ? topicsByProduct[selectedProductId] : [];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -124,7 +176,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
         </div>
       </div>
 
-      {/* Middle Panel - Topics List */}
+      {/* Middle Panel - Topics List (Draggable) */}
       <div className="space-y-4">
         {selectedProductId ? (
           <>
@@ -142,17 +194,21 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
             </div>
 
             <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
-              {currentProductTopics.map((topic: any) => (
-                <button
+              {currentProductTopics.map((topic: any, localIndex: number) => (
+                <DraggableListItem
                   key={topic.originalIndex}
+                  index={localIndex}
+                  isSelected={selectedTopicIndex === topic.originalIndex}
+                  isDragging={draggedIndex === localIndex}
+                  isDragOver={dragOverIndex === localIndex}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onDragEnd={handleDragEnd}
                   onClick={() => handleSelectTopic(topic.originalIndex)}
-                  className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                    selectedTopicIndex === topic.originalIndex
-                      ? 'bg-green-50 border-green-300'
-                      : 'bg-white border-gray-200 hover:border-gray-300'
-                  }`}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-1">
                     <div className="flex-1">
                       <div className="font-medium text-sm text-gray-900">{topic.title}</div>
                       <div className="text-xs text-gray-500 mt-1">{topic.id}</div>
@@ -162,9 +218,9 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
                         </div>
                       )}
                     </div>
-                    <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                    <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0 ml-2" />
                   </div>
-                </button>
+                </DraggableListItem>
               ))}
             </div>
           </>
@@ -230,7 +286,11 @@ interface TopicFormProps {
 }
 
 function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSave, onDelete, onCancel }: TopicFormProps) {
-  const [formData, setFormData] = useState<SupportHub>(
+  const [hasParentTopic, setHasParentTopic] = useState(!!topic?.parentTopicId);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  // Use the change tracking hook
+  const { formData, setFormData, hasChanges } = useFormChangeTracking<SupportHub>(
     topic || {
       id: '',
       title: '',
@@ -242,40 +302,22 @@ function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSa
     }
   );
 
-  const [hasParentTopic, setHasParentTopic] = useState(false);
-
-  // Update form data when topic prop changes
-  useEffect(() => {
-    if (topic) {
-      setFormData(topic);
-      setHasParentTopic(!!topic.parentTopicId);
-    } else {
-      setFormData({
-        id: '',
-        title: '',
-        description: '',
-        icon: '',
-        productId: defaultProductId,
-        parentTopicId: '',
-        showOnProductLanding: true,
-      });
-      setHasParentTopic(false);
-    }
-  }, [topic, defaultProductId]);
-
   const handleChange = (field: keyof SupportHub, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (formData) {
+      setFormData({ ...formData, [field]: value });
+    }
   };
 
   const handleParentTopicToggle = (checked: boolean) => {
     setHasParentTopic(checked);
-    if (!checked) {
-      setFormData((prev) => ({ ...prev, parentTopicId: '' }));
+    if (!checked && formData) {
+      setFormData({ ...formData, parentTopicId: '' });
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData) return;
 
     // Remove optional fields if empty
     const cleaned: any = { ...formData };
@@ -285,156 +327,193 @@ function TopicForm({ topic, isNew, defaultProductId, availableParentTopics, onSa
     }
 
     onSave(cleaned);
+    onCancel(); // Close form after saving
   };
 
+  const handleCancel = () => {
+    if (hasChanges) {
+      setShowCancelConfirm(true);
+    } else {
+      onCancel();
+    }
+  };
+
+  const confirmCancel = () => {
+    setShowCancelConfirm(false);
+    onCancel();
+  };
+
+  if (!formData) return null;
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {isNew ? 'New Topic' : 'Edit Topic'}
-        </h3>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="text-gray-400 hover:text-gray-600"
-        >
-          <XMarkIcon className="h-6 w-6" />
-        </button>
-      </div>
+    <>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {isNew ? 'New Topic' : 'Edit Topic'}
+          </h3>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          ID <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          value={formData.id}
-          onChange={(e) => handleChange('id', e.target.value)}
-          disabled={!isNew}
-          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            !isNew ? 'bg-gray-100 cursor-not-allowed' : ''
-          }`}
-          placeholder="e.g., install-software"
-          required
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          {isNew ? 'Unique identifier (use lowercase with hyphens)' : 'ID cannot be changed after creation'}
-        </p>
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            ID <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={formData.id}
+            onChange={(e) => handleChange('id', e.target.value)}
+            disabled={!isNew}
+            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+              !isNew ? 'bg-gray-100 cursor-not-allowed' : ''
+            }`}
+            placeholder="e.g., install-software"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            {isNew ? 'Unique identifier (use lowercase with hyphens)' : 'ID cannot be changed after creation'}
+          </p>
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Title <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          value={formData.title}
-          onChange={(e) => handleChange('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="e.g., Install your software"
-          required
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => handleChange('title', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="e.g., Install your software"
+            required
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) => handleChange('description', e.target.value)}
-          rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Brief description of this topic..."
-          required
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            value={formData.description}
+            onChange={(e) => handleChange('description', e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Brief description of this topic..."
+            required
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Icon <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          value={formData.icon}
-          onChange={(e) => handleChange('icon', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="e.g., download, bank, calendar"
-          required
-        />
-        <p className="text-xs text-gray-500 mt-1">Icon name for UI display</p>
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Icon <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={formData.icon}
+            onChange={(e) => handleChange('icon', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="e.g., download, bank, calendar"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">Icon name for UI display</p>
+        </div>
 
-      <div className="space-y-3">
+        <div className="space-y-3">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="hasParentTopic"
+              checked={hasParentTopic}
+              onChange={(e) => handleParentTopicToggle(e.target.checked)}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="hasParentTopic" className="ml-2 text-sm font-medium text-gray-700">
+              This is a subtopic
+            </label>
+          </div>
+
+          {hasParentTopic && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Parent Topic <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.parentTopicId || ''}
+                onChange={(e) => handleChange('parentTopicId', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required={hasParentTopic}
+              >
+                <option value="">Select parent topic...</option>
+                {availableParentTopics
+                  .filter((t: any) => t.id !== formData.id) // Don't allow selecting itself
+                  .map((t: any) => (
+                    <option key={t.id} value={t.id}>
+                      {t.title} ({t.id})
+                    </option>
+                  ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">Select the parent topic this belongs under</p>
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center">
           <input
             type="checkbox"
-            id="hasParentTopic"
-            checked={hasParentTopic}
-            onChange={(e) => handleParentTopicToggle(e.target.checked)}
+            id="showOnProductLanding"
+            checked={formData.showOnProductLanding !== false}
+            onChange={(e) => handleChange('showOnProductLanding', e.target.checked)}
             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
           />
-          <label htmlFor="hasParentTopic" className="ml-2 text-sm font-medium text-gray-700">
-            This is a subtopic
+          <label htmlFor="showOnProductLanding" className="ml-2 text-sm text-gray-700">
+            Show on Product Landing Page
           </label>
         </div>
 
-        {hasParentTopic && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Parent Topic <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={formData.parentTopicId || ''}
-              onChange={(e) => handleChange('parentTopicId', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required={hasParentTopic}
-            >
-              <option value="">Select parent topic...</option>
-              {availableParentTopics
-                .filter((t: any) => t.id !== formData.id) // Don't allow selecting itself
-                .map((t: any) => (
-                  <option key={t.id} value={t.id}>
-                    {t.title} ({t.id})
-                  </option>
-                ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">Select the parent topic this belongs under</p>
-          </div>
-        )}
-      </div>
-
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          id="showOnProductLanding"
-          checked={formData.showOnProductLanding !== false}
-          onChange={(e) => handleChange('showOnProductLanding', e.target.checked)}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-        />
-        <label htmlFor="showOnProductLanding" className="ml-2 text-sm text-gray-700">
-          Show on Product Landing Page
-        </label>
-      </div>
-
-      <div className="flex gap-3 pt-4 border-t border-gray-200">
-        <button
-          type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          {isNew ? 'Create Topic' : 'Save Changes'}
-        </button>
-        {onDelete && (
+        <div className="flex gap-3 pt-4 border-t border-gray-200">
           <button
             type="button"
-            onClick={onDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            onClick={handleCancel}
+            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <TrashIcon className="h-5 w-5" />
+            Cancel
           </button>
-        )}
-      </div>
-    </form>
+          <button
+            type="submit"
+            disabled={!hasChanges && !isNew}
+            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          >
+            {isNew ? 'Add Topic' : 'Apply Changes'}
+          </button>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <TrashIcon className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Cancel Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showCancelConfirm}
+        onClose={() => setShowCancelConfirm(false)}
+        onConfirm={confirmCancel}
+        title="Unsaved Changes"
+        message="You have unsaved changes. Are you sure you want to cancel? All changes will be lost."
+        confirmText="Yes, Cancel"
+        cancelText="Keep Editing"
+        confirmStyle="danger"
+      />
+    </>
   );
 }
-
