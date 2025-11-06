@@ -305,6 +305,27 @@ export interface PersonaContextValue {
   setPersona: (persona: PersonaId) => void;
 }
 
+export interface AuthContextValue {
+  user: User | null;
+  login: (userId: string) => void;
+  logout: () => void;
+  loading: boolean;
+}
+
+// ==================== User Types ====================
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  persona: PersonaId;
+  ownedProducts: string[];
+}
+
+export interface UsersData {
+  users: User[];
+}
+
 // ==================== Search Types ====================
 
 export interface SearchResult {

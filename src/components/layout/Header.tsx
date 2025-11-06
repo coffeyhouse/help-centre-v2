@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRegion } from '../../hooks/useRegion';
 import RegionSelector from './RegionSelector';
+import UserMenu from './UserMenu';
 import Icon from '../common/Icon';
 
 export default function Header() {
@@ -50,6 +51,9 @@ export default function Header() {
 
           {/* Right section */}
           <div className="flex items-center gap-4">
+            {/* User Menu */}
+            <UserMenu />
+
             {/* Region Selector */}
             <RegionSelector />
 

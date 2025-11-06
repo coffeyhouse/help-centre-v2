@@ -12,16 +12,19 @@
 import { useRegion } from '../hooks/useRegion';
 import { useData } from '../hooks/useData';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useAuth } from '../hooks/useAuth';
 import { loadProducts } from '../utils/dataLoader';
 import Hero from '../components/common/Hero';
 import PersonaTabs from '../components/pages/HomePage/PersonaTabs';
 import ProductGrid from '../components/pages/HomePage/ProductGrid';
+import MyProductsGrid from '../components/pages/HomePage/MyProductsGrid';
 import HotTopics from '../components/pages/HomePage/HotTopics';
 import QuickAccessCards from '../components/pages/HomePage/QuickAccessCards';
 import type { ProductsData } from '../types';
 
 export default function HomePage() {
   const { region, regionConfig, loading: regionLoading, error: regionError } = useRegion();
+  const { user } = useAuth();
 
   // Set page title
   usePageTitle('Home');
@@ -57,16 +60,30 @@ export default function HomePage() {
     );
   }
 
+  // Personalized greeting for logged-in users
+  const heroTitle = user
+    ? `Hi, ${user.name.split(' ')[0]}, how can we help you?`
+    : 'Welcome to the Help Centre';
+
+  const heroSubtitle = user
+    ? `Find help and support for your products`
+    : `Find help and support for all our products in ${regionConfig?.displayName || 'your region'}`;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <Hero
-        title="Welcome to the Help Centre"
-        subtitle={`Find help and support for all our products in ${regionConfig?.displayName || 'your region'}`}
+        title={heroTitle}
+        subtitle={heroSubtitle}
       />
 
       {/* Main Content */}
       <div className="container-custom py-12">
+        {/* My Products Section - Only shown when logged in */}
+        {user && productsData && (
+          <MyProductsGrid products={productsData.products} />
+        )}
+
         {/* Persona Tabs */}
         <PersonaTabs />
 

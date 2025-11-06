@@ -11,6 +11,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { RegionProvider } from './context/RegionContext';
 import { PersonaProvider } from './context/PersonaContext';
+import { AuthProvider } from './context/AuthContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { AdminRegionProvider } from './context/AdminRegionContext';
 
@@ -193,9 +194,10 @@ function App() {
             element={
               <RegionProvider>
                 <PersonaProvider>
-                  <div className="min-h-screen flex flex-col">
-                    {/* Header with navigation and region selector */}
-                    <Header />
+                  <AuthProvider>
+                    <div className="min-h-screen flex flex-col">
+                      {/* Header with navigation and region selector */}
+                      <Header />
 
                     {/* Main content area with Layout (includes BannerManager) */}
                     <main className="flex-grow">
@@ -219,9 +221,10 @@ function App() {
                       </Routes>
                     </main>
 
-                    {/* Footer with links and information */}
-                    <Footer />
-                  </div>
+                      {/* Footer with links and information */}
+                      <Footer />
+                    </div>
+                  </AuthProvider>
                 </PersonaProvider>
               </RegionProvider>
             }
