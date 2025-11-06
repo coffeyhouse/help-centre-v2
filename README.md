@@ -15,6 +15,8 @@ A modern, multi-region customer support portal built with React, TypeScript, and
 - **JSON-Powered Content**: Easy content management without backend changes
 - **TypeScript**: Full type safety across the application
 - **Automatic Scroll Management**: Smart scroll-to-top on page navigation
+- **Search Integration**: External search API with server-side proxy, pagination, and knowledgebase linking
+- **Popup Modal System**: Contextual popups with flexible triggers and targeting
 
 ## Tech Stack
 
@@ -39,7 +41,11 @@ help-centre-v2/
 │   │   │   ├── Hero.tsx
 │   │   │   ├── Icon.tsx
 │   │   │   ├── IncidentBanner.tsx
-│   │   │   └── ScrollToTop.tsx
+│   │   │   ├── Modal.tsx
+│   │   │   ├── PopupManager.tsx
+│   │   │   ├── PopupModal.tsx
+│   │   │   ├── ScrollToTop.tsx
+│   │   │   └── SearchBar.tsx
 │   │   ├── layout/          # Layout components
 │   │   │   ├── Breadcrumb.tsx
 │   │   │   ├── Footer.tsx
@@ -60,14 +66,17 @@ help-centre-v2/
 │   │   └── useRegion.ts
 │   ├── pages/               # Page components
 │   │   ├── ContactPage.tsx
+│   │   ├── CountrySelector.tsx
 │   │   ├── HomePage.tsx
 │   │   ├── ProductLanding.tsx
 │   │   ├── ReleaseNotesPage.tsx
+│   │   ├── SearchResultsPage.tsx
 │   │   └── TopicPage.tsx
 │   ├── types/               # TypeScript type definitions
 │   │   └── index.ts
 │   ├── utils/               # Utility functions
-│   │   └── dataLoader.ts
+│   │   ├── dataLoader.ts
+│   │   └── mockSearchAPI.ts
 │   ├── App.tsx              # Main application component
 │   └── main.tsx             # Application entry point
 ├── public/                  # Static assets and JSON data
@@ -80,12 +89,23 @@ help-centre-v2/
 │       │       ├── articles.json
 │       │       ├── contact.json
 │       │       ├── incidents.json
-│       │       └── release-notes.json
-│       └── countries/       # Country-specific configurations
-│           ├── gb/
-│           │   └── config.json
-│           └── ie/
-│               └── config.json
+│       │       ├── popups.json
+│       │       ├── release-notes.json
+│       │       └── search-results.json  # Mock search data
+│       ├── countries/       # Country-specific configurations
+│       │   ├── gb/
+│       │   │   └── config.json
+│       │   └── ie/
+│       │       └── config.json
+│       └── articles/        # Individual article content files
+│           └── {article-id}.json
+├── server/                  # Express server for API and admin
+│   ├── index.js             # Server entry point
+│   └── routes/
+│       ├── auth.js          # Admin authentication
+│       ├── files.js         # File management API
+│       ├── regions.js       # Region management API
+│       └── search.js        # Search API proxy
 ├── docs/                    # Documentation
 │   ├── PRD.md              # Product Requirements Document
 │   ├── MVP.md              # Minimum Viable Product spec
@@ -163,6 +183,75 @@ The application includes a password-protected admin panel for managing JSON cont
 3. Navigate to `/admin/login` and enter your password
 
 For detailed documentation, see [ADMIN_README.md](./ADMIN_README.md)
+
+**Admin Pages:**
+
+The admin panel includes comprehensive management interfaces:
+- **Region Selector** - Choose which region to manage
+- **Main Menu** - Navigation hub for region-specific content
+- **Products List** - View and manage all products
+- **Product Detail** - Edit product information, including knowledgebase collection
+- **Product Topics** - Manage support hubs for each product
+- **Topic Articles** - Edit article lists for each topic
+- **Incidents** - Manage incident banners
+- **Popups** - Configure popup modals
+- **Contact Options** - Edit contact methods
+- **Release Notes** - Manage product release notes
+- **Region Settings** - Configure region-level settings
+
+## Environment Variables
+
+The application uses environment variables for configuration. Copy `.env.example` to `.env` and configure:
+
+### Server Configuration
+
+```bash
+# Admin password for the CMS
+ADMIN_PASSWORD=your_secure_password_here
+
+# Server port (default: 3001)
+PORT=3001
+
+# Node environment (development or production)
+NODE_ENV=development
+```
+
+### Search API Configuration (Server-side)
+
+These credentials are kept secure on the server and never exposed to the client:
+
+```bash
+# Your search API endpoint URL (without query parameters)
+# Example: https://website.com/portal/api/rest/search
+SEARCH_API_URL=https://website.com/portal/api/rest/search
+
+# Basic authentication token (base64 encoded credentials)
+SEARCH_API_AUTH_TOKEN=your_base64_encoded_token_here
+
+# Company code for the search API
+SEARCH_API_COMPANY_CODE=company_name
+```
+
+### Client Configuration (Vite)
+
+These are prefixed with `VITE_` to be accessible in the client-side code:
+
+```bash
+# API URL for the client to connect to the server (default: http://localhost:3001)
+VITE_API_URL=http://localhost:3001
+
+# Set to 'true' to use mock search data instead of calling the real API
+# Useful for development/testing when you don't have API credentials
+VITE_USE_MOCK_SEARCH=false
+```
+
+### Important Notes:
+
+1. **Never commit `.env` files** - They're in `.gitignore` by default
+2. **Server variables** (without VITE_ prefix) are only accessible server-side
+3. **Client variables** (with VITE_ prefix) are bundled into the client code
+4. **Search credentials** must be server-side only for security
+5. **Restart servers** after changing environment variables
 
 ## Data Architecture
 
@@ -362,11 +451,14 @@ The application uses country-code-based routing:
 
 ```
 /                                             → Redirects to /gb
+/select-country                               → Country selector page
 /:countryCode                                 → Home page
+/:countryCode/search                          → Search results page
 /:countryCode/products/:productId             → Product landing page
 /:countryCode/products/:productId/release-notes → Product release notes
 /:countryCode/products/:productId/topics/:topicId → Topic page
 /:countryCode/contact                         → Contact page
+/admin                                        → Admin panel
 ```
 
 **Note**: URLs use country codes (e.g., `/gb`, `/ie`) but data is loaded from shared regional files. The dataLoader automatically:
@@ -613,6 +705,181 @@ The release notes link automatically appears in the product landing page navigat
 
 Automatically scrolls to the top of the page on route navigation for better UX. Implemented via `ScrollToTop` component.
 
+### Search Integration
+
+Comprehensive search functionality with external API integration and knowledgebase linking.
+
+**Features:**
+- Server-side proxy pattern for secure API authentication
+- Product-specific filtering via knowledgebase collections
+- Pagination (10 results per page)
+- External knowledgebase article links
+- Mock data fallback for development
+- Region-aware search results
+
+**Architecture:**
+
+The search system uses a three-tier architecture:
+1. **Client (SearchBar.tsx)** - Collects search queries and navigates to results page
+2. **Results Page (SearchResultsPage.tsx)** - Displays paginated results with external links
+3. **Server Proxy (server/routes/search.js)** - Authenticates and proxies requests to external search API
+
+**Data Flow:**
+```
+User Search → SearchBar → SearchResultsPage → Client API Call → Server Proxy → External API
+```
+
+**Configuration:**
+
+Products can specify a `knowledgebase_collection` field to filter search results:
+
+```json
+{
+  "id": "product-a",
+  "name": "Accounts Desktop",
+  "knowledgebase_collection": "custom_gb_en_fifty_accounts"
+}
+```
+
+When searching from a product page, results are automatically filtered to that product's collection.
+
+**Environment Variables:**
+
+Server-side (secure credentials):
+- `SEARCH_API_URL` - External search API endpoint
+- `SEARCH_API_AUTH_TOKEN` - Base64-encoded authentication token
+- `SEARCH_API_COMPANY_CODE` - Company identifier for API
+
+Client-side:
+- `VITE_API_URL` - Server API URL (default: http://localhost:3001)
+- `VITE_USE_MOCK_SEARCH` - Set to 'true' to use mock data (development mode)
+
+**External Links:**
+
+Search results link to external knowledgebase articles with region-aware URLs:
+- Format: `https://{region}-kb.sagedatacloud.com/portal/app/portlets/results/viewsolution.jsp?solutionid={id}`
+- Example: `https://gb-kb.sagedatacloud.com/.../viewsolution.jsp?solutionid=210322142713950`
+
+**Mock Data:**
+
+For development without API credentials, set `VITE_USE_MOCK_SEARCH=true` and provide mock results in:
+- `public/data/regions/{region}/search-results.json`
+
+The client automatically falls back to mock data if the API call fails.
+
+**Documentation:**
+- [Search API Integration Guide](SEARCH_API_INTEGRATION.md) - Detailed setup instructions
+- [Search API Usage](SEARCH_API_USAGE.md) - TypeScript examples and client usage
+
+**Routes:**
+- `/:countryCode/search?term={query}&collection={productCollection}&page={pageNumber}`
+- Example: `/gb/search?term=vat&collection=custom_gb_en_fifty_accounts&page=1`
+
+### Popup Modal System
+
+Contextual popup modals with flexible triggers and targeting for announcements, promotions, and user engagement.
+
+**Features:**
+- Multiple trigger types (immediate, delay, scroll-based)
+- Granular targeting (global, product, topic, page-specific)
+- Priority-based display
+- Rich content support (images, videos, buttons)
+- Session-based dismissal tracking
+- Country-level filtering
+- Responsive design
+
+**Trigger Types:**
+
+1. **Immediate** - Shows as soon as page loads
+   ```json
+   {
+     "trigger": {
+       "type": "immediate"
+     }
+   }
+   ```
+
+2. **Delay** - Shows after specified milliseconds
+   ```json
+   {
+     "trigger": {
+       "type": "delay",
+       "delay": 5000
+     }
+   }
+   ```
+
+3. **Scroll** - Shows when user scrolls to percentage of page
+   ```json
+   {
+     "trigger": {
+       "type": "scroll",
+       "scrollPercentage": 50
+     }
+   }
+   ```
+
+**Targeting Scopes:**
+
+Identical to incident banners - target globally, by product, by topic, or by page pattern.
+
+**Priority System:**
+
+When multiple active popups match the current context, the highest priority popup is displayed first. Priority is a number (higher = more important).
+
+**Example Configuration:**
+
+Edit `public/data/regions/{region}/popups.json`:
+
+```json
+{
+  "popups": [
+    {
+      "id": "new-feature-announcement",
+      "title": "New Feature: Bank Feed Sync",
+      "message": "Automatically sync your bank transactions with one click!",
+      "image": "/images/bank-sync.png",
+      "buttons": [
+        {
+          "text": "Learn More",
+          "url": "/gb/products/product-a/topics/banking",
+          "action": "link",
+          "primary": true
+        },
+        {
+          "text": "Dismiss",
+          "action": "dismiss",
+          "primary": false
+        }
+      ],
+      "scope": {
+        "type": "product",
+        "productIds": ["product-a"]
+      },
+      "trigger": {
+        "type": "delay",
+        "delay": 3000
+      },
+      "priority": 10,
+      "active": true,
+      "countries": ["gb", "ie"]
+    }
+  ]
+}
+```
+
+**Implementation:**
+
+The `PopupManager` component:
+- Monitors route changes and scroll events
+- Evaluates active popups against current context
+- Tracks dismissed popups in session storage
+- Displays highest priority matching popup
+
+**Session Management:**
+
+Popups are dismissed per-session. Once a user dismisses a popup, it won't show again until they start a new browser session.
+
 ### Responsive Design
 
 Mobile-first approach with breakpoints for tablet and desktop views using Tailwind CSS.
@@ -638,9 +905,15 @@ The application automatically:
 
 ## Documentation
 
-- [Product Requirements Document](docs/PRD.md)
-- [MVP Specification](docs/MVP.md)
-- [Implementation Plan](docs/IMPLEMENTATION_PLAN.md)
+### Project Planning
+- [Product Requirements Document](docs/PRD.md) - Full product specification
+- [MVP Specification](docs/MVP.md) - Minimum viable product scope
+- [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) - Development roadmap
+
+### Feature Documentation
+- [Admin README](ADMIN_README.md) - Comprehensive admin panel guide
+- [Search API Integration](SEARCH_API_INTEGRATION.md) - Detailed search API setup guide
+- [Search API Usage](SEARCH_API_USAGE.md) - TypeScript examples and client usage
 
 ## Contributing
 
