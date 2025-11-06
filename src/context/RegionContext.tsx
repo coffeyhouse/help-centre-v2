@@ -12,7 +12,7 @@
 import { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { loadRegionConfig } from '../utils/dataLoader';
+import { loadRegionConfig, loadRegions } from '../utils/dataLoader';
 import type { RegionContextValue, RegionConfig } from '../types';
 
 // Create the context with undefined default (will be provided by RegionProvider)
@@ -41,12 +41,17 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
   const navigate = useNavigate();
   const location = useLocation();
 
+  // State for valid region codes (loaded from regions.json)
+  const [validRegionCodes, setValidRegionCodes] = useState<string[]>([]);
+
   // Extract region from URL pathname (e.g., "/ie/products/..." -> "ie")
   const getRegionFromPath = (): string => {
     const pathParts = location.pathname.split('/').filter(Boolean);
     const firstPart = pathParts[0];
     // Check if first part is a valid region code
-    if (firstPart && ['gb', 'ie'].includes(firstPart)) {
+    // If validRegionCodes hasn't loaded yet, allow common codes as fallback
+    const validCodes = validRegionCodes.length > 0 ? validRegionCodes : ['gb', 'ie'];
+    if (firstPart && validCodes.includes(firstPart)) {
       return firstPart;
     }
     // Fall back to params or initial region
@@ -60,6 +65,33 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
   const [regionConfig, setRegionConfig] = useState<RegionConfig | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Load valid region codes on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchValidRegions = async () => {
+      try {
+        const regions = await loadRegions();
+        if (isMounted) {
+          const codes = regions.map((r) => r.code);
+          setValidRegionCodes(codes);
+        }
+      } catch (err) {
+        console.error('Failed to load valid region codes:', err);
+        // Fallback to common region codes if loading fails
+        if (isMounted) {
+          setValidRegionCodes(['gb', 'ie']);
+        }
+      }
+    };
+
+    fetchValidRegions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Sync region state with URL parameters
   useEffect(() => {
@@ -128,7 +160,9 @@ export function RegionProvider({ children, initialRegion = 'gb' }: RegionProvide
       const pathParts = location.pathname.split('/').filter(Boolean);
 
       // If we're on a region-based route, replace the region
-      if (pathParts.length > 0 && ['gb', 'ie'].includes(pathParts[0])) {
+      // Use dynamic validRegionCodes, fallback to common codes if not loaded yet
+      const validCodes = validRegionCodes.length > 0 ? validRegionCodes : ['gb', 'ie'];
+      if (pathParts.length > 0 && validCodes.includes(pathParts[0])) {
         pathParts[0] = newRegion;
         navigate(`/${pathParts.join('/')}`);
       } else {
