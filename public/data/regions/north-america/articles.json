@@ -1,3 +1,18 @@
 {
-  "articles": {}
+  "articles": {
+    "sage-50": {
+      "install": [
+        {
+          "id": "test-article",
+          "title": "test article here",
+          "description": "this is a description",
+          "type": "article",
+          "countries": [
+            "us",
+            "ca"
+          ]
+        }
+      ]
+    }
+  }
 }

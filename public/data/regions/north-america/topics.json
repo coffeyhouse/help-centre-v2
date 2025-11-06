@@ -1,3 +1,11 @@
 {
-  "supportHubs": []
+  "supportHubs": [
+    {
+      "id": "install",
+      "title": "Install",
+      "description": "test from the ui",
+      "icon": "download",
+      "productId": "sage-50"
+    }
+  ]
 }
