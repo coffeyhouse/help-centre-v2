@@ -121,6 +121,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
         description: formData.description,
         type: formData.type,
         icon: formData.icon || undefined,
+        personas: ['customer', 'accountant'], // Default to all personas
       };
 
       const updatedData = {
