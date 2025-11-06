@@ -6,7 +6,8 @@ import {
   HomeIcon,
   ChevronDownIcon,
 } from '@heroicons/react/24/outline';
-import Breadcrumbs, { BreadcrumbItem } from './Breadcrumbs';
+import Breadcrumbs from './Breadcrumbs';
+import type { BreadcrumbItem } from './types';
 import { useState, useRef, useEffect } from 'react';
 
 interface AdminHeaderProps {

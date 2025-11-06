@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import AdminHeader from './AdminHeader';
-import { BreadcrumbItem } from './Breadcrumbs';
+import type { BreadcrumbItem } from './types';
 
 interface AdminLayoutProps {
   children: ReactNode;

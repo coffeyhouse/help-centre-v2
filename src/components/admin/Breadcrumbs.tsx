@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline';
-
-export interface BreadcrumbItem {
-  label: string;
-  path?: string;
-  icon?: React.ReactNode;
-}
+import type { BreadcrumbItem } from './types';
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
