@@ -23,6 +23,9 @@ export default function QuickAccessCards({ cards }: QuickAccessCardsProps) {
 
   return (
     <div className="mb-12">
+      {/* Section Title */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Resources</h2>
+
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {cards.map((card) => (

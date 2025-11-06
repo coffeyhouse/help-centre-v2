@@ -45,19 +45,25 @@ export type PersonaId = 'customer' | 'accountant' | 'partner' | 'developer';
 
 export type ProductType = 'cloud' | 'desktop';
 
+export type ProductCategory =
+  | 'accounting-software'
+  | 'people-payroll'
+  | 'business-management'
+  | 'solutions-accountants-bookkeepers';
+
 export interface Product {
   id: string;
   name: string;
   description: string;
   type: ProductType;
   personas: PersonaId[];
+  categories: ProductCategory[];
   icon: string;
   countries?: string[];
 }
 
 export interface ProductsData {
   products: Product[];
-  hotTopics: HotTopic[];
   quickAccessCards: QuickAccessCard[];
 }
 
@@ -79,16 +85,6 @@ export interface ReleaseNotesData {
   releaseNotes: {
     [productId: string]: ReleaseNote[];
   };
-}
-
-// ==================== Hot Topics ====================
-
-export interface HotTopic {
-  id: string;
-  title: string;
-  icon: string;
-  url?: string;
-  countries?: string[];
 }
 
 // ==================== Quick Access Cards ====================
@@ -303,6 +299,27 @@ export interface RegionContextValue {
 export interface PersonaContextValue {
   persona: PersonaId;
   setPersona: (persona: PersonaId) => void;
+}
+
+export interface AuthContextValue {
+  user: User | null;
+  login: (userId: string) => void;
+  logout: () => void;
+  loading: boolean;
+}
+
+// ==================== User Types ====================
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  persona: PersonaId;
+  ownedProducts: string[];
+}
+
+export interface UsersData {
+  users: User[];
 }
 
 // ==================== Search Types ====================

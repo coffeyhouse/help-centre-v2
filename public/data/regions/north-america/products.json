@@ -2,19 +2,22 @@
   "products": [
     {
       "id": "sage-50",
-      "name": "Sage 50",
-      "description": "testing ",
+      "name": "Sage 50 Accounting",
+      "description": "Comprehensive accounting software for small to medium businesses",
       "type": "cloud",
       "icon": "download",
       "personas": [
         "customer",
         "accountant"
       ],
+      "categories": [
+        "accounting-software",
+        "business-management"
+      ],
       "countries": [
         "us"
       ]
     }
   ],
-  "hotTopics": [],
   "quickAccessCards": []
 }

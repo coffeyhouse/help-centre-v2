@@ -16,14 +16,9 @@
   "navigation": {
     "main": [
       {
-        "label": "Help Centre",
+        "label": "Home",
         "path": "/ie",
         "icon": "home"
-      },
-      {
-        "label": "Products",
-        "path": "/ie/products",
-        "type": "dropdown"
       },
       {
         "label": "Contact us",

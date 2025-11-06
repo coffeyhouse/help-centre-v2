@@ -12,12 +12,6 @@ interface Product {
   icon: string;
 }
 
-interface HotTopic {
-  id: string;
-  title: string;
-  icon: string;
-}
-
 interface QuickAccessCard {
   id: string;
   title: string;
@@ -28,13 +22,12 @@ interface QuickAccessCard {
 interface ProductsEditorProps {
   data: {
     products: Product[];
-    hotTopics: HotTopic[];
     quickAccessCards: QuickAccessCard[];
   };
   onChange: (data: any) => void;
 }
 
-type SectionType = 'products' | 'hotTopics' | 'quickAccessCards';
+type SectionType = 'products' | 'quickAccessCards';
 
 export default function ProductsEditor({ data, onChange }: ProductsEditorProps) {
   const [activeSection, setActiveSection] = useState<SectionType>('products');
@@ -158,16 +151,6 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
           Products ({data.products.length})
         </button>
         <button
-          onClick={() => setActiveSection('hotTopics')}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            activeSection === 'hotTopics'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          Hot Topics ({data.hotTopics.length})
-        </button>
-        <button
           onClick={() => setActiveSection('quickAccessCards')}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             activeSection === 'quickAccessCards'
@@ -285,14 +268,6 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
             )}
           </div>
         </div>
-      )}
-
-      {/* Hot Topics Section */}
-      {activeSection === 'hotTopics' && (
-        <HotTopicsSection
-          hotTopics={data.hotTopics}
-          onChange={(hotTopics) => onChange({ ...data, hotTopics })}
-        />
       )}
 
       {/* Quick Access Cards Section */}
@@ -606,98 +581,6 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
         confirmStyle="danger"
       />
     </>
-  );
-}
-
-// Hot Topics Section Component
-function HotTopicsSection({ hotTopics, onChange }: { hotTopics: HotTopic[]; onChange: (topics: HotTopic[]) => void }) {
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [topicToDelete, setTopicToDelete] = useState<{ index: number; title: string } | null>(null);
-
-  const addTopic = () => {
-    onChange([...hotTopics, { id: `topic-${Date.now()}`, title: '', icon: '' }]);
-  };
-
-  const updateTopic = (index: number, field: keyof HotTopic, value: string) => {
-    const updated = [...hotTopics];
-    updated[index] = { ...updated[index], [field]: value };
-    onChange(updated);
-  };
-
-  const removeTopic = (index: number) => {
-    setTopicToDelete({ index, title: hotTopics[index].title });
-    setDeleteConfirmOpen(true);
-  };
-
-  const confirmDelete = () => {
-    if (topicToDelete) {
-      onChange(hotTopics.filter((_, i) => i !== topicToDelete.index));
-      setTopicToDelete(null);
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Hot Topics</h3>
-        <button
-          onClick={addTopic}
-          className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Add Hot Topic
-        </button>
-      </div>
-
-      <div className="space-y-3">
-        {hotTopics.map((topic, index) => (
-          <div key={index} className="p-4 border border-gray-200 rounded-lg bg-white">
-            <div className="flex items-center gap-3">
-              <div className="flex-1 grid grid-cols-3 gap-3">
-                <input
-                  type="text"
-                  placeholder="ID"
-                  value={topic.id}
-                  onChange={(e) => updateTopic(index, 'id', e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={topic.title}
-                  onChange={(e) => updateTopic(index, 'title', e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <input
-                  type="text"
-                  placeholder="Icon"
-                  value={topic.icon}
-                  onChange={(e) => updateTopic(index, 'icon', e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <button
-                onClick={() => removeTopic(index)}
-                className="text-red-600 hover:text-red-700"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <ConfirmModal
-        isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
-        onConfirm={confirmDelete}
-        title="Delete Hot Topic"
-        message={`Are you sure you want to delete "${topicToDelete?.title}"? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
-        confirmStyle="danger"
-      />
-    </div>
   );
 }
 

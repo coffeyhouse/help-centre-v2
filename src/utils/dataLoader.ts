@@ -92,7 +92,6 @@ export async function loadProducts(countryCode: string): Promise<ProductsData> {
 
   return {
     products: filterByCountry(data.products, countryCode),
-    hotTopics: filterByCountry(data.hotTopics, countryCode),
     quickAccessCards: filterByCountry(data.quickAccessCards, countryCode),
   };
 }

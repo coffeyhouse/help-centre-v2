@@ -2,69 +2,83 @@
   "products": [
     {
       "id": "product-a",
-      "name": "Product A",
-      "description": "Desktop accounting software",
+      "name": "Accounts Desktop",
+      "description": "Comprehensive desktop accounting for small businesses",
       "type": "desktop",
       "personas": ["customer", "accountant"],
+      "categories": ["accounting-software"],
       "countries": ["gb", "ie"],
       "icon": "icon-a"
     },
     {
       "id": "product-b",
-      "name": "Product B",
-      "description": "Cloud-based accounting",
+      "name": "Accounts Cloud",
+      "description": "Modern cloud-based accounting solution",
       "type": "cloud",
       "personas": ["customer", "accountant"],
+      "categories": ["accounting-software", "business-management"],
       "countries": ["gb", "ie"],
       "icon": "icon-b"
     },
     {
       "id": "product-c",
-      "name": "Product C",
-      "description": "Payroll software",
+      "name": "Payroll Plus",
+      "description": "Complete payroll and HR management",
       "type": "cloud",
       "personas": ["customer"],
+      "categories": ["people-payroll"],
       "countries": ["gb"],
       "icon": "icon-c"
     },
     {
       "id": "product-d",
-      "name": "Product D",
-      "description": "Tax management",
+      "name": "Tax Manager Pro",
+      "description": "Professional tax filing and compliance",
       "type": "desktop",
       "personas": ["accountant"],
+      "categories": ["solutions-accountants-bookkeepers", "accounting-software"],
       "countries": ["gb", "ie"],
       "icon": "icon-d"
     },
     {
       "id": "product-e",
-      "name": "Product E",
-      "description": "Invoice management",
+      "name": "Invoice Express",
+      "description": "Fast and simple invoicing software",
       "type": "cloud",
       "personas": ["customer", "accountant"],
+      "categories": ["business-management"],
       "countries": ["ie"],
       "icon": "icon-e"
     },
     {
       "id": "product-f",
-      "name": "Product F",
-      "description": "Expense tracking",
+      "name": "Expense Tracker",
+      "description": "Track and manage business expenses",
       "type": "desktop",
       "personas": ["customer"],
+      "categories": ["business-management"],
       "countries": ["gb", "ie"],
       "icon": "icon-f"
-    }
-  ],
-  "hotTopics": [
-    {
-      "id": "2fa",
-      "title": "2-factor authentication (2FA)",
-      "icon": "lock"
     },
     {
-      "id": "whats-new",
-      "title": "What's new in 2025",
-      "icon": "star"
+      "id": "product-g",
+      "name": "Practice Manager",
+      "description": "Complete practice management for accounting firms",
+      "type": "cloud",
+      "personas": ["accountant"],
+      "categories": ["solutions-accountants-bookkeepers"],
+      "countries": ["gb", "ie"],
+      "icon": "icon-a"
+    },
+    {
+      "id": "product-h",
+      "name": "Bookkeeping Suite",
+      "description": "Essential bookkeeping tools for professionals",
+      "type": "cloud",
+      "personas": ["accountant"],
+      "categories": ["solutions-accountants-bookkeepers", "accounting-software"],
+      "countries": ["gb", "ie"],
+      "icon": "icon-b"
     }
   ],
   "quickAccessCards": [

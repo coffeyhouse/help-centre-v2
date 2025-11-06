@@ -34,6 +34,10 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   VideoCameraIcon,
   Square3Stack3DIcon,
+  UserCircleIcon,
+  XMarkIcon,
+  ChevronDownIcon,
+  ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 
 interface IconProps {
@@ -80,6 +84,11 @@ export default function Icon({ name, className = 'w-6 h-6' }: IconProps) {
     'icon-d': ChartPieIcon,
     'icon-e': ClipboardDocumentListIcon,
     'icon-f': CreditCardIcon,
+    // User/Auth icons
+    user: UserCircleIcon,
+    x: XMarkIcon,
+    'chevron-down': ChevronDownIcon,
+    logout: ArrowRightOnRectangleIcon,
   };
 
   const IconComponent = iconMap[name] || QuestionMarkCircleIcon;
