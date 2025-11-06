@@ -326,21 +326,29 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
       icon: '',
     }
   );
+  const [originalData, setOriginalData] = useState<Product>(formData);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   useEffect(() => {
     if (product) {
       setFormData(product);
+      setOriginalData(product);
     } else {
-      setFormData({
+      const defaultData = {
         id: '',
         name: '',
         description: '',
         type: 'cloud',
         personas: [],
         icon: '',
-      });
+      };
+      setFormData(defaultData);
+      setOriginalData(defaultData);
     }
   }, [product]);
+
+  // Check if form has changes
+  const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
 
   const handleChange = (field: keyof Product, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -359,22 +367,37 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
+    onCancel(); // Close form after saving
+  };
+
+  const handleCancel = () => {
+    if (hasChanges) {
+      setShowCancelConfirm(true);
+    } else {
+      onCancel();
+    }
+  };
+
+  const confirmCancel = () => {
+    setShowCancelConfirm(false);
+    onCancel();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {isNew ? 'New Product' : 'Edit Product'}
-        </h3>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="text-gray-400 hover:text-gray-600"
-        >
-          <XMarkIcon className="h-6 w-6" />
-        </button>
-      </div>
+    <>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {isNew ? 'New Product' : 'Edit Product'}
+          </h3>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -474,24 +497,45 @@ function ProductForm({ product, isNew, onSave, onDelete, onCancel }: ProductForm
         <p className="text-xs text-gray-500 mt-2">Select all applicable personas</p>
       </div>
 
-      <div className="flex gap-3 pt-4 border-t border-gray-200">
-        <button
-          type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          {isNew ? 'Create Product' : 'Save Changes'}
-        </button>
-        {onDelete && (
+        <div className="flex gap-3 pt-4 border-t border-gray-200">
           <button
             type="button"
-            onClick={onDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            onClick={handleCancel}
+            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <TrashIcon className="h-5 w-5" />
+            Cancel
           </button>
-        )}
-      </div>
-    </form>
+          <button
+            type="submit"
+            disabled={!hasChanges && !isNew}
+            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          >
+            {isNew ? 'Add Product' : 'Apply Changes'}
+          </button>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <TrashIcon className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Cancel Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showCancelConfirm}
+        onClose={() => setShowCancelConfirm(false)}
+        onConfirm={confirmCancel}
+        title="Unsaved Changes"
+        message="You have unsaved changes. Are you sure you want to cancel? All changes will be lost."
+        confirmText="Yes, Cancel"
+        cancelText="Keep Editing"
+        confirmStyle="danger"
+      />
+    </>
   );
 }
 
