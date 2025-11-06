@@ -4,7 +4,7 @@
  * Features:
  * - Groups products by category
  * - Shows category headings
- * - Optionally filters out owned products when user is logged in
+ * - Shows all products (including owned products)
  * - Uses Card component for each product
  * - Links to Product Landing pages
  * - Responsive grid
@@ -12,13 +12,11 @@
 
 import { useMemo } from 'react';
 import { useRegion } from '../../../hooks/useRegion';
-import { useAuth } from '../../../hooks/useAuth';
 import Card from '../../common/Card';
 import type { Product, ProductCategory } from '../../../types';
 
 interface CategoryProductGridProps {
   products: Product[];
-  showAllProducts: boolean;
 }
 
 // Category display names
@@ -37,21 +35,17 @@ const categoryOrder: ProductCategory[] = [
   'solutions-accountants-bookkeepers',
 ];
 
-export default function CategoryProductGrid({ products, showAllProducts }: CategoryProductGridProps) {
+export default function CategoryProductGrid({ products }: CategoryProductGridProps) {
   const { region } = useRegion();
-  const { user } = useAuth();
 
-  // Filter products and group by category
+  // Filter products by country and group by category
   const productsByCategory = useMemo(() => {
-    // Filter products based on country and optionally exclude owned products
+    // Filter products based on country only (show all products including owned)
     const availableProducts = products.filter((product) => {
       // Check if product is available for the current country
       const matchesCountry = !product.countries || product.countries.includes(region);
 
-      // Exclude products owned by the user only if showAllProducts is false
-      const isNotOwned = showAllProducts || !user || !user.ownedProducts.includes(product.id);
-
-      return matchesCountry && isNotOwned;
+      return matchesCountry;
     });
 
     // Group products by category
@@ -71,7 +65,7 @@ export default function CategoryProductGrid({ products, showAllProducts }: Categ
     });
 
     return grouped;
-  }, [products, region, user, showAllProducts]);
+  }, [products, region]);
 
   // If no products available, show message
   if (productsByCategory.size === 0) {

@@ -89,12 +89,9 @@ export default function HomePage() {
           />
         )}
 
-        {/* Products by Category */}
-        {productsData && (
-          <CategoryProductGrid
-            products={productsData.products}
-            showAllProducts={showAllProducts}
-          />
+        {/* Products by Category - Hidden by default when logged in, shown when "Show all products" is clicked or when not logged in */}
+        {productsData && (!user || showAllProducts) && (
+          <CategoryProductGrid products={productsData.products} />
         )}
 
         {/* Hot Topics */}

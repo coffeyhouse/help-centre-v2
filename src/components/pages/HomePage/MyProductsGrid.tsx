@@ -48,7 +48,7 @@ export default function MyProductsGrid({ products, showAllProducts, onToggleShow
           variant="secondary"
           onClick={onToggleShowAll}
         >
-          {showAllProducts ? 'Hide my products from categories' : 'Show all products'}
+          {showAllProducts ? 'Show only my products' : 'Show all products'}
         </Button>
       </div>
 
