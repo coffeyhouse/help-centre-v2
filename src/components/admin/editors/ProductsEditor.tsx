@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import ConfirmModal from '../ConfirmModal';
 
 interface Product {
@@ -41,6 +41,8 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ name: string; index: number } | null>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const handleSelectProduct = (index: number) => {
     setSelectedProductIndex(index);
@@ -84,6 +86,56 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
   const handleCancel = () => {
     setIsAddingNew(false);
     setSelectedProductIndex(null);
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const updated = { ...data };
+    const reorderedProducts = [...updated.products];
+    const [movedProduct] = reorderedProducts.splice(draggedIndex, 1);
+    reorderedProducts.splice(dropIndex, 0, movedProduct);
+
+    updated.products = reorderedProducts;
+    onChange(updated);
+
+    // Update selected index if needed
+    if (selectedProductIndex === draggedIndex) {
+      setSelectedProductIndex(dropIndex);
+    } else if (selectedProductIndex !== null) {
+      if (draggedIndex < selectedProductIndex && dropIndex >= selectedProductIndex) {
+        setSelectedProductIndex(selectedProductIndex - 1);
+      } else if (draggedIndex > selectedProductIndex && dropIndex <= selectedProductIndex) {
+        setSelectedProductIndex(selectedProductIndex + 1);
+      }
+    }
+
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   return (
@@ -140,38 +192,59 @@ export default function ProductsEditor({ data, onChange }: ProductsEditorProps) 
 
             <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
               {data.products.map((product, index) => (
-                <button
+                <div
                   key={product.id}
-                  onClick={() => handleSelectProduct(index)}
-                  className={`w-full text-left p-4 rounded-lg border transition-colors ${
-                    selectedProductIndex === index
-                      ? 'bg-blue-50 border-blue-300'
-                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`rounded-lg border transition-all ${
+                    draggedIndex === index
+                      ? 'opacity-50'
+                      : dragOverIndex === index
+                      ? 'border-blue-500 border-2 bg-blue-50'
+                      : selectedProductIndex === index
+                      ? 'border-blue-300'
+                      : 'border-gray-200'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="font-medium text-sm text-gray-900">{product.name}</div>
-                      <div className="text-xs text-gray-500 mt-1">{product.id}</div>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          product.type === 'cloud' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {product.type}
-                        </span>
-                        {product.personas.map((persona) => (
-                          <span
-                            key={persona}
-                            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800"
-                          >
-                            {persona}
-                          </span>
-                        ))}
+                  <button
+                    onClick={() => handleSelectProduct(index)}
+                    className={`w-full text-left p-4 rounded-lg transition-colors ${
+                      selectedProductIndex === index
+                        ? 'bg-blue-50'
+                        : 'bg-white hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="cursor-grab active:cursor-grabbing">
+                        <Bars3Icon className="h-5 w-5 text-gray-400" />
                       </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm text-gray-900">{product.name}</div>
+                        <div className="text-xs text-gray-500 mt-1">{product.id}</div>
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                            product.type === 'cloud' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {product.type}
+                          </span>
+                          {product.personas.map((persona) => (
+                            <span
+                              key={persona}
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800"
+                            >
+                              {persona}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
                     </div>
-                    <ChevronRightIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                  </div>
-                </button>
+                  </button>
+                </div>
               ))}
             </div>
           </div>
