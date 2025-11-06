@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useState, useMemo } from 'react';
+import { PlusIcon, TrashIcon, XMarkIcon, ChevronRightIcon, EyeIcon } from '@heroicons/react/24/outline';
 import ConfirmModal from '../ConfirmModal';
 import DraggableListItem from '../DraggableListItem';
+import Modal from '../../common/Modal';
+import Card from '../../common/Card';
 import { useDragAndDrop } from '../../../hooks/useDragAndDrop';
 import { useFormChangeTracking } from '../../../hooks/useFormChangeTracking';
 
@@ -28,6 +30,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [topicToDelete, setTopicToDelete] = useState<{ index: number; title: string } | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Group topics by product for easier viewing
   const topicsByProduct = data.supportHubs.reduce((acc: any, topic, index) => {
@@ -184,13 +187,22 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
               <h3 className="text-lg font-semibold text-gray-900">
                 Topics ({currentProductTopics.length})
               </h3>
-              <button
-                onClick={handleAddNew}
-                className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <PlusIcon className="h-4 w-4" />
-                Add New
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowPreview(true)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <EyeIcon className="h-4 w-4" />
+                  Preview
+                </button>
+                <button
+                  onClick={handleAddNew}
+                  className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <PlusIcon className="h-4 w-4" />
+                  Add New
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
@@ -271,6 +283,89 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
         cancelText="Cancel"
         confirmStyle="danger"
       />
+
+      {/* Preview Modal */}
+      <Modal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        title="Topics Preview"
+        maxWidth="max-w-6xl"
+      >
+        {selectedProductId && (
+          <TopicsPreview
+            supportHubs={data.supportHubs}
+            productId={selectedProductId}
+          />
+        )}
+      </Modal>
+    </div>
+  );
+}
+
+// Preview component for topics (doesn't need region context)
+function TopicsPreview({ supportHubs, productId }: { supportHubs: SupportHub[]; productId: string }) {
+  // Filter support hubs by current product
+  // Exclude subtopics unless they have showOnProductLanding: true
+  const filteredHubs = useMemo(() => {
+    return supportHubs.filter((hub) => {
+      if (hub.productId !== productId) return false;
+
+      // If it's a subtopic (has parentTopicId), only show if showOnProductLanding is true
+      if (hub.parentTopicId) {
+        return hub.showOnProductLanding === true;
+      }
+
+      // Top-level topics are always shown
+      return true;
+    });
+  }, [supportHubs, productId]);
+
+  // Show first 6 hubs
+  const visibleHubs = filteredHubs.slice(0, 6);
+
+  return (
+    <div className="space-y-6">
+      {/* Heading */}
+      <div>
+        <h2 className="text-3xl font-bold mb-2">
+          What do you need help with today?
+        </h2>
+        <p className="text-sm text-gray-600">
+          This shows how topics will appear on the product landing page. Only topics marked as "Show on Product Landing Page" are displayed.
+        </p>
+      </div>
+
+      {/* Support Hubs Grid */}
+      {visibleHubs.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {visibleHubs.map((hub) => (
+            <Card
+              key={hub.id}
+              title={hub.title}
+              description={hub.description}
+              icon={hub.icon}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">
+            No support hubs available for this product.
+          </p>
+          <p className="text-sm text-gray-400 mt-2">
+            Topics need to be marked as "Show on Product Landing Page" to appear here.
+          </p>
+        </div>
+      )}
+
+      {/* "See more" indicator */}
+      {filteredHubs.length > 6 && (
+        <div className="text-center">
+          <div className="inline-block px-4 py-2 bg-gray-100 text-gray-600 rounded-md text-sm">
+            + {filteredHubs.length - 6} more topics not shown (showing first 6)
+          </div>
+        </div>
+      )}
     </div>
   );
 }
