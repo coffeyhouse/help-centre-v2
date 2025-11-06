@@ -19,8 +19,26 @@ interface TopicsEditorProps {
 }
 
 export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedTopicIndex, setSelectedTopicIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
+
+  // Group topics by product for easier viewing
+  const topicsByProduct = data.supportHubs.reduce((acc: any, topic, index) => {
+    if (!acc[topic.productId]) {
+      acc[topic.productId] = [];
+    }
+    acc[topic.productId].push({ ...topic, originalIndex: index });
+    return acc;
+  }, {});
+
+  const products = Object.keys(topicsByProduct).sort();
+
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProductId(productId);
+    setSelectedTopicIndex(null);
+    setIsAddingNew(false);
+  };
 
   const handleAddNew = () => {
     setIsAddingNew(true);
@@ -59,67 +77,92 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
     setSelectedTopicIndex(null);
   };
 
-  // Group topics by product for easier viewing
-  const topicsByProduct = data.supportHubs.reduce((acc: any, topic, index) => {
-    if (!acc[topic.productId]) {
-      acc[topic.productId] = [];
-    }
-    acc[topic.productId].push({ ...topic, originalIndex: index });
-    return acc;
-  }, {});
+  const currentProductTopics = selectedProductId ? topicsByProduct[selectedProductId] : [];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Left Panel - List of Topics */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Left Panel - Product Selector */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Support Hubs ({data.supportHubs.length})
-          </h3>
-          <button
-            onClick={handleAddNew}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add New
-          </button>
-        </div>
-
-        <div className="space-y-6 max-h-[calc(100vh-350px)] overflow-y-auto">
-          {Object.keys(topicsByProduct).sort().map((productId) => (
-            <div key={productId}>
-              <h4 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
-                {productId}
-              </h4>
-              <div className="space-y-2">
-                {topicsByProduct[productId].map((topic: any) => (
-                  <button
-                    key={topic.originalIndex}
-                    onClick={() => handleSelectTopic(topic.originalIndex)}
-                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                      selectedTopicIndex === topic.originalIndex
-                        ? 'bg-blue-50 border-blue-300'
-                        : 'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="font-medium text-sm text-gray-900">{topic.title}</div>
-                        <div className="text-xs text-gray-500 mt-1">{topic.id}</div>
-                        {topic.parentTopicId && (
-                          <div className="text-xs text-gray-400 mt-1">
-                            ↳ Child of: {topic.parentTopicId}
-                          </div>
-                        )}
-                      </div>
-                      <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+        <h3 className="text-lg font-semibold text-gray-900">Products</h3>
+        <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
+          {products.map((productId) => {
+            const topicCount = topicsByProduct[productId].length;
+            return (
+              <button
+                key={productId}
+                onClick={() => handleSelectProduct(productId)}
+                className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                  selectedProductId === productId
+                    ? 'bg-blue-50 border-blue-300'
+                    : 'bg-white border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium text-sm text-gray-900 capitalize">
+                      {productId.replace(/-/g, ' ')}
                     </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
+                    <div className="text-xs text-gray-500 mt-1">
+                      {topicCount} {topicCount === 1 ? 'topic' : 'topics'}
+                    </div>
+                  </div>
+                  <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                </div>
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Middle Panel - Topics List */}
+      <div className="space-y-4">
+        {selectedProductId ? (
+          <>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Topics ({currentProductTopics.length})
+              </h3>
+              <button
+                onClick={handleAddNew}
+                className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <PlusIcon className="h-4 w-4" />
+                Add New
+              </button>
+            </div>
+
+            <div className="space-y-2 max-h-[calc(100vh-350px)] overflow-y-auto">
+              {currentProductTopics.map((topic: any) => (
+                <button
+                  key={topic.originalIndex}
+                  onClick={() => handleSelectTopic(topic.originalIndex)}
+                  className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                    selectedTopicIndex === topic.originalIndex
+                      ? 'bg-green-50 border-green-300'
+                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm text-gray-900">{topic.title}</div>
+                      <div className="text-xs text-gray-500 mt-1">{topic.id}</div>
+                      {topic.parentTopicId && (
+                        <div className="text-xs text-gray-400 mt-1">
+                          ↳ Child of: {topic.parentTopicId}
+                        </div>
+                      )}
+                    </div>
+                    <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center h-full flex items-center justify-center">
+            <p className="text-gray-600">Select a product to view its topics</p>
+          </div>
+        )}
       </div>
 
       {/* Right Panel - Topic Form */}
@@ -128,6 +171,7 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
           <TopicForm
             topic={selectedTopicIndex !== null ? data.supportHubs[selectedTopicIndex] : null}
             isNew={isAddingNew}
+            defaultProductId={selectedProductId || ''}
             onSave={
               isAddingNew
                 ? handleSaveNew
@@ -139,8 +183,12 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
             onCancel={handleCancel}
           />
         ) : (
-          <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center">
-            <p className="text-gray-600">Select a topic to edit or click "Add New" to create one.</p>
+          <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center h-full flex items-center justify-center">
+            <p className="text-gray-600">
+              {selectedProductId
+                ? 'Select a topic to edit or click "Add New" to create one'
+                : 'Select a product first'}
+            </p>
           </div>
         )}
       </div>
@@ -151,19 +199,20 @@ export default function TopicsEditor({ data, onChange }: TopicsEditorProps) {
 interface TopicFormProps {
   topic: SupportHub | null;
   isNew: boolean;
+  defaultProductId: string;
   onSave: (topic: SupportHub) => void;
   onDelete?: () => void;
   onCancel: () => void;
 }
 
-function TopicForm({ topic, isNew, onSave, onDelete, onCancel }: TopicFormProps) {
+function TopicForm({ topic, isNew, defaultProductId, onSave, onDelete, onCancel }: TopicFormProps) {
   const [formData, setFormData] = useState<SupportHub>(
     topic || {
       id: '',
       title: '',
       description: '',
       icon: '',
-      productId: '',
+      productId: defaultProductId,
       parentTopicId: '',
       showOnProductLanding: true,
     }
