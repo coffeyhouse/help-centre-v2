@@ -40,7 +40,7 @@ export default function ProductTopicsListPage() {
       setError('');
 
       // Load product details
-      const productResponse = await fetch(`/api/files/${region}-products`, {
+      const productResponse = await fetch(`/api/products/${region}/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,16 +51,10 @@ export default function ProductTopicsListPage() {
       }
 
       const productResult = await productResponse.json();
-      const foundProduct = productResult.data.products?.find((p: Product) => p.id === productId);
-
-      if (!foundProduct) {
-        throw new Error('Product not found');
-      }
-
-      setProduct(foundProduct);
+      setProduct(productResult.product);
 
       // Load topics
-      const topicsResponse = await fetch(`/api/files/${region}-topics`, {
+      const topicsResponse = await fetch(`/api/products/${region}/${productId}/topics`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -74,7 +68,7 @@ export default function ProductTopicsListPage() {
       setData(topicsResult.data);
 
       // Load articles
-      const articlesResponse = await fetch(`/api/files/${region}-articles`, {
+      const articlesResponse = await fetch(`/api/products/${region}/${productId}/articles`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,7 +97,7 @@ export default function ProductTopicsListPage() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(`/api/files/${region}-topics`, {
+      const response = await fetch(`/api/products/${region}/${productId}/topics`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +168,7 @@ export default function ProductTopicsListPage() {
           <TopicsEditor
             data={data}
             onChange={setData}
-            filterByProductId={productId}
+            filterByProductId={product?.id}
             articlesData={articlesData}
             onNavigateToArticles={handleNavigateToArticles}
           />
