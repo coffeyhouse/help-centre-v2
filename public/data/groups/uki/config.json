@@ -1,6 +1,7 @@
 {
   "id": "uki",
   "name": "United Kingdom & Ireland",
+  "productIds": ["sage-50-accounts"],
   "countries": [
     {
       "code": "gb",

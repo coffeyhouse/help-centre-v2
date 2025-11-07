@@ -7,5 +7,6 @@
   "categories": ["accounting-software"],
   "countries": ["gb", "ie"],
   "icon": "icon-a",
-  "knowledgebase_collection": "custom_gb_en_fifty_accounts"
+  "knowledgebase_collection": "custom_gb_en_fifty_accounts",
+  "topicIds": ["install-your-software", "manage-vat", "banking", "bank-feeds", "bank-reconciliation"]
 }
