@@ -28,6 +28,12 @@ export default function ArticlesGrid({
   region,
   productId,
 }: ArticlesGridProps) {
+  // Generate external KB URL based on region and article ID
+  const getKnowledgeBaseUrl = (solutionId: string): string => {
+    const regionPrefix = region || 'gb';
+    return `https://${regionPrefix}-kb.sagedatacloud.com/portal/app/portlets/results/viewsolution.jsp?solutionid=${solutionId}`;
+  };
+
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
@@ -67,13 +73,13 @@ export default function ArticlesGrid({
               />
             );
           } else {
-            // Regular article
+            // Regular article - link to external knowledgebase
             return (
               <Card
                 key={item.id}
                 title={item.title || ''}
                 description={item.description}
-                href={`#article-${item.id}`}
+                href={getKnowledgeBaseUrl(item.id)}
                 type="Article"
               />
             );
