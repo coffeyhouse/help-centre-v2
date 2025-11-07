@@ -5,8 +5,6 @@ import {
   CubeIcon,
   ExclamationTriangleIcon,
   ChatBubbleLeftRightIcon,
-  PhoneIcon,
-  DocumentTextIcon,
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
@@ -35,7 +33,7 @@ export default function MainMenuPage() {
     {
       id: 'products',
       title: 'Products',
-      description: 'Manage products, topics, and related content',
+      description: 'Manage products, topics, articles, videos, and training',
       icon: <CubeIcon className="w-8 h-8" />,
       path: `/admin/${region}/products`,
       color: 'blue',
@@ -43,7 +41,7 @@ export default function MainMenuPage() {
     {
       id: 'incidents',
       title: 'Incidents',
-      description: 'Manage incident banners and alerts',
+      description: 'Manage group-level incident banners and alerts',
       icon: <ExclamationTriangleIcon className="w-8 h-8" />,
       path: `/admin/${region}/incidents`,
       color: 'red',
@@ -51,31 +49,15 @@ export default function MainMenuPage() {
     {
       id: 'popups',
       title: 'Pop-ups',
-      description: 'Manage promotional and informational pop-ups',
+      description: 'Manage group-level promotional and informational pop-ups',
       icon: <ChatBubbleLeftRightIcon className="w-8 h-8" />,
       path: `/admin/${region}/popups`,
       color: 'purple',
     },
     {
-      id: 'contact',
-      title: 'Contact Options',
-      description: 'Manage contact methods and support channels',
-      icon: <PhoneIcon className="w-8 h-8" />,
-      path: `/admin/${region}/contact`,
-      color: 'green',
-    },
-    {
-      id: 'release-notes',
-      title: 'Release Notes',
-      description: 'Manage product release notes and updates',
-      icon: <DocumentTextIcon className="w-8 h-8" />,
-      path: `/admin/${region}/release-notes`,
-      color: 'indigo',
-    },
-    {
-      id: 'settings',
-      title: 'Region Settings',
-      description: 'Manage region configuration and settings',
+      id: 'config',
+      title: 'Group Config',
+      description: 'Manage group configuration, countries, and quick access cards',
       icon: <Cog6ToothIcon className="w-8 h-8" />,
       path: `/admin/${region}/settings`,
       color: 'gray',
@@ -102,18 +84,6 @@ export default function MainMenuPage() {
         hover: 'group-hover:bg-purple-200',
         border: 'hover:border-purple-500',
       },
-      green: {
-        bg: 'bg-green-100',
-        icon: 'text-green-600',
-        hover: 'group-hover:bg-green-200',
-        border: 'hover:border-green-500',
-      },
-      indigo: {
-        bg: 'bg-indigo-100',
-        icon: 'text-indigo-600',
-        hover: 'group-hover:bg-indigo-200',
-        border: 'hover:border-indigo-500',
-      },
       gray: {
         bg: 'bg-gray-100',
         icon: 'text-gray-600',
@@ -138,12 +108,12 @@ export default function MainMenuPage() {
           {regionName} Administration
         </h1>
         <p className="text-gray-600">
-          Select a section to manage content for this region
+          Select a section to manage content for this group
         </p>
       </div>
 
       {/* Menu Cards Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2">
         {menuCards.map((card) => {
           const colors = getColorClasses(card.color);
           return (
