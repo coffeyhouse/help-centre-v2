@@ -126,6 +126,50 @@ export async function loadContact(countryCode: string): Promise<ContactData> {
 }
 
 /**
+ * Load contact information for a specific product
+ * Filters contact methods by product and country
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @param productId - Product ID (e.g., 'sage-50-accounts')
+ * @returns Promise resolving to ContactData object filtered by product and country
+ */
+export async function loadContactForProduct(countryCode: string, productId: string): Promise<ContactData> {
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading contact for ${countryCode}/${productId} from API: ${BASE_API_PATH}/${normalizedCode}/products/${productId}/contact`);
+  const data = await fetchJSON<ContactData>(`${BASE_API_PATH}/${normalizedCode}/products/${productId}/contact`);
+  console.log(`[dataLoader] Loaded contact for ${countryCode}/${productId}:`, data);
+  return data;
+}
+
+/**
+ * Load contact information for a specific topic
+ * Falls back through: topic-level → product-level → group-level contact
+ * Filters by country and product
+ * @param countryCode - Country code (e.g., 'gb', 'ie')
+ * @param productFolderId - Product folder ID (e.g., 'sage-50-accounts')
+ * @param topicFolderId - Topic folder ID (e.g., 'install-your-software')
+ * @returns Promise resolving to ContactData object filtered by topic/product and country
+ */
+export async function loadContactForTopic(
+  countryCode: string,
+  productFolderId: string,
+  topicFolderId: string
+): Promise<ContactData> {
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading contact for ${countryCode}/${productFolderId}/${topicFolderId} from API: ${BASE_API_PATH}/${normalizedCode}/products/${productFolderId}/topics/${topicFolderId}/contact`);
+
+  try {
+    const data = await fetchJSON<ContactData>(
+      `${BASE_API_PATH}/${normalizedCode}/products/${productFolderId}/topics/${topicFolderId}/contact`
+    );
+    console.log(`[dataLoader] Loaded contact for ${countryCode}/${productFolderId}/${topicFolderId}:`, data);
+    return data;
+  } catch (error) {
+    console.error(`Failed to load contact for ${productFolderId}/${topicFolderId}:`, error);
+    return { contactMethods: [] };
+  }
+}
+
+/**
  * Load incident banners for a specific country
  * @param countryCode - Country code (e.g., 'gb', 'ie')
  * @returns Promise resolving to IncidentBannersData object filtered by country

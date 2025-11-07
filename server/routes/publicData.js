@@ -516,6 +516,148 @@ router.get('/:country/release-notes/:productId', async (req, res) => {
 });
 
 /**
+ * Helper function to filter contact methods by product
+ * Includes methods with no productIds OR matching productId
+ * @param {Array} contactMethods - Array of contact methods
+ * @param {string} productId - Product ID to filter by
+ * @returns {Array} Filtered contact methods
+ */
+function filterByProduct(contactMethods, productId) {
+  if (!Array.isArray(contactMethods)) return [];
+
+  return contactMethods.filter(
+    (method) => !method.productIds || method.productIds.includes(productId)
+  );
+}
+
+/**
+ * GET /api/public/data/:country/products/:productFolderId/topics/:topicFolderId/contact
+ * Get contact information for a specific topic
+ * Falls back to product-level, then group-level contact
+ */
+router.get('/:country/products/:productFolderId/topics/:topicFolderId/contact', async (req, res) => {
+  try {
+    const { country, productFolderId, topicFolderId } = req.params;
+    const groupId = await getGroupForCountry(country);
+
+    // Try to load topic-specific contact first
+    const topicContactPath = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'topics', topicFolderId, 'contact.json');
+    try {
+      const data = await readJSONFile(topicContactPath);
+      return res.json({
+        contactMethods: filterByCountry(data.contactMethods || [], country),
+      });
+    } catch (error) {
+      // Topic-level contact doesn't exist, continue to fallback
+    }
+
+    // Try to load product-specific contact
+    const productContactPath = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'contact.json');
+    try {
+      const data = await readJSONFile(productContactPath);
+      return res.json({
+        contactMethods: filterByCountry(data.contactMethods || [], country),
+      });
+    } catch (error) {
+      // Product-level contact doesn't exist, continue to fallback
+    }
+
+    // Fall back to group-level contact
+    const groupContactPath = path.join(GROUPS_DIR, groupId, 'contact.json');
+    try {
+      // Load product config to get the productId (not folder ID)
+      const productConfig = await readJSONFile(
+        path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'config.json')
+      );
+
+      const data = await readJSONFile(groupContactPath);
+      const filtered = filterByCountry(data.contactMethods || [], country);
+      const productFiltered = filterByProduct(filtered, productConfig.id);
+
+      return res.json({
+        contactMethods: productFiltered,
+      });
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return res.json({ contactMethods: [] });
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error(`Error loading contact for ${req.params.productFolderId}/${req.params.topicFolderId}:`, error);
+    res.status(500).json({ error: 'Failed to load contact information' });
+  }
+});
+
+/**
+ * GET /api/public/data/:country/products/:productId/contact
+ * Get contact information for a specific product
+ * Falls back to group-level contact filtered by productId
+ */
+router.get('/:country/products/:productId/contact', async (req, res) => {
+  try {
+    const { country, productId } = req.params;
+    const groupId = await getGroupForCountry(country);
+
+    // Load group config to find product folder
+    const groupConfig = await readJSONFile(
+      path.join(GROUPS_DIR, groupId, 'config.json')
+    );
+
+    // Find the product folder that matches the productId
+    let productFolderId = null;
+    for (const folder of groupConfig.productIds) {
+      try {
+        const productConfig = await readJSONFile(
+          path.join(GROUPS_DIR, groupId, 'products', folder, 'config.json')
+        );
+        if (productConfig.id === productId) {
+          productFolderId = folder;
+          break;
+        }
+      } catch (error) {
+        console.error(`Failed to load product ${folder}:`, error);
+      }
+    }
+
+    if (!productFolderId) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Try to load product-specific contact first
+    const productContactPath = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'contact.json');
+    try {
+      const data = await readJSONFile(productContactPath);
+      return res.json({
+        contactMethods: filterByCountry(data.contactMethods || [], country),
+      });
+    } catch (error) {
+      // Product-level contact doesn't exist, fall back to group-level
+    }
+
+    // Fall back to group-level contact filtered by productId
+    const groupContactPath = path.join(GROUPS_DIR, groupId, 'contact.json');
+    try {
+      const data = await readJSONFile(groupContactPath);
+      const filtered = filterByCountry(data.contactMethods || [], country);
+      const productFiltered = filterByProduct(filtered, productId);
+
+      return res.json({
+        contactMethods: productFiltered,
+      });
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return res.json({ contactMethods: [] });
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error(`Error loading contact for product ${req.params.productId}:`, error);
+    res.status(500).json({ error: 'Failed to load contact information' });
+  }
+});
+
+/**
  * GET /api/public/data/:country/contact
  * Get contact information for a country
  */
