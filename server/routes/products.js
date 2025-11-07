@@ -390,6 +390,136 @@ router.get('/:groupId/:productFolderId/articles', verifyAuth, async (req, res) =
 });
 
 /**
+ * GET /api/products/:groupId/:productFolderId/topics/:topicId
+ * Get a specific topic's config
+ */
+router.get('/:groupId/:productFolderId/topics/:topicId', verifyAuth, async (req, res) => {
+  try {
+    const { groupId, productFolderId, topicId } = req.params;
+
+    // Read product config to get productId
+    const productConfigPath = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'config.json');
+    const productContent = await fs.readFile(productConfigPath, 'utf-8');
+    const productConfig = JSON.parse(productContent);
+
+    // Convert topicId to folder ID
+    const topicFolderId = topicId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+    // Read topic config
+    const topicConfigPath = path.join(
+      GROUPS_DIR,
+      groupId,
+      'products',
+      productFolderId,
+      'topics',
+      topicFolderId,
+      'config.json'
+    );
+    const topicContent = await fs.readFile(topicConfigPath, 'utf-8');
+    const topicConfig = JSON.parse(topicContent);
+
+    res.json({
+      success: true,
+      topic: {
+        ...topicConfig,
+        productId: productConfig.id,
+      },
+    });
+  } catch (error) {
+    console.error('Error loading topic:', error);
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Topic not found' });
+    }
+    res.status(500).json({ error: 'Failed to load topic' });
+  }
+});
+
+/**
+ * GET /api/products/:groupId/:productFolderId/topics/:topicId/articles
+ * Get articles for a specific topic
+ */
+router.get('/:groupId/:productFolderId/topics/:topicId/articles', verifyAuth, async (req, res) => {
+  try {
+    const { groupId, productFolderId, topicId } = req.params;
+
+    // Convert topicId to folder ID
+    const topicFolderId = topicId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+    // Read articles
+    const articlesPath = path.join(
+      GROUPS_DIR,
+      groupId,
+      'products',
+      productFolderId,
+      'topics',
+      topicFolderId,
+      'articles.json'
+    );
+    const articlesContent = await fs.readFile(articlesPath, 'utf-8');
+    const articles = JSON.parse(articlesContent);
+
+    res.json({
+      success: true,
+      articles,
+    });
+  } catch (error) {
+    console.error('Error loading articles:', error);
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Articles not found' });
+    }
+    res.status(500).json({ error: 'Failed to load articles' });
+  }
+});
+
+/**
+ * PUT /api/products/:groupId/:productFolderId/topics/:topicId/articles
+ * Update articles for a specific topic
+ */
+router.put('/:groupId/:productFolderId/topics/:topicId/articles', verifyAuth, async (req, res) => {
+  try {
+    const { groupId, productFolderId, topicId } = req.params;
+    const { articles } = req.body;
+
+    if (!Array.isArray(articles)) {
+      return res.status(400).json({ error: 'Invalid articles format' });
+    }
+
+    // Convert topicId to folder ID
+    const topicFolderId = topicId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+    const articlesPath = path.join(
+      GROUPS_DIR,
+      groupId,
+      'products',
+      productFolderId,
+      'topics',
+      topicFolderId,
+      'articles.json'
+    );
+
+    // Create backup if file exists
+    try {
+      const existingContent = await fs.readFile(articlesPath, 'utf-8');
+      const backupPath = `${articlesPath}.backup-${Date.now()}`;
+      await fs.writeFile(backupPath, existingContent);
+    } catch (error) {
+      // File doesn't exist yet, no backup needed
+    }
+
+    // Write articles
+    await fs.writeFile(articlesPath, JSON.stringify(articles, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Articles updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating articles:', error);
+    res.status(500).json({ error: 'Failed to update articles' });
+  }
+});
+
+/**
  * DELETE /api/products/:groupId/:productFolderId
  * Delete a product
  */
