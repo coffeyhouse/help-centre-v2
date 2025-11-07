@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useAdminRegion } from '../../context/AdminRegionContext';
+import IconSelector from './IconSelector';
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -11,6 +13,7 @@ interface AddProductModalProps {
 
 export default function AddProductModal({ isOpen, onClose, onProductCreated, region }: AddProductModalProps) {
   const { token } = useAdminAuth();
+  const { regions } = useAdminRegion();
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -19,9 +22,21 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     icon: '',
     knowledgebase_collection: '',
     categories: [] as string[],
+    personas: [] as string[],
+    countries: [] as string[],
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Get available countries for this region
+  const currentRegion = regions.find((r) => r.id === region);
+  const availableCountries = currentRegion?.countryCodes || [];
+
+  // Available personas
+  const availablePersonas = [
+    { id: 'customer', label: "I'm a Customer" },
+    { id: 'accountant', label: "I'm an Accountant or Bookkeeper" },
+  ];
 
   // Reset form when modal closes
   useEffect(() => {
@@ -34,6 +49,8 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
         icon: '',
         knowledgebase_collection: '',
         categories: [],
+        personas: [],
+        countries: [],
       });
       setError('');
     }
@@ -82,6 +99,24 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     setFormData({ ...formData, categories: newCategories });
   };
 
+  const handlePersonaToggle = (persona: string) => {
+    const personas = formData.personas || [];
+    const isSelected = personas.includes(persona);
+    const newPersonas = isSelected
+      ? personas.filter((p) => p !== persona)
+      : [...personas, persona];
+    setFormData({ ...formData, personas: newPersonas });
+  };
+
+  const handleCountryToggle = (country: string) => {
+    const countries = formData.countries || [];
+    const isSelected = countries.includes(country);
+    const newCountries = isSelected
+      ? countries.filter((c) => c !== country)
+      : [...countries, country];
+    setFormData({ ...formData, countries: newCountries });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -124,9 +159,9 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
           type: formData.type,
           icon: formData.icon || '',
           knowledgebase_collection: formData.knowledgebase_collection || '',
-          personas: ['customer', 'accountant'], // Default to all personas
+          personas: formData.personas.length > 0 ? formData.personas : ['customer', 'accountant'],
           categories: formData.categories,
-          countries: [], // Will be set later when editing product
+          countries: formData.countries,
         }),
       });
 
@@ -168,7 +203,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
       {/* Modal content container */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className="relative bg-white rounded-lg shadow-xl w-full max-w-lg transform transition-all"
+          className="relative bg-white rounded-lg shadow-xl w-full max-w-5xl transform transition-all"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -190,138 +225,193 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
 
           {/* Content */}
           <form onSubmit={handleSubmit}>
-            <div className="px-6 py-4 space-y-4">
+            <div className="px-6 py-4">
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
                   {error}
                 </div>
               )}
 
-              {/* Product Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="e.g., Product A"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              {/* Product ID (auto-generated) */}
-              <div>
-                <label htmlFor="id" className="block text-sm font-medium text-gray-700 mb-1">
-                  Product ID *
-                </label>
-                <input
-                  type="text"
-                  id="id"
-                  value={formData.id}
-                  onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                  placeholder="e.g., product-a"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">Auto-generated from name, but can be edited</p>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Description *
-                </label>
-                <textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                  placeholder="Brief description of the product"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              {/* Type */}
-              <div>
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-                  Type *
-                </label>
-                <select
-                  id="type"
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value as 'cloud' | 'desktop' })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                >
-                  <option value="cloud">Cloud</option>
-                  <option value="desktop">Desktop</option>
-                </select>
-              </div>
-
-              {/* Icon URL (optional) */}
-              <div>
-                <label htmlFor="icon" className="block text-sm font-medium text-gray-700 mb-1">
-                  Icon URL (optional)
-                </label>
-                <input
-                  type="text"
-                  id="icon"
-                  value={formData.icon}
-                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                  placeholder="e.g., /images/product-icon.svg"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              {/* Knowledgebase Collection (optional) */}
-              <div>
-                <label htmlFor="knowledgebase_collection" className="block text-sm font-medium text-gray-700 mb-1">
-                  Knowledgebase Collection ID (optional)
-                </label>
-                <input
-                  type="text"
-                  id="knowledgebase_collection"
-                  value={formData.knowledgebase_collection}
-                  onChange={(e) => setFormData({ ...formData, knowledgebase_collection: e.target.value })}
-                  placeholder="e.g., custom_gb_en_fifty_accounts"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  The collection ID used for filtering search results
-                </p>
-              </div>
-
-              {/* Categories (required) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Categories *
-                </label>
-                <div className="space-y-2">
-                  {[
-                    { id: 'accounting-software', label: 'Accounting software' },
-                    { id: 'people-payroll', label: 'People and Payroll' },
-                    { id: 'business-management', label: 'Business management' },
-                    { id: 'solutions-accountants-bookkeepers', label: 'Solutions for accountants and bookkeepers' }
-                  ].map((category) => (
-                    <label key={category.id} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={formData.categories.includes(category.id)}
-                        onChange={() => handleCategoryToggle(category.id)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{category.label}</span>
+              {/* Two-column grid layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-4">
+                  {/* Product Name */}
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Product Name *
                     </label>
-                  ))}
+                    <input
+                      type="text"
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleNameChange(e.target.value)}
+                      placeholder="e.g., Accounts Desktop"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
+
+                  {/* Product ID (auto-generated) */}
+                  <div>
+                    <label htmlFor="id" className="block text-sm font-medium text-gray-700 mb-1">
+                      Product ID *
+                    </label>
+                    <input
+                      type="text"
+                      id="id"
+                      value={formData.id}
+                      onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+                      placeholder="e.g., accounts-desktop"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Auto-generated from name, but can be edited</p>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                      Description *
+                    </label>
+                    <textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={3}
+                      placeholder="Brief description of the product"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
+
+                  {/* Type */}
+                  <div>
+                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+                      Type *
+                    </label>
+                    <select
+                      id="type"
+                      value={formData.type}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value as 'cloud' | 'desktop' })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    >
+                      <option value="cloud">Cloud</option>
+                      <option value="desktop">Desktop</option>
+                    </select>
+                  </div>
+
+                  {/* Icon Selector */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Product Icon (optional)
+                    </label>
+                    <IconSelector
+                      value={formData.icon}
+                      onChange={(iconName) => setFormData({ ...formData, icon: iconName })}
+                    />
+                  </div>
+
+                  {/* Knowledgebase Collection (optional) */}
+                  <div>
+                    <label htmlFor="knowledgebase_collection" className="block text-sm font-medium text-gray-700 mb-1">
+                      Knowledgebase Collection ID (optional)
+                    </label>
+                    <input
+                      type="text"
+                      id="knowledgebase_collection"
+                      value={formData.knowledgebase_collection}
+                      onChange={(e) => setFormData({ ...formData, knowledgebase_collection: e.target.value })}
+                      placeholder="e.g., custom_gb_en_fifty_accounts"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      The collection ID used for filtering search results
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Select one or more categories to display this product on the homepage
-                </p>
+
+                {/* Right Column */}
+                <div className="space-y-4">
+                  {/* Categories (required) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Categories *
+                    </label>
+                    <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      {[
+                        { id: 'accounting-software', label: 'Accounting software' },
+                        { id: 'people-payroll', label: 'People and Payroll' },
+                        { id: 'business-management', label: 'Business management' },
+                        { id: 'solutions-accountants-bookkeepers', label: 'Solutions for accountants and bookkeepers' }
+                      ].map((category) => (
+                        <label key={category.id} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={formData.categories.includes(category.id)}
+                            onChange={() => handleCategoryToggle(category.id)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">{category.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Select one or more categories to display this product on the homepage
+                    </p>
+                  </div>
+
+                  {/* Personas */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Target Personas (optional)
+                    </label>
+                    <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      {availablePersonas.map((persona) => (
+                        <label key={persona.id} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={formData.personas.includes(persona.id)}
+                            onChange={() => handlePersonaToggle(persona.id)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">{persona.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Leave empty to show for all personas, or select specific personas
+                    </p>
+                  </div>
+
+                  {/* Countries */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Available Countries (optional)
+                    </label>
+                    <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      {availableCountries.length > 0 ? (
+                        availableCountries.map((countryCode) => (
+                          <label key={countryCode} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={formData.countries.includes(countryCode)}
+                              onChange={() => handleCountryToggle(countryCode)}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-700 uppercase">{countryCode}</span>
+                          </label>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500">No countries configured for this region</p>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Leave empty to show in all countries, or select specific countries
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
