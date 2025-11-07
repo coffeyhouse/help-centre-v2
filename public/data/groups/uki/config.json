@@ -26,6 +26,31 @@
       "default": false
     }
   ],
+  "personas": [
+    {
+      "id": "customer",
+      "label": "I'm a Customer",
+      "default": true
+    },
+    {
+      "id": "accountant",
+      "label": "I'm an Accountant or Bookkeeper",
+      "default": false
+    }
+  ],
+  "navigation": {
+    "main": [
+      {
+        "label": "Home",
+        "path": "/:country",
+        "icon": "home"
+      },
+      {
+        "label": "Contact us",
+        "path": "/:country/contact"
+      }
+    ]
+  },
   "quickAccessCards": [
     {
       "id": "account-mgmt",

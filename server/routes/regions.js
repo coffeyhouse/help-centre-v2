@@ -100,6 +100,31 @@ async function createRegionFiles(groupId, groupName, countries) {
       dateFormat: 'YYYY-MM-DD',
       default: index === 0,
     })),
+    personas: [
+      {
+        id: 'customer',
+        label: "I'm a Customer",
+        default: true
+      },
+      {
+        id: 'accountant',
+        label: "I'm an Accountant or Bookkeeper",
+        default: false
+      }
+    ],
+    navigation: {
+      main: [
+        {
+          label: 'Home',
+          path: '/:country',
+          icon: 'home'
+        },
+        {
+          label: 'Contact us',
+          path: '/:country/contact'
+        }
+      ]
+    },
     quickAccessCards: [],
   };
 
@@ -145,8 +170,115 @@ async function createRegionFiles(groupId, groupName, countries) {
 }
 
 /**
+ * GET /api/regions/public
+ * Public endpoint - List all countries from all groups (no auth required)
+ * Returns a flattened list of countries for the region selector
+ */
+router.get('/public', async (req, res) => {
+  try {
+    // Read all group folders
+    const groupFolders = await fs.readdir(GROUPS_DIR, { withFileTypes: true });
+    const countries = [];
+
+    for (const folder of groupFolders) {
+      if (!folder.isDirectory()) continue;
+
+      const groupId = folder.name;
+      const configPath = path.join(GROUPS_DIR, groupId, 'config.json');
+
+      try {
+        const configData = await fs.readFile(configPath, 'utf-8');
+        const config = JSON.parse(configData);
+
+        // Add each country from this group to the flattened list
+        for (const country of config.countries || []) {
+          countries.push({
+            code: country.code,
+            name: country.name,
+            language: country.language || 'en-US',
+            currency: country.currency || 'USD',
+            currencySymbol: country.currencySymbol || '$',
+            dateFormat: country.dateFormat || 'YYYY-MM-DD',
+            region: groupId, // Group identifier (e.g., 'uki')
+            regionName: config.name, // Group display name (e.g., 'United Kingdom & Ireland')
+            default: country.default || false,
+          });
+        }
+      } catch (error) {
+        console.error(`Error reading group config for ${groupId}:`, error);
+      }
+    }
+
+    res.json(countries);
+  } catch (error) {
+    console.error('Error fetching public regions:', error);
+    res.status(500).json({ error: 'Failed to fetch regions' });
+  }
+});
+
+/**
+ * GET /api/regions/public/:countryCode/config
+ * Public endpoint - Get configuration for a specific country (no auth required)
+ * Returns personas, navigation, and other UI config from the group config
+ */
+router.get('/public/:countryCode/config', async (req, res) => {
+  try {
+    const { countryCode } = req.params;
+    const normalizedCode = countryCode.toLowerCase();
+
+    // Find which group contains this country
+    const groupFolders = await fs.readdir(GROUPS_DIR, { withFileTypes: true });
+
+    for (const folder of groupFolders) {
+      if (!folder.isDirectory()) continue;
+
+      const groupId = folder.name;
+      const configPath = path.join(GROUPS_DIR, groupId, 'config.json');
+
+      try {
+        const configData = await fs.readFile(configPath, 'utf-8');
+        const config = JSON.parse(configData);
+
+        // Check if this group contains the requested country
+        const country = (config.countries || []).find(
+          (c) => c.code.toLowerCase() === normalizedCode
+        );
+
+        if (country) {
+          // Return config with country-specific data
+          const navigation = config.navigation || { main: [] };
+
+          // Replace :country placeholder in navigation paths
+          const processedNavigation = {
+            main: navigation.main.map((item) => ({
+              ...item,
+              path: item.path.replace(':country', normalizedCode),
+            })),
+          };
+
+          return res.json({
+            region: normalizedCode,
+            displayName: country.name,
+            personas: config.personas || [],
+            navigation: processedNavigation,
+          });
+        }
+      } catch (error) {
+        console.error(`Error reading group config for ${groupId}:`, error);
+      }
+    }
+
+    // Country not found in any group
+    res.status(404).json({ error: `Country ${countryCode} not found` });
+  } catch (error) {
+    console.error('Error fetching country config:', error);
+    res.status(500).json({ error: 'Failed to fetch country config' });
+  }
+});
+
+/**
  * GET /api/regions
- * List all admin regions
+ * List all admin regions (requires auth)
  */
 router.get('/', verifyAuth, async (req, res) => {
   try {

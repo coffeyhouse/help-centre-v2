@@ -72,7 +72,7 @@ async function getGroupForCountry(countryCode: string): Promise<string> {
  * @returns Promise resolving to array of Region objects
  */
 export async function loadRegions(): Promise<Region[]> {
-  return fetchJSON<Region[]>(`${BASE_DATA_PATH}/regions.json`);
+  return fetchJSON<Region[]>('/api/regions/public');
 }
 
 /**
@@ -81,9 +81,9 @@ export async function loadRegions(): Promise<Region[]> {
  * @returns Promise resolving to RegionConfig object
  */
 export async function loadRegionConfig(countryCode: string): Promise<RegionConfig> {
-  // Normalize to lowercase for consistent file paths
+  // Normalize to lowercase for consistent API calls
   const normalizedCode = countryCode.toLowerCase();
-  return fetchJSON<RegionConfig>(`${BASE_DATA_PATH}/countries/${normalizedCode}/config.json`);
+  return fetchJSON<RegionConfig>(`/api/regions/public/${normalizedCode}/config`);
 }
 
 /**
