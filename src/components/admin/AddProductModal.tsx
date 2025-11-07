@@ -18,6 +18,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     type: 'cloud' as 'cloud' | 'desktop',
     icon: '',
     knowledgebase_collection: '',
+    categories: [] as string[],
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +33,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
         type: 'cloud',
         icon: '',
         knowledgebase_collection: '',
+        categories: [],
       });
       setError('');
     }
@@ -71,6 +73,15 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     });
   };
 
+  const handleCategoryToggle = (category: string) => {
+    const categories = formData.categories || [];
+    const isSelected = categories.includes(category);
+    const newCategories = isSelected
+      ? categories.filter((c) => c !== category)
+      : [...categories, category];
+    setFormData({ ...formData, categories: newCategories });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -88,6 +99,11 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
 
     if (!formData.description.trim()) {
       setError('Product description is required');
+      return;
+    }
+
+    if (!formData.categories || formData.categories.length === 0) {
+      setError('At least one category is required');
       return;
     }
 
@@ -125,6 +141,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
         icon: formData.icon || undefined,
         knowledgebase_collection: formData.knowledgebase_collection || undefined,
         personas: ['customer', 'accountant'], // Default to all personas
+        categories: formData.categories,
       };
 
       const updatedData = {
@@ -304,6 +321,34 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   The collection ID used for filtering search results
+                </p>
+              </div>
+
+              {/* Categories (required) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Categories *
+                </label>
+                <div className="space-y-2">
+                  {[
+                    { id: 'accounting-software', label: 'Accounting software' },
+                    { id: 'people-payroll', label: 'People and Payroll' },
+                    { id: 'business-management', label: 'Business management' },
+                    { id: 'solutions-accountants-bookkeepers', label: 'Solutions for accountants and bookkeepers' }
+                  ].map((category) => (
+                    <label key={category.id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.categories.includes(category.id)}
+                        onChange={() => handleCategoryToggle(category.id)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{category.label}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Select one or more categories to display this product on the homepage
                 </p>
               </div>
             </div>
