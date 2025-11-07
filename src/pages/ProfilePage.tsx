@@ -17,11 +17,13 @@ import Button from '../components/common/Button';
 import type { Product } from '../types';
 
 export default function ProfilePage() {
-  const { user, reloadUser, loading: authLoading } = useAuth();
+  const { user, reloadUser, logout, loading: authLoading } = useAuth();
   const { region } = useRegion();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -120,6 +122,32 @@ export default function ProfilePage() {
       setError(err instanceof Error ? err.message : 'Failed to update profile');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!user) return;
+
+    setDeleting(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/users/${user.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete account');
+      }
+
+      // Account deleted successfully, log out and redirect
+      logout();
+      navigate(`/${region}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete account');
+      setDeleting(false);
+      setShowDeleteModal(false);
     }
   };
 
@@ -292,7 +320,64 @@ export default function ProfilePage() {
             {saving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
+
+        {/* Danger Zone - Delete Account */}
+        <div className="mt-12 pt-8 border-t border-gray-300">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-red-900 mb-2">
+              Danger Zone
+            </h3>
+            <p className="text-sm text-red-700 mb-4">
+              Once you delete your account, there is no going back. This action cannot be undone.
+            </p>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+            >
+              Delete Account
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Icon name="alert-circle" className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Delete Account
+                </h2>
+              </div>
+            </div>
+
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
+            </p>
+
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                className={`flex-1 ${deleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Cancel
+              </Button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleting ? 'Deleting...' : 'Delete Account'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
