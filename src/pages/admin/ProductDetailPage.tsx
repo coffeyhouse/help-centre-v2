@@ -139,44 +139,23 @@ export default function ProductDetailPage() {
   };
 
   const handleSave = async () => {
-    if (!editedProduct) return;
+    if (!editedProduct || !productId) return;
 
     try {
       setSaving(true);
       setSaveError('');
 
-      // Fetch current products data
-      const fetchResponse = await fetch(`/api/files/${region}-products`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Convert product ID to folder ID (same logic as backend)
+      const productFolderId = productId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-      if (!fetchResponse.ok) {
-        throw new Error('Failed to load products data');
-      }
-
-      const result = await fetchResponse.json();
-      const productsData = result.data;
-
-      // Update the product in the array
-      const updatedProducts = productsData.products.map((p: Product) =>
-        p.id === productId ? editedProduct : p
-      );
-
-      // Save back to the API
-      const saveResponse = await fetch(`/api/files/${region}-products`, {
+      // Update the product using the products API
+      const saveResponse = await fetch(`/api/products/${region}/${productFolderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          data: {
-            ...productsData,
-            products: updatedProducts,
-          },
-        }),
+        body: JSON.stringify(editedProduct),
       });
 
       if (!saveResponse.ok) {
