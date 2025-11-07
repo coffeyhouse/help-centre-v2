@@ -10,12 +10,14 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useRegion } from '../../hooks/useRegion';
 import Icon from '../common/Icon';
 import RegistrationForm from '../auth/RegistrationForm';
 import type { UsersData } from '../../types';
 
 export default function UserMenu() {
   const { user, login, logout } = useAuth();
+  const { region } = useRegion();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegistration, setShowRegistration] = useState(false);
@@ -180,7 +182,7 @@ export default function UserMenu() {
               </div>
             </div>
             <a
-              href="/profile"
+              href={`/${region}/profile`}
               className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2 block"
               onClick={() => setShowDropdown(false)}
             >

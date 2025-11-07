@@ -215,7 +215,7 @@ function App() {
                           <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
                           <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
                           <Route path="/:region/contact" element={<ContactPage />} />
-                          <Route path="/profile" element={<ProfilePage />} />
+                          <Route path="/:region/profile" element={<ProfilePage />} />
                         </Route>
 
                         {/* 404 - Redirect to default region */}

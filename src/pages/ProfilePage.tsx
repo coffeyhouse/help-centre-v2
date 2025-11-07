@@ -16,7 +16,7 @@ import Icon from '../components/common/Icon';
 import type { Product } from '../types';
 
 export default function ProfilePage() {
-  const { user, reloadUser } = useAuth();
+  const { user, reloadUser, loading: authLoading } = useAuth();
   const { region } = useRegion();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -30,12 +30,12 @@ export default function ProfilePage() {
     ownedProducts: user?.ownedProducts || [],
   });
 
-  // Redirect to home if not logged in
+  // Redirect to home if not logged in (but wait for auth to finish loading)
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       navigate(`/${region}`);
     }
-  }, [user, navigate, region]);
+  }, [user, authLoading, navigate, region]);
 
   // Load available products
   useEffect(() => {
@@ -127,6 +127,17 @@ export default function ProfilePage() {
     (formData.name !== user.name ||
       JSON.stringify([...formData.ownedProducts].sort()) !==
         JSON.stringify([...user.ownedProducts].sort()));
+
+  // Show loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-600">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return null;
