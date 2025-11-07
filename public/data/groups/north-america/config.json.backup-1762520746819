@@ -1,9 +1,7 @@
 {
   "id": "north-america",
   "name": "North America",
-  "productIds": [
-    "test"
-  ],
+  "productIds": [],
   "countries": [
     {
       "code": "us",
