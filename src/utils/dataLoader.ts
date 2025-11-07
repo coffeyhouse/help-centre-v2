@@ -16,11 +16,11 @@ import type {
   ReleaseNotesData
 } from '../types';
 
-const BASE_DATA_PATH = '/data';
+const BASE_API_PATH = '/api/public/data';
 
 /**
- * Generic function to fetch JSON data
- * @param path - Relative path to the JSON file
+ * Generic function to fetch JSON data from API
+ * @param path - API endpoint path
  * @returns Promise resolving to the parsed JSON data
  */
 async function fetchJSON<T>(path: string): Promise<T> {
@@ -45,40 +45,6 @@ async function fetchJSON<T>(path: string): Promise<T> {
     console.error(`[fetchJSON] Response was:`, text.substring(0, 200));
     throw error;
   }
-}
-
-/**
- * Filter items by country - only return items that apply to the given country
- * If an item has no countries field, it applies to all countries in the region
- * @param items - Array of items with optional countries field
- * @param countryCode - Country code to filter by
- * @returns Filtered array of items
- */
-function filterByCountry<T extends { countries?: string[] }>(
-  items: T[],
-  countryCode: string
-): T[] {
-  const normalizedCode = countryCode.toLowerCase();
-  return items.filter(
-    (item) => !item.countries || item.countries.map(c => c.toLowerCase()).includes(normalizedCode)
-  );
-}
-
-/**
- * Get the group identifier for a given country code
- * @param countryCode - Country code (e.g., 'gb', 'ie', 'GB', 'US')
- * @returns Promise resolving to the group identifier
- */
-async function getGroupForCountry(countryCode: string): Promise<string> {
-  const regions = await loadRegions();
-  const normalizedCode = countryCode.toLowerCase();
-  const region = regions.find((r) => r.code === normalizedCode);
-  // Map old region names to new group names
-  const regionToGroupMap: Record<string, string> = {
-    'uk-ireland': 'uki',
-    'north-america': 'north-america',
-  };
-  return regionToGroupMap[region?.region || 'uk-ireland'] || 'uki';
 }
 
 /**
@@ -113,37 +79,11 @@ export async function loadRegionConfig(countryCode: string): Promise<RegionConfi
  * @returns Promise resolving to ProductsData object filtered by country
  */
 export async function loadProducts(countryCode: string): Promise<ProductsData> {
-  const groupId = await getGroupForCountry(countryCode);
-
-  // Load group config to get productIds and quickAccessCards
-  const groupConfig = await fetchJSON<{
-    id: string;
-    name: string;
-    productIds: string[];
-    quickAccessCards: any[];
-  }>(`${BASE_DATA_PATH}/groups/${groupId}/config.json`);
-
-  // Load each product's config
-  const products = await Promise.all(
-    groupConfig.productIds.map(async (productFolderId) => {
-      try {
-        return await fetchJSON<any>(
-          `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/config.json`
-        );
-      } catch (error) {
-        console.error(`Failed to load product ${productFolderId}:`, error);
-        return null;
-      }
-    })
-  );
-
-  // Filter out null products and filter by country
-  const validProducts = products.filter((p) => p !== null);
-
-  return {
-    products: filterByCountry(validProducts, countryCode),
-    quickAccessCards: filterByCountry(groupConfig.quickAccessCards, countryCode),
-  };
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading products for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/products`);
+  const data = await fetchJSON<ProductsData>(`${BASE_API_PATH}/${normalizedCode}/products`);
+  console.log(`[dataLoader] Loaded products for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -152,53 +92,11 @@ export async function loadProducts(countryCode: string): Promise<ProductsData> {
  * @returns Promise resolving to TopicsData object filtered by country
  */
 export async function loadTopics(countryCode: string): Promise<TopicsData> {
-  const groupId = await getGroupForCountry(countryCode);
-
-  // Load group config to get productIds
-  const groupConfig = await fetchJSON<{
-    productIds: string[];
-  }>(`${BASE_DATA_PATH}/groups/${groupId}/config.json`);
-
-  const allTopics: any[] = [];
-
-  // For each product, load its topics
-  for (const productFolderId of groupConfig.productIds) {
-    try {
-      const productConfig = await fetchJSON<{ id: string; topicIds?: string[] }>(
-        `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/config.json`
-      );
-
-      if (productConfig.topicIds) {
-        // Load each topic's config
-        const topicConfigs = await Promise.all(
-          productConfig.topicIds.map(async (topicFolderId) => {
-            try {
-              const topicConfig = await fetchJSON<any>(
-                `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/topics/${topicFolderId}/config.json`
-              );
-              // Add productId to the topic (it's stored in the folder structure)
-              return {
-                ...topicConfig,
-                productId: productConfig.id,
-              };
-            } catch (error) {
-              console.error(`Failed to load topic ${topicFolderId}:`, error);
-              return null;
-            }
-          })
-        );
-
-        // Filter out null topics
-        allTopics.push(...topicConfigs.filter((t) => t !== null));
-      }
-    } catch (error) {
-      console.error(`Failed to load product ${productFolderId} for topics:`, error);
-    }
-  }
-
-  return {
-    supportHubs: filterByCountry(allTopics, countryCode),
-  };
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading topics for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/topics`);
+  const data = await fetchJSON<TopicsData>(`${BASE_API_PATH}/${normalizedCode}/topics`);
+  console.log(`[dataLoader] Loaded topics for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -207,50 +105,11 @@ export async function loadTopics(countryCode: string): Promise<TopicsData> {
  * @returns Promise resolving to ArticlesData object filtered by country
  */
 export async function loadArticles(countryCode: string): Promise<ArticlesData> {
-  const groupId = await getGroupForCountry(countryCode);
-
-  // Load group config to get productIds
-  const groupConfig = await fetchJSON<{
-    productIds: string[];
-  }>(`${BASE_DATA_PATH}/groups/${groupId}/config.json`);
-
-  const allArticles: { [productId: string]: { [topicId: string]: ArticleItem[] } } = {};
-
-  // For each product, load its articles
-  for (const productFolderId of groupConfig.productIds) {
-    try {
-      const productConfig = await fetchJSON<{ id: string; topicIds?: string[] }>(
-        `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/config.json`
-      );
-
-      if (productConfig.topicIds) {
-        allArticles[productConfig.id] = {};
-
-        // Load articles for each topic
-        for (const topicFolderId of productConfig.topicIds) {
-          try {
-            const topicConfig = await fetchJSON<{ id: string }>(
-              `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/topics/${topicFolderId}/config.json`
-            );
-
-            const articles = await fetchJSON<ArticleItem[]>(
-              `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/topics/${topicFolderId}/articles.json`
-            );
-
-            allArticles[productConfig.id][topicConfig.id] = filterByCountry(articles, countryCode);
-          } catch (error) {
-            console.error(`Failed to load articles for topic ${topicFolderId}:`, error);
-          }
-        }
-      }
-    } catch (error) {
-      console.error(`Failed to load product ${productFolderId} for articles:`, error);
-    }
-  }
-
-  return {
-    articles: allArticles,
-  };
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading articles for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/articles`);
+  const data = await fetchJSON<ArticlesData>(`${BASE_API_PATH}/${normalizedCode}/articles`);
+  console.log(`[dataLoader] Loaded articles for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -259,12 +118,11 @@ export async function loadArticles(countryCode: string): Promise<ArticlesData> {
  * @returns Promise resolving to ContactData object filtered by country
  */
 export async function loadContact(countryCode: string): Promise<ContactData> {
-  const groupId = await getGroupForCountry(countryCode);
-  const data = await fetchJSON<ContactData>(`${BASE_DATA_PATH}/groups/${groupId}/contact.json`);
-
-  return {
-    contactMethods: filterByCountry(data.contactMethods, countryCode),
-  };
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading contact for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/contact`);
+  const data = await fetchJSON<ContactData>(`${BASE_API_PATH}/${normalizedCode}/contact`);
+  console.log(`[dataLoader] Loaded contact for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -273,12 +131,11 @@ export async function loadContact(countryCode: string): Promise<ContactData> {
  * @returns Promise resolving to IncidentBannersData object filtered by country
  */
 export async function loadIncidentBanners(countryCode: string): Promise<IncidentBannersData> {
-  const groupId = await getGroupForCountry(countryCode);
-  const data = await fetchJSON<IncidentBannersData>(`${BASE_DATA_PATH}/groups/${groupId}/incidents.json`);
-
-  return {
-    banners: filterByCountry(data.banners, countryCode),
-  };
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading incidents for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/incidents`);
+  const data = await fetchJSON<IncidentBannersData>(`${BASE_API_PATH}/${normalizedCode}/incidents`);
+  console.log(`[dataLoader] Loaded incidents for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -287,12 +144,11 @@ export async function loadIncidentBanners(countryCode: string): Promise<Incident
  * @returns Promise resolving to PopupsData object filtered by country
  */
 export async function loadPopups(countryCode: string): Promise<PopupsData> {
-  const groupId = await getGroupForCountry(countryCode);
-  const data = await fetchJSON<PopupsData>(`${BASE_DATA_PATH}/groups/${groupId}/popups.json`);
-
-  return {
-    popups: filterByCountry(data.popups, countryCode),
-  };
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading popups for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/popups`);
+  const data = await fetchJSON<PopupsData>(`${BASE_API_PATH}/${normalizedCode}/popups`);
+  console.log(`[dataLoader] Loaded popups for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -302,57 +158,19 @@ export async function loadPopups(countryCode: string): Promise<PopupsData> {
  * @returns Promise resolving to ReleaseNotesData object filtered by country and optionally by product
  */
 export async function loadReleaseNotes(countryCode: string, productId?: string): Promise<ReleaseNotesData> {
-  const groupId = await getGroupForCountry(countryCode);
+  const normalizedCode = countryCode.toLowerCase();
 
-  // Load group config to get productIds
-  const groupConfig = await fetchJSON<{
-    productIds: string[];
-  }>(`${BASE_DATA_PATH}/groups/${groupId}/config.json`);
-
-  const allReleaseNotes: { [productId: string]: any[] } = {};
-
-  // For each product, load its release notes
-  for (const productFolderId of groupConfig.productIds) {
-    try {
-      const productConfig = await fetchJSON<{ id: string }>(
-        `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/config.json`
-      );
-
-      // Load release notes for this product
-      try {
-        const releaseNotes = await fetchJSON<any[]>(
-          `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/release-notes.json`
-        );
-
-        const filteredNotes = filterByCountry(releaseNotes, countryCode);
-
-        // Sort by date in descending order (newest first)
-        filteredNotes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-        if (filteredNotes.length > 0) {
-          allReleaseNotes[productConfig.id] = filteredNotes;
-        }
-      } catch (error) {
-        // Release notes might not exist for all products
-        console.debug(`No release notes found for product ${productFolderId}`);
-      }
-    } catch (error) {
-      console.error(`Failed to load product ${productFolderId} for release notes:`, error);
-    }
-  }
-
-  // If productId is specified, return only that product's release notes
   if (productId) {
-    return {
-      releaseNotes: {
-        [productId]: allReleaseNotes[productId] || [],
-      },
-    };
+    console.log(`[dataLoader] Loading release notes for ${countryCode}/${productId} from API: ${BASE_API_PATH}/${normalizedCode}/release-notes/${productId}`);
+    const data = await fetchJSON<ReleaseNotesData>(`${BASE_API_PATH}/${normalizedCode}/release-notes/${productId}`);
+    console.log(`[dataLoader] Loaded release notes for ${countryCode}/${productId}:`, data);
+    return data;
   }
 
-  return {
-    releaseNotes: allReleaseNotes,
-  };
+  console.log(`[dataLoader] Loading release notes for ${countryCode} from API: ${BASE_API_PATH}/${normalizedCode}/release-notes`);
+  const data = await fetchJSON<ReleaseNotesData>(`${BASE_API_PATH}/${normalizedCode}/release-notes`);
+  console.log(`[dataLoader] Loaded release notes for ${countryCode}:`, data);
+  return data;
 }
 
 /**
@@ -367,14 +185,15 @@ export async function loadVideos(
   productFolderId: string,
   topicFolderId: string
 ): Promise<any[]> {
-  const groupId = await getGroupForCountry(countryCode);
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading videos for ${countryCode}/${productFolderId}/${topicFolderId} from API: ${BASE_API_PATH}/${normalizedCode}/products/${productFolderId}/topics/${topicFolderId}/videos`);
 
   try {
     const videos = await fetchJSON<any[]>(
-      `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/topics/${topicFolderId}/videos.json`
+      `${BASE_API_PATH}/${normalizedCode}/products/${productFolderId}/topics/${topicFolderId}/videos`
     );
-
-    return filterByCountry(videos, countryCode);
+    console.log(`[dataLoader] Loaded videos for ${countryCode}/${productFolderId}/${topicFolderId}:`, videos);
+    return videos;
   } catch (error) {
     console.error(`Failed to load videos for ${productFolderId}/${topicFolderId}:`, error);
     return [];
@@ -393,14 +212,15 @@ export async function loadTraining(
   productFolderId: string,
   topicFolderId: string
 ): Promise<any[]> {
-  const groupId = await getGroupForCountry(countryCode);
+  const normalizedCode = countryCode.toLowerCase();
+  console.log(`[dataLoader] Loading training for ${countryCode}/${productFolderId}/${topicFolderId} from API: ${BASE_API_PATH}/${normalizedCode}/products/${productFolderId}/topics/${topicFolderId}/training`);
 
   try {
     const training = await fetchJSON<any[]>(
-      `${BASE_DATA_PATH}/groups/${groupId}/products/${productFolderId}/topics/${topicFolderId}/training.json`
+      `${BASE_API_PATH}/${normalizedCode}/products/${productFolderId}/topics/${topicFolderId}/training`
     );
-
-    return filterByCountry(training, countryCode);
+    console.log(`[dataLoader] Loaded training for ${countryCode}/${productFolderId}/${topicFolderId}:`, training);
+    return training;
   } catch (error) {
     console.error(`Failed to load training for ${productFolderId}/${topicFolderId}:`, error);
     return [];
