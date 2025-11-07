@@ -10,6 +10,7 @@ import regionsRoutes from './routes/regions.js';
 import productsRoutes from './routes/products.js';
 import searchRoutes from './routes/search.js';
 import publicDataRoutes from './routes/publicData.js';
+import usersRoutes from './routes/users.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,7 @@ app.use('/api/regions', regionsRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/public/data', publicDataRoutes);
+app.use('/api/users', usersRoutes);
 
 // Serve static files in production
 if (NODE_ENV === 'production') {
