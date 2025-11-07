@@ -110,57 +110,29 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     setLoading(true);
 
     try {
-      // Load existing products
-      const response = await fetch(`/api/files/${region}-products`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to load products');
-      }
-
-      const result = await response.json();
-      const productsData = result.data;
-
-      // Check if product ID already exists
-      const existingProduct = productsData.products?.find((p: any) => p.id === formData.id);
-      if (existingProduct) {
-        setError('A product with this ID already exists');
-        setLoading(false);
-        return;
-      }
-
-      // Add new product
-      const newProduct = {
-        id: formData.id,
-        name: formData.name,
-        description: formData.description,
-        type: formData.type,
-        icon: formData.icon || undefined,
-        knowledgebase_collection: formData.knowledgebase_collection || undefined,
-        personas: ['customer', 'accountant'], // Default to all personas
-        categories: formData.categories,
-      };
-
-      const updatedData = {
-        ...productsData,
-        products: [...(productsData.products || []), newProduct],
-      };
-
-      // Save updated data
-      const updateResponse = await fetch(`/api/files/${region}-products`, {
-        method: 'PUT',
+      // Create new product using the products API
+      const response = await fetch(`/api/products/${region}`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ data: updatedData }),
+        body: JSON.stringify({
+          id: formData.id,
+          name: formData.name,
+          description: formData.description,
+          type: formData.type,
+          icon: formData.icon || '',
+          knowledgebase_collection: formData.knowledgebase_collection || '',
+          personas: ['customer', 'accountant'], // Default to all personas
+          categories: formData.categories,
+          countries: [], // Will be set later when editing product
+        }),
       });
 
-      if (!updateResponse.ok) {
-        throw new Error('Failed to save product');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create product');
       }
 
       // Success
