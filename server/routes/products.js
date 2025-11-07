@@ -520,6 +520,47 @@ router.put('/:groupId/:productFolderId/topics/:topicId/articles', verifyAuth, as
 });
 
 /**
+ * DELETE /api/products/:groupId/:productFolderId/topics/:topicId
+ * Delete a topic
+ */
+router.delete('/:groupId/:productFolderId/topics/:topicId', verifyAuth, async (req, res) => {
+  try {
+    const { groupId, productFolderId, topicId } = req.params;
+
+    // Convert topicId to folder ID
+    const topicFolderId = topicId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+    // Remove topic folder
+    const topicDir = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'topics', topicFolderId);
+    await fs.rm(topicDir, { recursive: true, force: true });
+
+    // Update product config to remove topicId
+    const productConfigPath = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'config.json');
+    const productContent = await fs.readFile(productConfigPath, 'utf-8');
+    const productConfig = JSON.parse(productContent);
+
+    if (productConfig.topicIds) {
+      productConfig.topicIds = productConfig.topicIds.filter(id => id !== topicFolderId);
+    }
+
+    // Create backup
+    const backupPath = `${productConfigPath}.backup-${Date.now()}`;
+    await fs.writeFile(backupPath, productContent);
+
+    // Write updated product config
+    await fs.writeFile(productConfigPath, JSON.stringify(productConfig, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Topic deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting topic:', error);
+    res.status(500).json({ error: 'Failed to delete topic' });
+  }
+});
+
+/**
  * DELETE /api/products/:groupId/:productFolderId
  * Delete a product
  */

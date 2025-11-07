@@ -118,6 +118,41 @@ export default function AddTopicModal({
     }
   };
 
+  const handleDelete = async () => {
+    if (!existingTopic) return;
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${existingTopic.title}"?\n\nThis will permanently delete the topic and all its articles, and cannot be undone.`
+    );
+
+    if (!confirmDelete) return;
+
+    setLoading(true);
+
+    try {
+      const deleteResponse = await fetch(`/api/products/${region}/${productFolderId}/topics/${existingTopic.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!deleteResponse.ok) {
+        throw new Error('Failed to delete topic');
+      }
+
+      // Success
+      onSuccess();
+      onClose();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete topic';
+      setError(errorMessage);
+      console.error('Error deleting topic:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -385,22 +420,36 @@ export default function AddTopicModal({
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading}
-              >
-                {loading ? (isEditMode ? 'Saving...' : 'Creating...') : (isEditMode ? 'Save Changes' : 'Add Topic')}
-              </button>
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <div>
+                {isEditMode && (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={loading}
+                  >
+                    Delete Topic
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading}
+                >
+                  {loading ? (isEditMode ? 'Saving...' : 'Creating...') : (isEditMode ? 'Save Changes' : 'Add Topic')}
+                </button>
+              </div>
             </div>
           </form>
         </div>
