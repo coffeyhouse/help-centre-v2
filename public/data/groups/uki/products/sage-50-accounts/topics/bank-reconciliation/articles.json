@@ -1,0 +1,20 @@
+[
+  {
+    "id": "reconciliation-basics",
+    "type": "article",
+    "title": "Bank reconciliation basics",
+    "description": "Learn the fundamentals of bank reconciliation."
+  },
+  {
+    "id": "perform-reconciliation",
+    "type": "article",
+    "title": "Perform a bank reconciliation",
+    "description": "Step-by-step guide to reconciling your bank accounts."
+  },
+  {
+    "id": "reconciliation-reports",
+    "type": "article",
+    "title": "Bank reconciliation reports",
+    "description": "Generate and understand reconciliation reports."
+  }
+]

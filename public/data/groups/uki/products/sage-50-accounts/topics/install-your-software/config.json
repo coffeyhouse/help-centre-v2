@@ -1,0 +1,8 @@
+{
+  "id": "install-software",
+  "title": "Install your software",
+  "description": "Everything you need to install your software.",
+  "icon": "download",
+  "parentTopicId": null,
+  "showOnProductLanding": true
+}

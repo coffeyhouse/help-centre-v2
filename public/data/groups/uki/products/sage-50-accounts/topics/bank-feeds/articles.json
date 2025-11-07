@@ -1,0 +1,26 @@
+[
+  {
+    "id": "bank-connection",
+    "type": "article",
+    "title": "Connect your bank account",
+    "description": "Link your bank account for automatic transaction imports."
+  },
+  {
+    "id": "setup-bank-feeds",
+    "type": "article",
+    "title": "Set up bank feeds",
+    "description": "Automatically import transactions from your bank."
+  },
+  {
+    "id": "bank-feeds-troubleshooting",
+    "type": "article",
+    "title": "Bank feeds troubleshooting",
+    "description": "Common issues and solutions for bank feeds."
+  },
+  {
+    "id": "supported-banks",
+    "type": "article",
+    "title": "Supported banks",
+    "description": "List of banks that support automatic feeds."
+  }
+]

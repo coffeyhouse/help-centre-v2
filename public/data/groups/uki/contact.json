@@ -1,0 +1,90 @@
+{
+  "contactMethods": [
+    {
+      "id": "community",
+      "type": "card",
+      "title": "Tap into the wisdom of our community forums",
+      "icon": "community",
+      "buttonLabel": "Go to Community Hub",
+      "buttonStyle": "primary"
+    },
+    {
+      "id": "priority-support",
+      "type": "action",
+      "title": "Priority Support",
+      "description": "Get faster response times and dedicated support for urgent issues.",
+      "icon": "star",
+      "buttonLabel": "Learn more",
+      "buttonStyle": "primary",
+      "openModal": true,
+      "modalContent": {
+        "title": "Priority Support Information",
+        "sections": [
+          {
+            "heading": "What is Priority Support?",
+            "content": "Priority Support gives you access to our premium support services with faster response times, dedicated account managers, and 24/7 availability for critical issues.",
+            "type": "text"
+          },
+          {
+            "heading": "Benefits Include",
+            "content": "Dedicated account manager\n24/7 support for critical issues\nResponse within 1 hour for urgent tickets\nDirect phone line to senior support staff\nPriority access to product updates and beta features",
+            "type": "list"
+          },
+          {
+            "heading": "Pricing",
+            "content": "Priority Support is available as an add-on to your existing subscription starting at £99/month.\n\nContact our sales team for custom enterprise pricing.",
+            "type": "info"
+          },
+          {
+            "content": "Please note: Priority Support requires an active subscription to one of our products.",
+            "type": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "id": "live-chat",
+      "type": "action",
+      "title": "Live Chat",
+      "description": "Chat with our support team in real-time for instant help.",
+      "icon": "chat",
+      "buttonLabel": "Start chat",
+      "buttonStyle": "primary",
+      "productIds": ["product-b", "product-c", "product-e"]
+    },
+    {
+      "id": "product-a-specialist",
+      "type": "action",
+      "title": "Product A Specialist Team",
+      "description": "Speak to our dedicated Product A experts for advanced support.",
+      "icon": "support",
+      "buttonLabel": "Contact specialists",
+      "buttonStyle": "outline",
+      "productIds": ["product-a"]
+    },
+    {
+      "id": "phone-gb",
+      "type": "action",
+      "title": "Telephone",
+      "description": "Give us a call and talk to one of our experts on the phone.",
+      "icon": "phone",
+      "buttonLabel": "Call now",
+      "buttonStyle": "outline",
+      "phoneNumber": "+44 (0) 191 294 3000",
+      "hours": "Monday-Friday, 9:00-17:00 GMT",
+      "countries": ["gb"]
+    },
+    {
+      "id": "phone-ie",
+      "type": "action",
+      "title": "Telephone",
+      "description": "Give us a call and talk to one of our experts on the phone.",
+      "icon": "phone",
+      "buttonLabel": "Call now",
+      "buttonStyle": "outline",
+      "phoneNumber": "+353 (0) 1 904 9200",
+      "hours": "Monday-Friday, 9:00-17:00 IST",
+      "countries": ["ie"]
+    }
+  ]
+}

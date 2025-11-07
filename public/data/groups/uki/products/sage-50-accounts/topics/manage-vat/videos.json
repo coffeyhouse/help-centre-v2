@@ -1,0 +1,19 @@
+[
+  {
+    "id": "video-vat-setup",
+    "title": "Setting up VAT",
+    "description": "Step-by-step guide to configuring VAT in your software",
+    "url": "https://www.youtube.com/embed/example-vat-setup",
+    "duration": "6:45",
+    "thumbnail": "/images/thumbnails/vat-setup.jpg"
+  },
+  {
+    "id": "video-mtd-uk",
+    "title": "Making Tax Digital for VAT (UK)",
+    "description": "How to submit VAT returns through MTD",
+    "url": "https://www.youtube.com/embed/example-mtd",
+    "duration": "10:20",
+    "thumbnail": "/images/thumbnails/mtd-uk.jpg",
+    "countries": ["gb"]
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "vat-setup",
+    "type": "article",
+    "title": "Set up VAT",
+    "description": "Configure your VAT settings correctly."
+  },
+  {
+    "id": "vat-returns",
+    "type": "article",
+    "title": "Submit VAT returns",
+    "description": "How to submit your VAT return online."
+  },
+  {
+    "id": "vat-returns-uk",
+    "type": "article",
+    "title": "Submit VAT returns to HMRC",
+    "description": "UK-specific guidance for submitting VAT returns through Making Tax Digital.",
+    "countries": ["gb"]
+  },
+  {
+    "id": "vat-returns-ie",
+    "type": "article",
+    "title": "Submit VAT returns to Revenue",
+    "description": "Irish-specific guidance for submitting VAT returns through ROS.",
+    "countries": ["ie"]
+  },
+  {
+    "id": "vat-rates",
+    "type": "article",
+    "title": "Understanding VAT rates",
+    "description": "Learn about different VAT rates and when to apply them."
+  },
+  {
+    "id": "vat-rates-uk",
+    "type": "article",
+    "title": "UK VAT rates (20%, 5%, 0%)",
+    "description": "Detailed breakdown of standard, reduced, and zero-rated VAT in the UK.",
+    "countries": ["gb"]
+  },
+  {
+    "id": "vat-rates-ie",
+    "type": "article",
+    "title": "Irish VAT rates (23%, 13.5%, 9%, 0%)",
+    "description": "Detailed breakdown of Irish VAT rates including the second reduced rate.",
+    "countries": ["ie"]
+  },
+  {
+    "id": "vat-reporting",
+    "type": "article",
+    "title": "VAT reporting and reconciliation",
+    "description": "Generate VAT reports and reconcile your accounts."
+  }
+]

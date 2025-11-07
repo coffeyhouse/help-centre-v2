@@ -1,0 +1,11 @@
+[
+  {
+    "id": "training-install-basics",
+    "title": "Installation Basics Course",
+    "description": "Complete guide to installing and setting up your software",
+    "type": "course",
+    "url": "https://training.example.com/install-basics",
+    "duration": "1 hour",
+    "level": "beginner"
+  }
+]

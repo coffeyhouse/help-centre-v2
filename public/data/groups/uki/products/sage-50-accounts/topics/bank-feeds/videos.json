@@ -1,0 +1,10 @@
+[
+  {
+    "id": "video-bank-feeds-setup",
+    "title": "Setting up Bank Feeds",
+    "description": "Connect your bank and start importing transactions",
+    "url": "https://www.youtube.com/embed/example-feeds",
+    "duration": "8:45",
+    "thumbnail": "/images/thumbnails/bank-feeds.jpg"
+  }
+]

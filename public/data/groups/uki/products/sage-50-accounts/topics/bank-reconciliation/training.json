@@ -1,0 +1,11 @@
+[
+  {
+    "id": "training-reconciliation",
+    "title": "Bank Reconciliation Essentials",
+    "description": "Master the art of bank reconciliation",
+    "type": "course",
+    "url": "https://training.example.com/reconciliation",
+    "duration": "2 hours",
+    "level": "intermediate"
+  }
+]
