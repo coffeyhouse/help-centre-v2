@@ -24,13 +24,24 @@ const BASE_DATA_PATH = '/data';
  * @returns Promise resolving to the parsed JSON data
  */
 async function fetchJSON<T>(path: string): Promise<T> {
+  console.log(`[fetchJSON] Fetching: ${path}`);
   const response = await fetch(path);
 
   if (!response.ok) {
+    console.error(`[fetchJSON] Failed to fetch ${path}: ${response.status} ${response.statusText}`);
     throw new Error(`Failed to fetch ${path}: ${response.statusText}`);
   }
 
-  return response.json();
+  try {
+    const data = await response.json();
+    console.log(`[fetchJSON] Success: ${path}`, data);
+    return data;
+  } catch (error) {
+    console.error(`[fetchJSON] JSON parse error for ${path}:`, error);
+    const text = await response.clone().text();
+    console.error(`[fetchJSON] Response was:`, text.substring(0, 200));
+    throw error;
+  }
 }
 
 /**
