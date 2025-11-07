@@ -10,10 +10,7 @@
   "categories": [
     "people-payroll"
   ],
-  "countries": [
-    "gb",
-    "ie"
-  ],
+  "countries": [],
   "icon": "",
   "knowledgebase_collection": "custom_gb_en_fiftycloud_payroll",
   "topicIds": []
