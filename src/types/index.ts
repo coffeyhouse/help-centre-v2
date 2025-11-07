@@ -60,6 +60,7 @@ export interface Product {
   categories: ProductCategory[];
   icon: string;
   countries?: string[];
+  knowledgebase_collection?: string; // Collection ID for search API (e.g., "custom_gb_en_fifty_accounts")
 }
 
 export interface ProductsData {
@@ -284,6 +285,7 @@ export interface HeroProps {
   searchBar?: boolean;
   searchPlaceholder?: string;
   productId?: string;
+  knowledgebaseCollection?: string;
 }
 
 // ==================== Context Types ====================
@@ -331,6 +333,38 @@ export interface SearchResult {
   productId?: string;
   topicId?: string;
   url: string;
+  taxonomy?: string[];
+  attributes?: Record<string, string>;
+  language?: string;
+  relevanceScore?: number;
+}
+
+// Search API parameters
+export interface SearchParams {
+  query: string;
+  country: string;
+  products?: string[];
+  taxonomy?: string;
+  attributes?: Record<string, string>;
+  language?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Search API response
+export interface SearchResponse {
+  results: SearchResult[];
+  total: number;
+  hasMore: boolean;
+  query: string;
+  filters: {
+    country: string;
+    products?: string[];
+    taxonomy?: string;
+    attributes?: Record<string, string>;
+    language?: string;
+  };
+  executionTime: number;
 }
 
 // ==================== Hook Return Types ====================

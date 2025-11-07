@@ -19,6 +19,7 @@ export default function Hero({
   searchBar = false,
   searchPlaceholder = 'Search for answers...',
   productId,
+  knowledgebaseCollection,
 }: HeroProps) {
 
   return (
@@ -43,6 +44,7 @@ export default function Hero({
                 <SearchBar
                   placeholder={searchPlaceholder}
                   productId={productId}
+                  knowledgebaseCollection={knowledgebaseCollection}
                 />
               </div>
             )}

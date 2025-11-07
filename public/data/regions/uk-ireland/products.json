@@ -8,7 +8,8 @@
       "personas": ["customer", "accountant"],
       "categories": ["accounting-software"],
       "countries": ["gb", "ie"],
-      "icon": "icon-a"
+      "icon": "icon-a",
+      "knowledgebase_collection": "custom_gb_en_fifty_accounts"
     },
     {
       "id": "product-b",
