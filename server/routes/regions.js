@@ -340,6 +340,122 @@ router.post('/', verifyAuth, async (req, res) => {
 });
 
 /**
+ * GET /api/regions/:groupId/popups
+ * Get popups for a group
+ */
+router.get('/:groupId/popups', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const popupsPath = path.join(GROUPS_DIR, groupId, 'popups.json');
+
+    const content = await fs.readFile(popupsPath, 'utf-8');
+    const data = JSON.parse(content);
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error('Error loading popups:', error);
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Popups file not found' });
+    }
+    res.status(500).json({ error: 'Failed to load popups' });
+  }
+});
+
+/**
+ * PUT /api/regions/:groupId/popups
+ * Update popups for a group
+ */
+router.put('/:groupId/popups', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const { data } = req.body;
+
+    const popupsPath = path.join(GROUPS_DIR, groupId, 'popups.json');
+
+    // Create backup
+    try {
+      const existingContent = await fs.readFile(popupsPath, 'utf-8');
+      const backupPath = `${popupsPath}.backup-${Date.now()}`;
+      await fs.writeFile(backupPath, existingContent);
+    } catch (error) {
+      // File doesn't exist yet, no backup needed
+    }
+
+    // Write updated popups
+    await fs.writeFile(popupsPath, JSON.stringify(data, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Popups updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating popups:', error);
+    res.status(500).json({ error: 'Failed to update popups' });
+  }
+});
+
+/**
+ * GET /api/regions/:groupId/incidents
+ * Get incidents for a group
+ */
+router.get('/:groupId/incidents', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const incidentsPath = path.join(GROUPS_DIR, groupId, 'incidents.json');
+
+    const content = await fs.readFile(incidentsPath, 'utf-8');
+    const data = JSON.parse(content);
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error('Error loading incidents:', error);
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Incidents file not found' });
+    }
+    res.status(500).json({ error: 'Failed to load incidents' });
+  }
+});
+
+/**
+ * PUT /api/regions/:groupId/incidents
+ * Update incidents for a group
+ */
+router.put('/:groupId/incidents', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const { data } = req.body;
+
+    const incidentsPath = path.join(GROUPS_DIR, groupId, 'incidents.json');
+
+    // Create backup
+    try {
+      const existingContent = await fs.readFile(incidentsPath, 'utf-8');
+      const backupPath = `${incidentsPath}.backup-${Date.now()}`;
+      await fs.writeFile(backupPath, existingContent);
+    } catch (error) {
+      // File doesn't exist yet, no backup needed
+    }
+
+    // Write updated incidents
+    await fs.writeFile(incidentsPath, JSON.stringify(data, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Incidents updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating incidents:', error);
+    res.status(500).json({ error: 'Failed to update incidents' });
+  }
+});
+
+/**
  * DELETE /api/regions/:regionId
  * Delete an admin region (future implementation)
  */

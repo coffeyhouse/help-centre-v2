@@ -30,7 +30,7 @@ export default function IncidentsPage() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(`/api/files/${region}-incidents`, {
+      const response = await fetch(`/api/regions/${region}/incidents`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ export default function IncidentsPage() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(`/api/files/${region}-incidents`, {
+      const response = await fetch(`/api/regions/${region}/incidents`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

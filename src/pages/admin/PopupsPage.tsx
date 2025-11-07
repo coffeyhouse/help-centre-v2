@@ -30,7 +30,7 @@ export default function PopupsPage() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(`/api/files/${region}-popups`, {
+      const response = await fetch(`/api/regions/${region}/popups`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ export default function PopupsPage() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(`/api/files/${region}-popups`, {
+      const response = await fetch(`/api/regions/${region}/popups`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
