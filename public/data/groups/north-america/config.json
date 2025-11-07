@@ -1,0 +1,26 @@
+{
+  "id": "north-america",
+  "name": "North America",
+  "productIds": [],
+  "countries": [
+    {
+      "code": "US",
+      "name": "United States",
+      "language": "en-US",
+      "currency": "USD",
+      "currencySymbol": "$",
+      "dateFormat": "YYYY-MM-DD",
+      "default": true
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "language": "en-US",
+      "currency": "USD",
+      "currencySymbol": "$",
+      "dateFormat": "YYYY-MM-DD",
+      "default": false
+    }
+  ],
+  "quickAccessCards": []
+}

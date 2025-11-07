@@ -1,11 +1,7 @@
 {
   "id": "uki",
   "name": "United Kingdom & Ireland",
-  "productIds": [
-    "sage-50-accounts",
-    "sage-50-payroll",
-    "sage-accounting"
-  ],
+  "productIds": ["sage-50-accounts"],
   "countries": [
     {
       "code": "gb",

@@ -40,27 +40,5 @@
     "region": "north-america",
     "regionName": "North America",
     "default": false
-  },
-  {
-    "code": "US",
-    "name": "United States",
-    "language": "en-US",
-    "currency": "USD",
-    "currencySymbol": "$",
-    "dateFormat": "MM/DD/YYYY",
-    "region": "north-america",
-    "regionName": "North America",
-    "default": true
-  },
-  {
-    "code": "CA",
-    "name": "Canada",
-    "language": "en-US",
-    "currency": "USD",
-    "currencySymbol": "$",
-    "dateFormat": "MM/DD/YYYY",
-    "region": "north-america",
-    "regionName": "North America",
-    "default": false
   }
 ]

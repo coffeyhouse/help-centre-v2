@@ -1,0 +1,20 @@
+{
+  "id": "sage-accounting",
+  "name": "Sage Accounting",
+  "description": "Cloud software",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "accounting-software"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "icon-b",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}
