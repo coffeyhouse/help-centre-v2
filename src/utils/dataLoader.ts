@@ -72,7 +72,10 @@ async function getGroupForCountry(countryCode: string): Promise<string> {
  * @returns Promise resolving to array of Region objects
  */
 export async function loadRegions(): Promise<Region[]> {
-  return fetchJSON<Region[]>('/api/regions/public');
+  console.log('[dataLoader] Loading regions from API: /api/regions/public');
+  const data = await fetchJSON<Region[]>('/api/regions/public');
+  console.log('[dataLoader] Loaded regions:', data);
+  return data;
 }
 
 /**
@@ -83,7 +86,11 @@ export async function loadRegions(): Promise<Region[]> {
 export async function loadRegionConfig(countryCode: string): Promise<RegionConfig> {
   // Normalize to lowercase for consistent API calls
   const normalizedCode = countryCode.toLowerCase();
-  return fetchJSON<RegionConfig>(`/api/regions/public/${normalizedCode}/config`);
+  const url = `/api/regions/public/${normalizedCode}/config`;
+  console.log(`[dataLoader] Loading config for ${countryCode} from API: ${url}`);
+  const data = await fetchJSON<RegionConfig>(url);
+  console.log(`[dataLoader] Loaded config for ${countryCode}:`, data);
+  return data;
 }
 
 /**
