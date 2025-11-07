@@ -17,7 +17,7 @@ import RegistrationForm from '../auth/RegistrationForm';
 import type { UsersData } from '../../types';
 
 export default function UserMenu() {
-  const { user, login, logout } = useAuth();
+  const { user, login, logout, reloadAllUsers } = useAuth();
   const { region } = useRegion();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -49,22 +49,23 @@ export default function UserMenu() {
     setShowDropdown(false);
   };
 
-  const handleRegistrationSuccess = (userId: string) => {
+  const handleRegistrationSuccess = async (userId: string) => {
     // Reload users to include the newly created one
-    const loadUsers = async () => {
-      try {
-        const response = await fetch('/data/users.json');
-        const data: UsersData = await response.json();
-        setUsers(data.users);
-        // Auto-login the new user
-        login(userId);
-        setShowLoginModal(false);
-        setShowRegistration(false);
-      } catch (error) {
-        console.error('Failed to reload users:', error);
-      }
-    };
-    loadUsers();
+    try {
+      const response = await fetch('/data/users.json');
+      const data: UsersData = await response.json();
+      setUsers(data.users);
+
+      // Reload users in AuthContext before logging in
+      await reloadAllUsers();
+
+      // Auto-login the new user
+      login(userId);
+      setShowLoginModal(false);
+      setShowRegistration(false);
+    } catch (error) {
+      console.error('Failed to reload users:', error);
+    }
   };
 
   if (!user) {

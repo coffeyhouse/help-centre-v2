@@ -308,6 +308,7 @@ export interface AuthContextValue {
   login: (userId: string) => void;
   logout: () => void;
   reloadUser: () => Promise<void>;
+  reloadAllUsers: () => Promise<void>;
   loading: boolean;
 }
 

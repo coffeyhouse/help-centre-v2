@@ -65,8 +65,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const reloadAllUsers = async () => {
+    try {
+      const response = await fetch('/data/users.json');
+      const data: UsersData = await response.json();
+      setAllUsers(data.users);
+    } catch (error) {
+      console.error('Failed to reload users list:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, reloadUser, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, reloadUser, reloadAllUsers, loading }}>
       {children}
     </AuthContext.Provider>
   );
