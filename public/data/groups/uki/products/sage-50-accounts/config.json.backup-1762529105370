@@ -1,6 +1,6 @@
 {
   "id": "sage-50-accounts",
-  "name": "Sage 50 Accounts",
+  "name": "Accounts Desktop",
   "description": "Comprehensive desktop accounting for small businesses",
   "type": "desktop",
   "personas": [
@@ -19,6 +19,7 @@
   "topicIds": [
     "manage-vat",
     "bank-reconciliation",
+    "install-software",
     "banking",
     "bank-feeds"
   ]
