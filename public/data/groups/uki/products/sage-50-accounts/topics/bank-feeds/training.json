@@ -1,0 +1,11 @@
+[
+  {
+    "id": "training-bank-feeds",
+    "title": "Bank Feeds Mastery",
+    "description": "Learn to set up and manage bank feeds efficiently",
+    "type": "course",
+    "url": "https://training.example.com/bank-feeds",
+    "duration": "1 hour",
+    "level": "intermediate"
+  }
+]

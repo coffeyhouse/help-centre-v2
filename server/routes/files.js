@@ -11,22 +11,21 @@ const router = express.Router();
 
 // Base path to data files
 const DATA_BASE_PATH = path.join(__dirname, '..', '..', 'public', 'data');
+const GROUPS_DIR = path.join(DATA_BASE_PATH, 'groups');
 
-// Valid file types for regions
+// Valid file types for groups
 const VALID_FILE_TYPES = [
   'products',
-  'articles',
-  'topics',
   'incidents',
   'popups',
   'contact',
-  'release-notes',
+  'config',
 ];
 
 /**
  * Helper function to get file path
- * Supports both static files (like regions.json) and region-specific files
- * Format: {region}-{fileType} (e.g., uk-ireland-products, north-america-topics)
+ * Supports both static files (like regions.json) and group-specific files
+ * Format: {groupId}-{fileType} (e.g., uki-products, north-america-incidents)
  */
 function getFilePath(fileId) {
   // Handle special case for regions.json
@@ -34,23 +33,29 @@ function getFilePath(fileId) {
     return path.join(DATA_BASE_PATH, 'regions.json');
   }
 
-  // Parse region-specific file ID
-  // Format: {region}-{fileType}
+  // Parse group-specific file ID
+  // Format: {groupId}-{fileType}
   const parts = fileId.split('-');
   if (parts.length < 2) {
     return null;
   }
 
-  // The last part is the file type, everything before is the region
+  // The last part is the file type, everything before is the groupId
   const fileType = parts[parts.length - 1];
-  const region = parts.slice(0, -1).join('-');
+  const groupId = parts.slice(0, -1).join('-');
 
   // Validate file type
   if (!VALID_FILE_TYPES.includes(fileType)) {
     return null;
   }
 
-  return path.join(DATA_BASE_PATH, 'regions', region, `${fileType}.json`);
+  // For products, return special marker (will be handled separately)
+  if (fileType === 'products') {
+    return { type: 'products', groupId };
+  }
+
+  // For other types, return path to group-level file
+  return path.join(GROUPS_DIR, groupId, `${fileType}.json`);
 }
 
 // Get list of available files (deprecated - kept for backwards compatibility)
@@ -72,19 +77,52 @@ router.get('/list', verifyAuth, async (req, res, next) => {
 router.get('/:fileId', verifyAuth, async (req, res, next) => {
   try {
     const { fileId } = req.params;
-    const filePath = getFilePath(fileId);
+    const filePathOrMarker = getFilePath(fileId);
 
-    if (!filePath) {
+    if (!filePathOrMarker) {
       return res.status(400).json({ error: 'Invalid file ID format' });
     }
 
-    const content = await fs.readFile(filePath, 'utf-8');
+    // Handle products specially - aggregate from individual product folders
+    if (typeof filePathOrMarker === 'object' && filePathOrMarker.type === 'products') {
+      const { groupId } = filePathOrMarker;
+
+      // Read group config to get productIds
+      const groupConfigPath = path.join(GROUPS_DIR, groupId, 'config.json');
+      const groupConfigContent = await fs.readFile(groupConfigPath, 'utf-8');
+      const groupConfig = JSON.parse(groupConfigContent);
+
+      // Load each product's config
+      const products = [];
+      for (const productFolderId of groupConfig.productIds || []) {
+        try {
+          const productConfigPath = path.join(GROUPS_DIR, groupId, 'products', productFolderId, 'config.json');
+          const productContent = await fs.readFile(productConfigPath, 'utf-8');
+          const productConfig = JSON.parse(productContent);
+          products.push(productConfig);
+        } catch (err) {
+          console.error(`Error loading product ${productFolderId}:`, err);
+        }
+      }
+
+      return res.json({
+        fileId,
+        data: {
+          products,
+          quickAccessCards: groupConfig.quickAccessCards || [],
+        },
+        path: groupConfigPath
+      });
+    }
+
+    // For other file types, read normally
+    const content = await fs.readFile(filePathOrMarker, 'utf-8');
     const data = JSON.parse(content);
 
     res.json({
       fileId,
       data,
-      path: filePath
+      path: filePathOrMarker
     });
   } catch (error) {
     if (error.code === 'ENOENT') {

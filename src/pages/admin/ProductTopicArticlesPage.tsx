@@ -45,7 +45,7 @@ export default function ProductTopicArticlesPage() {
       setError('');
 
       // Load product details
-      const productResponse = await fetch(`/api/files/${region}-products`, {
+      const productResponse = await fetch(`/api/products/${region}/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,37 +56,36 @@ export default function ProductTopicArticlesPage() {
       }
 
       const productResult = await productResponse.json();
-      const foundProduct = productResult.data.products?.find((p: Product) => p.id === productId);
-
-      if (!foundProduct) {
-        throw new Error('Product not found');
-      }
-
-      setProduct(foundProduct);
+      setProduct(productResult.product);
 
       // Load topic details
-      const topicsResponse = await fetch(`/api/files/${region}-topics`, {
+      const topicResponse = await fetch(`/api/products/${region}/${productId}/topics/${topicId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!topicsResponse.ok) {
-        throw new Error('Failed to load topics');
+      if (!topicResponse.ok) {
+        throw new Error('Failed to load topic');
       }
 
-      const topicsResult = await topicsResponse.json();
-      const foundTopic = topicsResult.data.supportHubs?.find((t: Topic) => t.id === topicId);
+      const topicResult = await topicResponse.json();
+      setTopic(topicResult.topic);
 
-      if (!foundTopic) {
-        throw new Error('Topic not found');
+      // Load all topics for this product (for the editor)
+      const topicsResponse = await fetch(`/api/products/${region}/${productId}/topics`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (topicsResponse.ok) {
+        const topicsResult = await topicsResponse.json();
+        setTopicsData(topicsResult.data.supportHubs || []);
       }
-
-      setTopic(foundTopic);
-      setTopicsData(topicsResult.data.supportHubs || []);
 
       // Load articles
-      const articlesResponse = await fetch(`/api/files/${region}-articles`, {
+      const articlesResponse = await fetch(`/api/products/${region}/${productId}/topics/${topicId}/articles`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -97,7 +96,7 @@ export default function ProductTopicArticlesPage() {
       }
 
       const articlesResult = await articlesResponse.json();
-      setData(articlesResult.data);
+      setData(articlesResult.articles);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
       setError(errorMessage);
@@ -113,13 +112,13 @@ export default function ProductTopicArticlesPage() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(`/api/files/${region}-articles`, {
+      const response = await fetch(`/api/products/${region}/${productId}/topics/${topicId}/articles`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ data }),
+        body: JSON.stringify({ articles: data }),
       });
 
       if (!response.ok) {
@@ -138,21 +137,11 @@ export default function ProductTopicArticlesPage() {
   };
 
   const handleArticlesChange = (newArticles: any[]) => {
-    // Update the articles for this specific product/topic
-    const newData = {
-      ...data,
-      articles: {
-        ...data.articles,
-        [productId!]: {
-          ...data.articles?.[productId!],
-          [topicId!]: newArticles,
-        },
-      },
-    };
-    setData(newData);
+    // Data is now just the articles array
+    setData(newArticles);
   };
 
-  const articles = data?.articles?.[productId]?.[topicId] || [];
+  const articles = Array.isArray(data) ? data : [];
   const articleCount = articles.length;
 
   return (
@@ -207,8 +196,8 @@ export default function ProductTopicArticlesPage() {
       ) : data ? (
         <div className="bg-white rounded-lg shadow">
           <ArticlesEditor
-            productId={productId!}
-            topicId={topicId!}
+            productId={product?.id || productId!}
+            topicId={topic?.id || topicId!}
             articles={articles}
             onChange={handleArticlesChange}
             topicsData={topicsData}

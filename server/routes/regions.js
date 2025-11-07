@@ -9,41 +9,53 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Path to regions.json
-const REGIONS_PATH = path.join(__dirname, '..', '..', 'public', 'data', 'regions.json');
-const DATA_DIR = path.join(__dirname, '..', '..', 'public', 'data', 'regions');
+const GROUPS_DIR = path.join(__dirname, '..', '..', 'public', 'data', 'groups');
 
 /**
- * Helper function to group countries by admin region
+ * Helper function to get admin groups from the groups folder
  */
 async function getAdminRegions() {
   try {
-    const data = await fs.readFile(REGIONS_PATH, 'utf-8');
-    const countries = JSON.parse(data);
+    // Read all group folders
+    const groupFolders = await fs.readdir(GROUPS_DIR, { withFileTypes: true });
+    const groups = [];
 
-    // Group countries by region
-    const regionsMap = {};
-    countries.forEach((country) => {
-      const regionKey = country.region;
-      if (!regionsMap[regionKey]) {
-        regionsMap[regionKey] = {
-          id: regionKey,
-          name: country.regionName || formatRegionName(regionKey), // Use stored name if available
-          code: regionKey,
-          countries: [],
-          countryCodes: [], // Add country codes array
-          currency: country.currency,
-          dateFormat: country.dateFormat,
-          language: country.language,
-        };
+    for (const folder of groupFolders) {
+      if (!folder.isDirectory()) continue;
+
+      const groupId = folder.name;
+      const configPath = path.join(GROUPS_DIR, groupId, 'config.json');
+
+      try {
+        const configData = await fs.readFile(configPath, 'utf-8');
+        const config = JSON.parse(configData);
+
+        // Extract country information from the config
+        const countryNames = config.countries.map(c => c.name);
+        const countryCodes = config.countries.map(c => c.code);
+
+        // Get currency, dateFormat, and language from first country
+        const firstCountry = config.countries[0] || {};
+
+        groups.push({
+          id: config.id || groupId,
+          name: config.name,
+          code: config.id || groupId,
+          countries: countryNames,
+          countryCodes: countryCodes,
+          currency: firstCountry.currency || 'USD',
+          dateFormat: firstCountry.dateFormat || 'YYYY-MM-DD',
+          language: firstCountry.language || 'en-US',
+        });
+      } catch (error) {
+        console.error(`Error reading group config for ${groupId}:`, error);
+        // Skip this group if config can't be read
       }
-      regionsMap[regionKey].countries.push(country.name);
-      regionsMap[regionKey].countryCodes.push(country.code);
-    });
+    }
 
-    return Object.values(regionsMap);
+    return groups;
   } catch (error) {
-    console.error('Error reading regions:', error);
+    console.error('Error reading groups:', error);
     throw error;
   }
 }
@@ -60,35 +72,81 @@ function formatRegionName(regionKey) {
 }
 
 /**
- * Helper function to create default files for a new region
+ * Helper function to create default files for a new group
  */
-async function createRegionFiles(regionId, regionName, countries) {
-  const regionDir = path.join(DATA_DIR, regionId);
-  const countriesDir = path.join(__dirname, '..', '..', 'public', 'data', 'countries');
+async function createRegionFiles(groupId, groupName, countries) {
+  const groupDir = path.join(GROUPS_DIR, groupId);
 
-  // Create region directory if it doesn't exist
+  // Create group directory if it doesn't exist
   try {
-    await fs.mkdir(regionDir, { recursive: true });
+    await fs.mkdir(groupDir, { recursive: true });
   } catch (error) {
     if (error.code !== 'EEXIST') {
       throw error;
     }
   }
 
-  // Default file templates for region
+  // Create group config.json
+  const groupConfig = {
+    id: groupId,
+    name: groupName,
+    productIds: [],
+    countries: countries.map((country, index) => ({
+      code: typeof country === 'string' ? `${groupId}-${index + 1}` : country.code,
+      name: typeof country === 'string' ? country : country.name,
+      language: 'en-US', // Default, can be customized
+      currency: 'USD', // Default, can be customized
+      currencySymbol: '$',
+      dateFormat: 'YYYY-MM-DD',
+      default: index === 0,
+    })),
+    personas: [
+      {
+        id: 'customer',
+        label: "I'm a Customer",
+        default: true
+      },
+      {
+        id: 'accountant',
+        label: "I'm an Accountant or Bookkeeper",
+        default: false
+      }
+    ],
+    navigation: {
+      main: [
+        {
+          label: 'Home',
+          path: '/:country',
+          icon: 'home'
+        },
+        {
+          label: 'Contact us',
+          path: '/:country/contact'
+        }
+      ]
+    },
+    quickAccessCards: [],
+  };
+
+  const configPath = path.join(groupDir, 'config.json');
+  try {
+    await fs.access(configPath);
+    console.log(`Group config already exists, skipping`);
+  } catch {
+    await fs.writeFile(configPath, JSON.stringify(groupConfig, null, 2));
+    console.log(`Created config.json for group ${groupId}`);
+  }
+
+  // Default file templates for group-level files
   const files = {
-    'products.json': { products: [], hotTopics: [], quickAccessCards: [] },
-    'topics.json': { supportHubs: [] },
-    'articles.json': { articles: {} },
     'incidents.json': { banners: [] },
     'popups.json': { popups: [] },
     'contact.json': { contactMethods: [] },
-    'release-notes.json': { releaseNotes: [] },
   };
 
-  // Create each region file
+  // Create each group-level file
   for (const [filename, content] of Object.entries(files)) {
-    const filePath = path.join(regionDir, filename);
+    const filePath = path.join(groupDir, filename);
     try {
       // Check if file already exists
       await fs.access(filePath);
@@ -96,76 +154,131 @@ async function createRegionFiles(regionId, regionName, countries) {
     } catch {
       // File doesn't exist, create it
       await fs.writeFile(filePath, JSON.stringify(content, null, 2));
-      console.log(`Created ${filename} for region ${regionId}`);
+      console.log(`Created ${filename} for group ${groupId}`);
     }
   }
 
-  // Create country config files for each country
-  for (const country of countries) {
-    const countryCode = typeof country === 'string' ? country : country.code;
-    const countryName = typeof country === 'string' ? country : country.name;
-    const countryDir = path.join(countriesDir, countryCode.toLowerCase());
-
-    try {
-      await fs.mkdir(countryDir, { recursive: true });
-    } catch (error) {
-      if (error.code !== 'EEXIST') {
-        throw error;
-      }
-    }
-
-    const configPath = path.join(countryDir, 'config.json');
-
-    // Check if config already exists
-    try {
-      await fs.access(configPath);
-      console.log(`Country config for ${countryCode} already exists, skipping`);
-    } catch {
-      // Create default country config
-      const countryConfig = {
-        region: countryCode.toLowerCase(),
-        displayName: countryName,
-        personas: [
-          {
-            id: 'customer',
-            label: "I'm a Customer",
-            default: true
-          },
-          {
-            id: 'accountant',
-            label: "I'm an Accountant or Bookkeeper",
-            default: false
-          }
-        ],
-        navigation: {
-          main: [
-            {
-              label: 'Help Centre',
-              path: `/${countryCode.toLowerCase()}`,
-              icon: 'home'
-            },
-            {
-              label: 'Products',
-              path: `/${countryCode.toLowerCase()}/products`,
-              type: 'dropdown'
-            },
-            {
-              label: 'Contact us',
-              path: `/${countryCode.toLowerCase()}/contact`
-            }
-          ]
-        }
-      };
-
-      await fs.writeFile(configPath, JSON.stringify(countryConfig, null, 2));
-      console.log(`Created config for country ${countryCode}`);
+  // Create products directory
+  const productsDir = path.join(groupDir, 'products');
+  try {
+    await fs.mkdir(productsDir, { recursive: true });
+  } catch (error) {
+    if (error.code !== 'EEXIST') {
+      throw error;
     }
   }
 }
 
 /**
+ * GET /api/regions/public
+ * Public endpoint - List all countries from all groups (no auth required)
+ * Returns a flattened list of countries for the region selector
+ */
+router.get('/public', async (req, res) => {
+  try {
+    // Read all group folders
+    const groupFolders = await fs.readdir(GROUPS_DIR, { withFileTypes: true });
+    const countries = [];
+
+    for (const folder of groupFolders) {
+      if (!folder.isDirectory()) continue;
+
+      const groupId = folder.name;
+      const configPath = path.join(GROUPS_DIR, groupId, 'config.json');
+
+      try {
+        const configData = await fs.readFile(configPath, 'utf-8');
+        const config = JSON.parse(configData);
+
+        // Add each country from this group to the flattened list
+        for (const country of config.countries || []) {
+          countries.push({
+            code: country.code,
+            name: country.name,
+            language: country.language || 'en-US',
+            currency: country.currency || 'USD',
+            currencySymbol: country.currencySymbol || '$',
+            dateFormat: country.dateFormat || 'YYYY-MM-DD',
+            region: groupId, // Group identifier (e.g., 'uki')
+            regionName: config.name, // Group display name (e.g., 'United Kingdom & Ireland')
+            default: country.default || false,
+          });
+        }
+      } catch (error) {
+        console.error(`Error reading group config for ${groupId}:`, error);
+      }
+    }
+
+    res.json(countries);
+  } catch (error) {
+    console.error('Error fetching public regions:', error);
+    res.status(500).json({ error: 'Failed to fetch regions' });
+  }
+});
+
+/**
+ * GET /api/regions/public/:countryCode/config
+ * Public endpoint - Get configuration for a specific country (no auth required)
+ * Returns personas, navigation, and other UI config from the group config
+ */
+router.get('/public/:countryCode/config', async (req, res) => {
+  try {
+    const { countryCode } = req.params;
+    const normalizedCode = countryCode.toLowerCase();
+
+    // Find which group contains this country
+    const groupFolders = await fs.readdir(GROUPS_DIR, { withFileTypes: true });
+
+    for (const folder of groupFolders) {
+      if (!folder.isDirectory()) continue;
+
+      const groupId = folder.name;
+      const configPath = path.join(GROUPS_DIR, groupId, 'config.json');
+
+      try {
+        const configData = await fs.readFile(configPath, 'utf-8');
+        const config = JSON.parse(configData);
+
+        // Check if this group contains the requested country
+        const country = (config.countries || []).find(
+          (c) => c.code.toLowerCase() === normalizedCode
+        );
+
+        if (country) {
+          // Return config with country-specific data
+          const navigation = config.navigation || { main: [] };
+
+          // Replace :country placeholder in navigation paths
+          const processedNavigation = {
+            main: navigation.main.map((item) => ({
+              ...item,
+              path: item.path.replace(':country', normalizedCode),
+            })),
+          };
+
+          return res.json({
+            region: normalizedCode,
+            displayName: country.name,
+            personas: config.personas || [],
+            navigation: processedNavigation,
+          });
+        }
+      } catch (error) {
+        console.error(`Error reading group config for ${groupId}:`, error);
+      }
+    }
+
+    // Country not found in any group
+    res.status(404).json({ error: `Country ${countryCode} not found` });
+  } catch (error) {
+    console.error('Error fetching country config:', error);
+    res.status(500).json({ error: 'Failed to fetch country config' });
+  }
+});
+
+/**
  * GET /api/regions
- * List all admin regions
+ * List all admin regions (requires auth)
  */
 router.get('/', verifyAuth, async (req, res) => {
   try {
@@ -179,7 +292,7 @@ router.get('/', verifyAuth, async (req, res) => {
 
 /**
  * POST /api/regions
- * Create a new admin region
+ * Create a new admin group
  * Body: { name, code, countries: [], currency, dateFormat, language }
  */
 router.post('/', verifyAuth, async (req, res) => {
@@ -187,7 +300,7 @@ router.post('/', verifyAuth, async (req, res) => {
     const { name, code, countries, currency, dateFormat, language } = req.body;
 
     // Validation
-    if (!name || !code || !countries || !currency || !dateFormat || !language) {
+    if (!name || !code || !countries) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -195,72 +308,152 @@ router.post('/', verifyAuth, async (req, res) => {
       return res.status(400).json({ error: 'Countries must be a non-empty array' });
     }
 
-    // Read existing regions
-    const data = await fs.readFile(REGIONS_PATH, 'utf-8');
-    const existingCountries = JSON.parse(data);
-
-    // Check if region code already exists
-    const regionExists = existingCountries.some((c) => c.region === code);
-    if (regionExists) {
-      return res.status(400).json({ error: 'Region code already exists' });
+    // Check if group already exists
+    const groupDir = path.join(GROUPS_DIR, code);
+    try {
+      await fs.access(groupDir);
+      return res.status(400).json({ error: 'Group code already exists' });
+    } catch {
+      // Group doesn't exist, continue
     }
 
-    // Create new country entries for each country in the region
-    const newCountries = countries.map((country, index) => ({
-      code: typeof country === 'string' ? `${code}-${index + 1}` : country.code,
-      name: typeof country === 'string' ? country : country.name,
-      language,
-      currency,
-      currencySymbol: getCurrencySymbol(currency),
-      dateFormat,
-      region: code,
-      regionName: name, // Store the actual region name
-      default: index === 0, // First country is default
-    }));
-
-    // Add new countries to the list
-    const updatedCountries = [...existingCountries, ...newCountries];
-
-    // Create backup
-    const backupPath = `${REGIONS_PATH}.backup-${Date.now()}`;
-    await fs.writeFile(backupPath, data);
-
-    // Write updated regions
-    await fs.writeFile(REGIONS_PATH, JSON.stringify(updatedCountries, null, 2));
-
-    // Create region files and country configs
+    // Create group files
     await createRegionFiles(code, name, countries);
 
     res.json({
       success: true,
-      message: 'Region created successfully',
+      message: 'Group created successfully',
       region: {
         id: code,
         name,
         code,
         countries,
-        currency,
-        dateFormat,
-        language,
+        currency: currency || 'USD',
+        dateFormat: dateFormat || 'YYYY-MM-DD',
+        language: language || 'en-US',
       },
     });
   } catch (error) {
-    console.error('Error creating region:', error);
-    res.status(500).json({ error: 'Failed to create region' });
+    console.error('Error creating group:', error);
+    res.status(500).json({ error: 'Failed to create group' });
   }
 });
 
 /**
- * Helper function to get currency symbol
+ * GET /api/regions/:groupId/popups
+ * Get popups for a group
  */
-function getCurrencySymbol(currency) {
-  const symbols = {
-    GBP: '£',
-    EUR: '€',
-    USD: '$',
-  };
-  return symbols[currency] || currency;
-}
+router.get('/:groupId/popups', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const popupsPath = path.join(GROUPS_DIR, groupId, 'popups.json');
+
+    const content = await fs.readFile(popupsPath, 'utf-8');
+    const data = JSON.parse(content);
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error('Error loading popups:', error);
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Popups file not found' });
+    }
+    res.status(500).json({ error: 'Failed to load popups' });
+  }
+});
+
+/**
+ * PUT /api/regions/:groupId/popups
+ * Update popups for a group
+ */
+router.put('/:groupId/popups', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const { data } = req.body;
+
+    const popupsPath = path.join(GROUPS_DIR, groupId, 'popups.json');
+
+    // Create backup
+    try {
+      const existingContent = await fs.readFile(popupsPath, 'utf-8');
+      const backupPath = `${popupsPath}.backup-${Date.now()}`;
+      await fs.writeFile(backupPath, existingContent);
+    } catch (error) {
+      // File doesn't exist yet, no backup needed
+    }
+
+    // Write updated popups
+    await fs.writeFile(popupsPath, JSON.stringify(data, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Popups updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating popups:', error);
+    res.status(500).json({ error: 'Failed to update popups' });
+  }
+});
+
+/**
+ * GET /api/regions/:groupId/incidents
+ * Get incidents for a group
+ */
+router.get('/:groupId/incidents', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const incidentsPath = path.join(GROUPS_DIR, groupId, 'incidents.json');
+
+    const content = await fs.readFile(incidentsPath, 'utf-8');
+    const data = JSON.parse(content);
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error('Error loading incidents:', error);
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Incidents file not found' });
+    }
+    res.status(500).json({ error: 'Failed to load incidents' });
+  }
+});
+
+/**
+ * PUT /api/regions/:groupId/incidents
+ * Update incidents for a group
+ */
+router.put('/:groupId/incidents', verifyAuth, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const { data } = req.body;
+
+    const incidentsPath = path.join(GROUPS_DIR, groupId, 'incidents.json');
+
+    // Create backup
+    try {
+      const existingContent = await fs.readFile(incidentsPath, 'utf-8');
+      const backupPath = `${incidentsPath}.backup-${Date.now()}`;
+      await fs.writeFile(backupPath, existingContent);
+    } catch (error) {
+      // File doesn't exist yet, no backup needed
+    }
+
+    // Write updated incidents
+    await fs.writeFile(incidentsPath, JSON.stringify(data, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Incidents updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating incidents:', error);
+    res.status(500).json({ error: 'Failed to update incidents' });
+  }
+});
 
 /**
  * DELETE /api/regions/:regionId

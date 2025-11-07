@@ -1,0 +1,21 @@
+[
+  {
+    "id": "training-vat-basics",
+    "title": "VAT Management Essentials",
+    "description": "Learn the fundamentals of VAT recording and reporting",
+    "type": "course",
+    "url": "https://training.example.com/vat-basics",
+    "duration": "2 hours",
+    "level": "beginner"
+  },
+  {
+    "id": "training-mtd",
+    "title": "Making Tax Digital Compliance",
+    "description": "Master MTD requirements and submissions",
+    "type": "course",
+    "url": "https://training.example.com/mtd-course",
+    "duration": "1.5 hours",
+    "level": "intermediate",
+    "countries": ["gb"]
+  }
+]

@@ -1,0 +1,84 @@
+[
+  {
+    "id": "release-product-a-2024-11",
+    "version": "12.5.1",
+    "date": "2024-11-20",
+    "title": "Year-End Tax Preparation Update",
+    "description": "Essential updates for year-end tax preparation and compliance.",
+    "features": [
+      "Automatic tax code updates for 2024/2025 tax year",
+      "Making Tax Digital (MTD) compliance enhancements",
+      "New payroll integration with automatic PAYE submissions"
+    ],
+    "improvements": [
+      "Streamlined bank reconciliation process",
+      "Enhanced backup and restore functionality",
+      "Improved performance for large datasets"
+    ],
+    "fixes": [
+      "Fixed issue with CIS deductions not appearing in reports",
+      "Resolved printing problems with aged debtor reports",
+      "Corrected VAT return calculation edge cases"
+    ]
+  },
+  {
+    "id": "release-product-a-2024-08",
+    "version": "12.4.0",
+    "date": "2024-08-15",
+    "title": "Audit Trail and Security Enhancement",
+    "description": "Improved audit capabilities and enhanced security features.",
+    "features": [
+      "Comprehensive audit trail for all transactions",
+      "Role-based access control with granular permissions",
+      "Automated backup scheduling with cloud storage integration"
+    ],
+    "improvements": [
+      "Enhanced password security requirements",
+      "Improved session management",
+      "Better error logging for troubleshooting"
+    ],
+    "fixes": [
+      "Fixed issue with user permissions not saving correctly",
+      "Resolved export problems with large data sets"
+    ]
+  },
+  {
+    "id": "release-product-a-2024-05",
+    "version": "12.3.0",
+    "date": "2024-05-10",
+    "title": "Spring Feature Release",
+    "description": "New features for improved productivity and compliance.",
+    "features": [
+      "Bulk invoice creation from recurring templates",
+      "Enhanced VAT management with automated calculations",
+      "New financial dashboard with key metrics"
+    ],
+    "improvements": [
+      "Faster report generation for year-end accounts",
+      "Better integration with banking systems",
+      "Improved data import/export capabilities"
+    ],
+    "fixes": [
+      "Fixed issue with journal entries not balancing correctly",
+      "Resolved chart of accounts customization problems"
+    ]
+  },
+  {
+    "id": "release-product-a-2024-03",
+    "version": "12.2.1",
+    "date": "2024-03-08",
+    "title": "Performance and Stability Update",
+    "description": "Focus on improving performance and fixing critical issues.",
+    "improvements": [
+      "Optimized database queries for better performance",
+      "Reduced memory usage for large company files",
+      "Improved startup time"
+    ],
+    "fixes": [
+      "Fixed critical crash when opening certain reports",
+      "Resolved data corruption issue in backup files",
+      "Corrected invoice numbering sequence problems",
+      "Fixed issue with email settings not being saved"
+    ]
+  }
+]

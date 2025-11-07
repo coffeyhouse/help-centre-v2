@@ -1,0 +1,11 @@
+[
+  {
+    "id": "training-banking-fundamentals",
+    "title": "Banking Fundamentals",
+    "description": "Master the basics of banking in your accounting software",
+    "type": "course",
+    "url": "https://training.example.com/banking-fundamentals",
+    "duration": "1.5 hours",
+    "level": "beginner"
+  }
+]

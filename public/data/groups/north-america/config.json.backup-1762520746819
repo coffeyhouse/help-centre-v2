@@ -1,0 +1,51 @@
+{
+  "id": "north-america",
+  "name": "North America",
+  "productIds": [],
+  "countries": [
+    {
+      "code": "us",
+      "name": "United States",
+      "language": "en-US",
+      "currency": "USD",
+      "currencySymbol": "$",
+      "dateFormat": "MM/DD/YYYY",
+      "default": true
+    },
+    {
+      "code": "ca",
+      "name": "Canada",
+      "language": "en-CA",
+      "currency": "CAD",
+      "currencySymbol": "$",
+      "dateFormat": "YYYY-MM-DD",
+      "default": false
+    }
+  ],
+  "personas": [
+    {
+      "id": "customer",
+      "label": "I'm a Customer",
+      "default": true
+    },
+    {
+      "id": "accountant",
+      "label": "I'm an Accountant or Bookkeeper",
+      "default": false
+    }
+  ],
+  "navigation": {
+    "main": [
+      {
+        "label": "Home",
+        "path": "/:country",
+        "icon": "home"
+      },
+      {
+        "label": "Contact us",
+        "path": "/:country/contact"
+      }
+    ]
+  },
+  "quickAccessCards": []
+}

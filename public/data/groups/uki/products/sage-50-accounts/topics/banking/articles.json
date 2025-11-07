@@ -1,0 +1,16 @@
+[
+  {
+    "id": "banking-overview",
+    "type": "article",
+    "title": "Banking overview",
+    "description": "Learn about banking features and how to manage your finances."
+  },
+  {
+    "id": "bank-feeds",
+    "type": "subtopic"
+  },
+  {
+    "id": "bank-reconciliation",
+    "type": "subtopic"
+  }
+]

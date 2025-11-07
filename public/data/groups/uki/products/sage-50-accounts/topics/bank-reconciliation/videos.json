@@ -1,0 +1,10 @@
+[
+  {
+    "id": "video-reconciliation-demo",
+    "title": "Bank Reconciliation Demo",
+    "description": "Watch a complete reconciliation from start to finish",
+    "url": "https://www.youtube.com/embed/example-reconciliation",
+    "duration": "12:15",
+    "thumbnail": "/images/thumbnails/reconciliation.jpg"
+  }
+]

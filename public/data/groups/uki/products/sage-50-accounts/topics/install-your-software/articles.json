@@ -1,0 +1,38 @@
+[
+  {
+    "id": "whats-new",
+    "type": "article",
+    "title": "What's new?",
+    "description": "Find out more about the latest improvements and features."
+  },
+  {
+    "id": "first-time",
+    "type": "article",
+    "title": "New to this product?",
+    "description": "Installing for the first time? Don't worry it's a quick and easy process."
+  },
+  {
+    "id": "install-guide",
+    "type": "article",
+    "title": "Install your software",
+    "description": "Install software on a new computer."
+  },
+  {
+    "id": "upgrade",
+    "type": "article",
+    "title": "Upgrade your installed software",
+    "description": "Upgrade to the latest version and get the most from your software."
+  },
+  {
+    "id": "older-versions",
+    "type": "article",
+    "title": "Download older versions",
+    "description": "You can download older versions here."
+  },
+  {
+    "id": "troubleshooting",
+    "type": "article",
+    "title": "Common queries and troubleshooting",
+    "description": "Not going as expected? Check these common queries."
+  }
+]

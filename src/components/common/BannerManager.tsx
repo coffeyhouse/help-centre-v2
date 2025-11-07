@@ -20,7 +20,7 @@ export default function BannerManager() {
   const location = useLocation();
   const params = useParams<{ productId?: string; topicId?: string; subtopicId?: string }>();
 
-  const { productId, topicId, subtopicId } = params;
+  const { productId, topicId } = params;
 
   // Load incident banners for current region
   const { data: incidentsData } = useData(
@@ -36,15 +36,15 @@ export default function BannerManager() {
   const activeBanners = incidentsData.banners.filter(banner => banner.active);
 
   // Debug logging
-  console.log('BannerManager Debug:', {
-    pathname: location.pathname,
-    productId,
-    topicId,
-    subtopicId,
-    totalBanners: incidentsData.banners.length,
-    activeBanners: activeBanners.length,
-    activeBannerIds: activeBanners.map(b => b.id),
-  });
+  // console.log('BannerManager Debug:', {
+  //   pathname: location.pathname,
+  //   productId,
+  //   topicId,
+  //   subtopicId,
+  //   totalBanners: incidentsData.banners.length,
+  //   activeBanners: activeBanners.length,
+  //   activeBannerIds: activeBanners.map(b => b.id),
+  // });
 
   if (activeBanners.length === 0) {
     return null;
@@ -69,7 +69,7 @@ export default function BannerManager() {
 
     // Product-specific banners but no productId in URL
     if (scope.type === 'product' && !productId) {
-      console.log(`Banner ${banner.id}: Product banner but no productId in URL - HIDING`);
+      // console.log(`Banner ${banner.id}: Product banner but no productId in URL - HIDING`);
       return false;
     }
 
@@ -99,7 +99,7 @@ export default function BannerManager() {
 
         const regex = new RegExp(`^${regexPattern}$`);
         const matches = regex.test(location.pathname);
-        console.log(`Banner ${banner.id}: Page banner - pattern=${pattern}, pathname=${location.pathname}, matches=${matches}`);
+        // console.log(`Banner ${banner.id}: Page banner - pattern=${pattern}, pathname=${location.pathname}, matches=${matches}`);
         return matches;
       });
     }
@@ -108,7 +108,7 @@ export default function BannerManager() {
     return false;
   });
 
-  console.log('Relevant banners:', relevantBanners.map(b => b.id));
+  // console.log('Relevant banners:', relevantBanners.map(b => b.id));
 
   if (relevantBanners.length === 0) {
     return null;
