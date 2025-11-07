@@ -38,6 +38,7 @@ import {
   XMarkIcon,
   ChevronDownIcon,
   ArrowRightOnRectangleIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 
 interface IconProps {
@@ -89,6 +90,9 @@ export default function Icon({ name, className = 'w-6 h-6' }: IconProps) {
     x: XMarkIcon,
     'chevron-down': ChevronDownIcon,
     logout: ArrowRightOnRectangleIcon,
+    // Alert/Status icons
+    'alert-circle': ExclamationCircleIcon,
+    'check-circle': CheckCircleIcon,
   };
 
   const IconComponent = iconMap[name] || QuestionMarkCircleIcon;

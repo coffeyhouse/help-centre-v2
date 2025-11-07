@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useRegion } from '../../hooks/useRegion';
 import Icon from '../common/Icon';
+import Button from '../common/Button';
 import RegistrationForm from '../auth/RegistrationForm';
 import type { UsersData } from '../../types';
 
@@ -125,12 +126,13 @@ export default function UserMenu() {
                     ))}
                   </div>
                   <div className="pt-4 border-t border-gray-200">
-                    <button
+                    <Button
+                      variant="primary"
                       onClick={() => setShowRegistration(true)}
-                      className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                      className="w-full"
                     >
                       Create New Account
-                    </button>
+                    </Button>
                   </div>
                 </>
               ) : (

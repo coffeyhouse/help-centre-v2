@@ -10,6 +10,7 @@
 
 import { useState } from 'react';
 import Icon from '../common/Icon';
+import Button from '../common/Button';
 import type { PersonaId } from '../../types';
 
 interface RegistrationFormProps {
@@ -154,17 +155,16 @@ export default function RegistrationForm({
       )}
 
       <div className="flex gap-3 pt-2">
-        <button
-          type="button"
+        <Button
+          variant="secondary"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          disabled={loading}
+          className={`flex-1 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Cancel
-        </button>
+        </Button>
         <button
           type="submit"
-          className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`flex-1 btn-primary ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={loading}
         >
           {loading ? 'Creating Account...' : 'Create Account'}

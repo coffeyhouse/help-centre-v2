@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useRegion } from '../hooks/useRegion';
 import Icon from '../components/common/Icon';
+import Button from '../components/common/Button';
 import type { Product } from '../types';
 
 export default function ProfilePage() {
@@ -276,20 +277,20 @@ export default function ProfilePage() {
 
         {/* Action Buttons */}
         <div className="flex gap-3">
-          <button
+          <Button
+            variant="secondary"
             onClick={() => navigate(`/${region}`)}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            disabled={saving}
+            className={saving ? 'opacity-50 cursor-not-allowed' : ''}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="primary"
             onClick={handleSave}
-            className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!hasChanges || saving}
+            className={!hasChanges || saving ? 'opacity-50 cursor-not-allowed' : ''}
           >
             {saving ? 'Saving...' : 'Save Changes'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
