@@ -46,6 +46,9 @@ export default function ProductTopicsListPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [articleCounts, setArticleCounts] = useState<Record<string, number>>({});
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   usePageTitle('Topics', 'Admin');
 
@@ -114,6 +117,7 @@ export default function ProductTopicsListPage() {
       console.error('Error loading topics:', err);
     } finally {
       setLoading(false);
+      setHasUnsavedChanges(false);
     }
   };
 
@@ -166,6 +170,52 @@ export default function ProductTopicsListPage() {
     }
   };
 
+  // Drag and Drop handlers
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+
+    if (draggedIndex === null) return;
+
+    const newTopics = [...topics];
+    const [draggedTopic] = newTopics.splice(draggedIndex, 1);
+    newTopics.splice(dropIndex, 0, draggedTopic);
+
+    setTopics(newTopics);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setHasUnsavedChanges(true);
+
+    // Update selected topic if it was moved
+    if (selectedTopic && draggedTopic.id === selectedTopic.id) {
+      setSelectedTopic(draggedTopic);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleSaveOrder = async () => {
+    await handleSaveTopics();
+    setHasUnsavedChanges(false);
+  };
+
   return (
     <AdminLayout
       breadcrumbs={[
@@ -179,16 +229,27 @@ export default function ProductTopicsListPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Topics for {product?.name}</h1>
           <p className="text-gray-600">
-            Select a topic to manage its content and settings
+            Select a topic to manage its content and settings. Drag to reorder.
           </p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <PlusIcon className="w-5 h-5" />
-          Add Topic
-        </button>
+        <div className="flex items-center gap-3">
+          {hasUnsavedChanges && (
+            <button
+              onClick={handleSaveOrder}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {saving ? 'Saving...' : 'Save Order'}
+            </button>
+          )}
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Add Topic
+          </button>
+        </div>
       </div>
 
       {successMessage && (
@@ -217,12 +278,22 @@ export default function ProductTopicsListPage() {
             </h2>
             {topics.length > 0 ? (
               <div className="space-y-2">
-                {topics.map((topic) => (
+                {topics.map((topic, index) => (
                   <button
                     key={topic.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => setSelectedTopic(topic)}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                      selectedTopic?.id === topic.id
+                    className={`w-full text-left p-4 rounded-lg border-2 transition-all cursor-move ${
+                      draggedIndex === index
+                        ? 'opacity-50'
+                        : dragOverIndex === index
+                        ? 'border-blue-500 bg-blue-50'
+                        : selectedTopic?.id === topic.id
                         ? 'bg-blue-50 border-blue-300 shadow-md'
                         : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow'
                     }`}
