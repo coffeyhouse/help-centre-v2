@@ -92,7 +92,7 @@ async function createRegionFiles(groupId, groupName, countries) {
     name: groupName,
     productIds: [],
     countries: countries.map((country, index) => ({
-      code: typeof country === 'string' ? `${groupId}-${index + 1}` : country.code,
+      code: typeof country === 'string' ? `${groupId}-${index + 1}`.toLowerCase() : country.code.toLowerCase(),
       name: typeof country === 'string' ? country : country.name,
       language: 'en-US', // Default, can be customized
       currency: 'USD', // Default, can be customized
