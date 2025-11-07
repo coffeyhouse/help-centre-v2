@@ -32,13 +32,16 @@ async function fetchJSON<T>(path: string): Promise<T> {
     throw new Error(`Failed to fetch ${path}: ${response.statusText}`);
   }
 
+  // Clone the response so we can read it multiple times if needed
+  const clonedResponse = response.clone();
+
   try {
     const data = await response.json();
     console.log(`[fetchJSON] Success: ${path}`, data);
     return data;
   } catch (error) {
     console.error(`[fetchJSON] JSON parse error for ${path}:`, error);
-    const text = await response.clone().text();
+    const text = await clonedResponse.text();
     console.error(`[fetchJSON] Response was:`, text.substring(0, 200));
     throw error;
   }
