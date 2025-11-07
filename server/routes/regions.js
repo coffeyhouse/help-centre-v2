@@ -9,8 +9,6 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Path to regions.json (still used for country-to-group mapping)
-const REGIONS_PATH = path.join(__dirname, '..', '..', 'public', 'data', 'regions.json');
 const GROUPS_DIR = path.join(__dirname, '..', '..', 'public', 'data', 'groups');
 
 /**
@@ -78,7 +76,6 @@ function formatRegionName(regionKey) {
  */
 async function createRegionFiles(groupId, groupName, countries) {
   const groupDir = path.join(GROUPS_DIR, groupId);
-  const countriesDir = path.join(__dirname, '..', '..', 'public', 'data', 'countries');
 
   // Create group directory if it doesn't exist
   try {
@@ -145,68 +142,6 @@ async function createRegionFiles(groupId, groupName, countries) {
       throw error;
     }
   }
-
-  // Create country config files for each country
-  for (const country of countries) {
-    const countryCode = typeof country === 'string' ? country : country.code;
-    const countryName = typeof country === 'string' ? country : country.name;
-    const countryDir = path.join(countriesDir, countryCode.toLowerCase());
-
-    try {
-      await fs.mkdir(countryDir, { recursive: true });
-    } catch (error) {
-      if (error.code !== 'EEXIST') {
-        throw error;
-      }
-    }
-
-    const configPath = path.join(countryDir, 'config.json');
-
-    // Check if config already exists
-    try {
-      await fs.access(configPath);
-      console.log(`Country config for ${countryCode} already exists, skipping`);
-    } catch {
-      // Create default country config
-      const countryConfig = {
-        region: countryCode.toLowerCase(),
-        displayName: countryName,
-        personas: [
-          {
-            id: 'customer',
-            label: "I'm a Customer",
-            default: true
-          },
-          {
-            id: 'accountant',
-            label: "I'm an Accountant or Bookkeeper",
-            default: false
-          }
-        ],
-        navigation: {
-          main: [
-            {
-              label: 'Help Centre',
-              path: `/${countryCode.toLowerCase()}`,
-              icon: 'home'
-            },
-            {
-              label: 'Products',
-              path: `/${countryCode.toLowerCase()}/products`,
-              type: 'dropdown'
-            },
-            {
-              label: 'Contact us',
-              path: `/${countryCode.toLowerCase()}/contact`
-            }
-          ]
-        }
-      };
-
-      await fs.writeFile(configPath, JSON.stringify(countryConfig, null, 2));
-      console.log(`Created config for country ${countryCode}`);
-    }
-  }
 }
 
 /**
@@ -250,37 +185,8 @@ router.post('/', verifyAuth, async (req, res) => {
       // Group doesn't exist, continue
     }
 
-    // Create group files and country configs
+    // Create group files
     await createRegionFiles(code, name, countries);
-
-    // Update regions.json to add mapping (for backward compatibility)
-    try {
-      const regionsData = await fs.readFile(REGIONS_PATH, 'utf-8');
-      const existingCountries = JSON.parse(regionsData);
-
-      const newCountries = countries.map((country, index) => ({
-        code: typeof country === 'string' ? `${code}-${index + 1}` : country.code,
-        name: typeof country === 'string' ? country : country.name,
-        language: language || 'en-US',
-        currency: currency || 'USD',
-        currencySymbol: getCurrencySymbol(currency || 'USD'),
-        dateFormat: dateFormat || 'YYYY-MM-DD',
-        region: code, // Map to group ID
-        regionName: name,
-        default: index === 0,
-      }));
-
-      const updatedCountries = [...existingCountries, ...newCountries];
-
-      // Create backup
-      const backupPath = `${REGIONS_PATH}.backup-${Date.now()}`;
-      await fs.writeFile(backupPath, regionsData);
-
-      // Write updated regions
-      await fs.writeFile(REGIONS_PATH, JSON.stringify(updatedCountries, null, 2));
-    } catch (error) {
-      console.warn('Warning: Could not update regions.json:', error);
-    }
 
     res.json({
       success: true,
@@ -300,18 +206,6 @@ router.post('/', verifyAuth, async (req, res) => {
     res.status(500).json({ error: 'Failed to create group' });
   }
 });
-
-/**
- * Helper function to get currency symbol
- */
-function getCurrencySymbol(currency) {
-  const symbols = {
-    GBP: '£',
-    EUR: '€',
-    USD: '$',
-  };
-  return symbols[currency] || currency;
-}
 
 /**
  * DELETE /api/regions/:regionId
