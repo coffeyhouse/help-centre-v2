@@ -118,7 +118,8 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     setFormData({
       ...formData,
       name,
-      id: generateId(name),
+      // Only update ID from name when creating a new product, not when editing
+      id: isEditMode ? formData.id : generateId(name),
     });
   };
 
