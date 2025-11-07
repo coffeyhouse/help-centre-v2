@@ -4,16 +4,33 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
 import IconSelector from './IconSelector';
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  type: 'cloud' | 'desktop';
+  personas: string[];
+  categories: string[];
+  countries: string[];
+  icon: string;
+  knowledgebase_collection: string;
+}
+
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onProductCreated: () => void;
   region: string;
+  existingProduct?: Product; // Optional: if provided, modal is in edit mode
 }
 
-export default function AddProductModal({ isOpen, onClose, onProductCreated, region }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, onProductCreated, region, existingProduct }: AddProductModalProps) {
   const { token } = useAdminAuth();
   const { regions } = useAdminRegion();
+
+  // Determine if we're in edit mode
+  const isEditMode = !!existingProduct;
+
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -38,9 +55,24 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     { id: 'accountant', label: "I'm an Accountant or Bookkeeper" },
   ];
 
-  // Reset form when modal closes
+  // Initialize or reset form when modal opens/closes
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen && existingProduct) {
+      // Edit mode: populate with existing data
+      setFormData({
+        id: existingProduct.id,
+        name: existingProduct.name,
+        description: existingProduct.description,
+        type: existingProduct.type,
+        icon: existingProduct.icon || '',
+        knowledgebase_collection: existingProduct.knowledgebase_collection || '',
+        categories: existingProduct.categories || [],
+        personas: existingProduct.personas || [],
+        countries: existingProduct.countries || [],
+      });
+      setError('');
+    } else if (!isOpen) {
+      // Reset form when modal closes
       setFormData({
         id: '',
         name: '',
@@ -54,7 +86,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
       });
       setError('');
     }
-  }, [isOpen]);
+  }, [isOpen, existingProduct]);
 
   // Handle ESC key
   useEffect(() => {
@@ -145,9 +177,17 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
     setLoading(true);
 
     try {
-      // Create new product using the products API
-      const response = await fetch(`/api/products/${region}`, {
-        method: 'POST',
+      // Convert product ID to folder ID for API endpoint
+      const productFolderId = formData.id.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+      // Determine API endpoint and method based on mode
+      const endpoint = isEditMode
+        ? `/api/products/${region}/${productFolderId}`
+        : `/api/products/${region}`;
+      const method = isEditMode ? 'PUT' : 'POST';
+
+      const response = await fetch(endpoint, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -167,16 +207,16 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create product');
+        throw new Error(errorData.error || `Failed to ${isEditMode ? 'update' : 'create'} product`);
       }
 
       // Success
       onProductCreated();
       onClose();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create product';
+      const errorMessage = err instanceof Error ? err.message : `Failed to ${isEditMode ? 'update' : 'create'} product`;
       setError(errorMessage);
-      console.error('Error creating product:', err);
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} product:`, err);
     } finally {
       setLoading(false);
     }
@@ -210,7 +250,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
           <div className="px-6 pt-6 pb-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h3 id="modal-title" className="text-xl font-semibold text-gray-900">
-                Add New Product
+                {isEditMode ? 'Edit Product' : 'Add New Product'}
               </h3>
               <button
                 type="button"
@@ -263,10 +303,13 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
                       value={formData.id}
                       onChange={(e) => setFormData({ ...formData, id: e.target.value })}
                       placeholder="e.g., accounts-desktop"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 ${isEditMode ? 'cursor-not-allowed' : ''}`}
                       required
+                      disabled={isEditMode}
                     />
-                    <p className="text-xs text-gray-500 mt-1">Auto-generated from name, but can be edited</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {isEditMode ? 'Product ID cannot be changed' : 'Auto-generated from name, but can be edited'}
+                    </p>
                   </div>
 
                   {/* Description */}
@@ -430,7 +473,7 @@ export default function AddProductModal({ isOpen, onClose, onProductCreated, reg
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loading}
               >
-                {loading ? 'Creating...' : 'Create Product'}
+                {loading ? (isEditMode ? 'Saving...' : 'Creating...') : (isEditMode ? 'Save Changes' : 'Create Product')}
               </button>
             </div>
           </form>
