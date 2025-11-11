@@ -14,7 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AddTopicModal from '../../components/admin/AddTopicModal';
-import DragDropCard, { Badge } from '../../components/admin/DragDropCard';
+import DragDropCard, { type Badge } from '../../components/admin/DragDropCard';
 import DragDropListLayout from '../../components/admin/DragDropListLayout';
 import DetailPanel from '../../components/admin/DetailPanel';
 

@@ -6,7 +6,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { useDragAndDrop } from '../../hooks/useDragAndDrop';
 import { DocumentTextIcon, PlusIcon, TrashIcon, LinkIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
-import DragDropCard, { Badge } from '../../components/admin/DragDropCard';
+import DragDropCard, { type Badge } from '../../components/admin/DragDropCard';
 import DragDropListLayout from '../../components/admin/DragDropListLayout';
 import DetailPanel from '../../components/admin/DetailPanel';
 import ConfirmModal from '../../components/admin/ConfirmModal';
