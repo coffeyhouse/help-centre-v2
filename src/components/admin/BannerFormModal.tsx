@@ -58,7 +58,6 @@ export default function BannerFormModal({
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [loadingTopics, setLoadingTopics] = useState(false);
-  const [selectedProductForTopics, setSelectedProductForTopics] = useState<string>('');
 
   const isNew = !banner;
 
@@ -81,12 +80,15 @@ export default function BannerFormModal({
     }
   }, [isOpen, region]);
 
-  // Load topics when product is selected for topic scope
+  // Load topics when products are selected for topic scope
   useEffect(() => {
-    if (selectedProductForTopics && formData?.scope.type === 'topic') {
-      loadTopicsForProduct(selectedProductForTopics);
+    if (formData?.scope.type === 'topic' && formData.scope.productIds && formData.scope.productIds.length > 0) {
+      loadTopicsForProducts(formData.scope.productIds);
+    } else if (formData?.scope.type === 'topic') {
+      // Clear topics if no products selected
+      setTopics([]);
     }
-  }, [selectedProductForTopics, formData?.scope.type]);
+  }, [formData?.scope.productIds, formData?.scope.type]);
 
   useEffect(() => {
     if (isOpen) {
@@ -124,21 +126,41 @@ export default function BannerFormModal({
     }
   };
 
-  const loadTopicsForProduct = async (productId: string) => {
+  const loadTopicsForProducts = async (productIds: string[]) => {
     try {
       setLoadingTopics(true);
-      const response = await fetch(`/api/products/${region}/${productId}/topics`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
+      // Load topics from all selected products
+      const allTopicsPromises = productIds.map(async (productId) => {
+        try {
+          const response = await fetch(`/api/products/${region}/${productId}/topics`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            console.error(`Failed to load topics for ${productId}`);
+            return [];
+          }
+
+          const result = await response.json();
+          return result.data.supportHubs || [];
+        } catch (err) {
+          console.error(`Error loading topics for ${productId}:`, err);
+          return [];
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to load topics');
-      }
+      const topicsArrays = await Promise.all(allTopicsPromises);
 
-      const result = await response.json();
-      setTopics(result.data.supportHubs || []);
+      // Flatten and deduplicate topics by id
+      const allTopics = topicsArrays.flat();
+      const uniqueTopics = allTopics.filter((topic, index, self) =>
+        index === self.findIndex((t) => t.id === topic.id)
+      );
+
+      setTopics(uniqueTopics);
     } catch (err) {
       console.error('Error loading topics:', err);
       setTopics([]);
@@ -183,7 +205,6 @@ export default function BannerFormModal({
           ...formData,
           scope: newScope,
         });
-        setSelectedProductForTopics('');
         setTopics([]);
       } else {
         setFormData({
@@ -544,33 +565,11 @@ export default function BannerFormModal({
                             )}
                           </div>
                           <p className="text-xs text-gray-500 mt-1">
-                            Select products for topic filtering
+                            Select products (topics will load automatically)
                           </p>
                         </div>
 
-                        <div>
-                          <label htmlFor="productForTopics" className="block text-sm font-medium text-gray-700 mb-1">
-                            Select Product to Load Topics <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="productForTopics"
-                            value={selectedProductForTopics}
-                            onChange={(e) => setSelectedProductForTopics(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          >
-                            <option value="">Choose a product...</option>
-                            {products.map((product) => (
-                              <option key={product.id} value={product.id}>
-                                {product.name}
-                              </option>
-                            ))}
-                          </select>
-                          <p className="text-xs text-gray-500 mt-1">
-                            Select a product to view its topics
-                          </p>
-                        </div>
-
-                        {selectedProductForTopics && (
+                        {formData.scope.productIds && formData.scope.productIds.length > 0 && (
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               Topics <span className="text-red-500">*</span>
@@ -591,7 +590,7 @@ export default function BannerFormModal({
                                   </label>
                                 ))
                               ) : (
-                                <p className="text-sm text-gray-500">No topics available for this product</p>
+                                <p className="text-sm text-gray-500">No topics available for selected products</p>
                               )}
                             </div>
                             <p className="text-xs text-gray-500 mt-1">
