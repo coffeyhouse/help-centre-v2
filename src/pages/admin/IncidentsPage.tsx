@@ -356,10 +356,6 @@ export default function IncidentsPage() {
                     <h4 className="text-sm font-semibold text-gray-900 mb-4">Banner Details</h4>
                     <div className="space-y-3 text-sm">
                       <div>
-                        <span className="font-medium text-gray-700">ID:</span>
-                        <span className="ml-2 text-gray-600">{selectedBanner.id}</span>
-                      </div>
-                      <div>
                         <span className="font-medium text-gray-700">State:</span>
                         <span className={`ml-2 px-2 py-0.5 text-xs font-medium rounded ${
                           selectedBanner.state === 'error' ? 'bg-red-100 text-red-800' :

@@ -152,9 +152,33 @@ export default function BannerFormModal({
 
   if (!isOpen) return null;
 
+  const generateId = (title: string): string => {
+    // Convert title to lowercase, replace spaces and special chars with hyphens
+    const titleSlug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    // Create datetime string (YYYYMMDD-HHMMSS format)
+    const now = new Date();
+    const datetime = now.toISOString()
+      .replace(/[-:]/g, '')
+      .replace(/\..+/, '')
+      .replace('T', '-')
+      .slice(0, 15); // YYYYMMDD-HHMMSS
+
+    return `${titleSlug}-${datetime}`;
+  };
+
   const handleChange = (field: keyof Banner, value: any) => {
     if (formData) {
-      setFormData({ ...formData, [field]: value });
+      if (field === 'title' && isNew) {
+        // Auto-generate ID from title for new banners
+        const newId = generateId(value);
+        setFormData({ ...formData, title: value, id: newId });
+      } else {
+        setFormData({ ...formData, [field]: value });
+      }
     }
   };
 
@@ -247,6 +271,12 @@ export default function BannerFormModal({
     e.preventDefault();
     if (!formData) return;
 
+    // For new banners, ensure ID is generated
+    if (isNew && !formData.id) {
+      alert('Banner ID could not be generated. Please try again.');
+      return;
+    }
+
     // Validate scope-specific fields
     if (formData.scope.type === 'product' && (!formData.scope.productIds || formData.scope.productIds.length === 0)) {
       alert('Please select at least one product for product scope');
@@ -333,27 +363,6 @@ export default function BannerFormModal({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Left Column - Basic Fields */}
                   <div className="space-y-4">
-                    <div>
-                      <label htmlFor="id" className="block text-sm font-medium text-gray-700 mb-1">
-                        ID <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="id"
-                        value={formData.id}
-                        onChange={(e) => handleChange('id', e.target.value)}
-                        disabled={!isNew}
-                        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          !isNew ? 'bg-gray-50 cursor-not-allowed' : ''
-                        }`}
-                        placeholder="e.g., maintenance-2025-01-15"
-                        required
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        {isNew ? 'Unique identifier (use lowercase with hyphens)' : 'ID cannot be changed after creation'}
-                      </p>
-                    </div>
-
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
