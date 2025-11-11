@@ -197,6 +197,14 @@ function filterAttentionBlockTitleElements(children: any[]): any[] {
       return false;
     }
 
+    // Filter out plain strong tags containing attention block titles
+    if (element.name === 'strong') {
+      const strongText = extractTextContent(element).trim();
+      if (/^(TIP|CAUTION|INFO|WARNING|NOTE)\s*:?\s*$/i.test(strongText)) {
+        return false;
+      }
+    }
+
     return true;
   });
 }
