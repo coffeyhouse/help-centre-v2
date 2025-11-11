@@ -83,7 +83,7 @@ export default function AttentionBlock({ type, title, content }: AttentionBlockP
         <Icon className={`w-5 h-5 ${config.iconColor} mt-0.5 mr-3 flex-shrink-0`} />
         <div className="flex-1">
           <p className={`font-bold ${config.titleColor} mb-1`}>{displayTitle}</p>
-          <div className={`text-sm ${config.textColor} prose prose-sm max-w-none`}>
+          <div className={`text-sm ${config.textColor} prose prose-sm max-w-none [&_a]:!text-current [&_a]:font-bold [&_a]:underline [&_strong]:!text-current`}>
             {content}
           </div>
         </div>
