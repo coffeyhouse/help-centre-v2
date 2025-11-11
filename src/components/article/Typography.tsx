@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
 interface BaseProps {
   children: React.ReactNode;
@@ -97,28 +98,52 @@ interface LinkProps extends BaseProps {
   rel?: string;
 }
 
-const A: React.FC<LinkProps> = ({ children, href, target, rel, className = '' }) => (
-  <a
-    href={href}
-    target={target}
-    rel={rel}
-    className={`text-green-700 underline hover:text-green-900 font-medium ${className}`}
-  >
-    {children}
-  </a>
-);
+// Helper function to check if a link is external
+const isExternalLink = (href?: string): boolean => {
+  if (!href) return false;
+  return href.startsWith('http://') || href.startsWith('https://');
+};
+
+const A: React.FC<LinkProps> = ({ children, href, target, rel, className = '' }) => {
+  const isExternal = isExternalLink(href);
+  const linkTarget = isExternal ? '_blank' : target;
+  const linkRel = isExternal ? 'noopener noreferrer' : rel;
+
+  return (
+    <a
+      href={href}
+      target={linkTarget}
+      rel={linkRel}
+      className={`text-green-700 underline hover:text-green-900 font-medium inline-flex items-center gap-1 ${className}`}
+    >
+      {children}
+      {isExternal && (
+        <ArrowTopRightOnSquareIcon className="w-4 h-4 inline-block flex-shrink-0" />
+      )}
+    </a>
+  );
+};
 
 // Button styled as a link (for download buttons, action buttons, etc.)
-const Button: React.FC<LinkProps> = ({ children, href, target, rel, className = '' }) => (
-  <a
-    href={href}
-    target={target}
-    rel={rel}
-    className={`inline-block px-6 py-3 bg-black text-white font-medium rounded hover:bg-gray-800 transition-colors text-center ${className}`}
-  >
-    {children}
-  </a>
-);
+const Button: React.FC<LinkProps> = ({ children, href, target, rel, className = '' }) => {
+  const isExternal = isExternalLink(href);
+  const linkTarget = isExternal ? '_blank' : target;
+  const linkRel = isExternal ? 'noopener noreferrer' : rel;
+
+  return (
+    <a
+      href={href}
+      target={linkTarget}
+      rel={linkRel}
+      className={`inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-medium rounded hover:bg-gray-800 transition-colors text-center ${className}`}
+    >
+      {children}
+      {isExternal && (
+        <ArrowTopRightOnSquareIcon className="w-4 h-4 inline-block flex-shrink-0" />
+      )}
+    </a>
+  );
+};
 
 const Code: React.FC<BaseProps> = ({ children, className = '' }) => (
   <code className={`text-sm bg-gray-100 px-1.5 py-0.5 rounded text-gray-800 font-mono ${className}`}>
