@@ -429,16 +429,52 @@ export function processArticleContent(
           return <Typography.Td className={className}>{children}</Typography.Td>;
         case 'iframe':
           // Handle iframes (especially for video embeds)
-          return (
-            <iframe
-              src={element.attribs?.src}
-              width={element.attribs?.width}
-              height={element.attribs?.height}
-              frameBorder={element.attribs?.frameborder || '0'}
-              allowFullScreen={element.attribs?.allowfullscreen === 'allowfullscreen'}
-              className="absolute top-0 left-0 w-full h-full"
-            />
-          );
+          const iframeSrc = element.attribs?.src || '';
+          const isVideoEmbed =
+            iframeSrc.includes('youtube.com') ||
+            iframeSrc.includes('youtu.be') ||
+            iframeSrc.includes('brightcove.net') ||
+            iframeSrc.includes('vimeo.com') ||
+            iframeSrc.includes('wistia.com');
+
+          // Check if parent is already a video-container
+          const parentIsVideoContainer = (element as any).parent?.attribs?.class?.includes('video-container');
+
+          if (isVideoEmbed && !parentIsVideoContainer) {
+            // Wrap standalone video embeds in responsive container
+            return (
+              <Typography.VideoEmbed key={Math.random()}>
+                <iframe
+                  src={iframeSrc}
+                  frameBorder={element.attribs?.frameborder || '0'}
+                  allowFullScreen={element.attribs?.allowfullscreen === 'allowfullscreen'}
+                  className="absolute top-0 left-0 w-full h-full"
+                />
+              </Typography.VideoEmbed>
+            );
+          } else if (parentIsVideoContainer) {
+            // Already in a video-container, use absolute positioning
+            return (
+              <iframe
+                src={iframeSrc}
+                frameBorder={element.attribs?.frameborder || '0'}
+                allowFullScreen={element.attribs?.allowfullscreen === 'allowfullscreen'}
+                className="absolute top-0 left-0 w-full h-full"
+              />
+            );
+          } else {
+            // Regular iframe (not a video), preserve original dimensions
+            return (
+              <iframe
+                src={iframeSrc}
+                width={element.attribs?.width}
+                height={element.attribs?.height}
+                frameBorder={element.attribs?.frameborder || '0'}
+                allowFullScreen={element.attribs?.allowfullscreen === 'allowfullscreen'}
+                className="my-4"
+              />
+            );
+          }
         case 'div':
           // Only replace divs that don't have special classes (like expand-collapse, content-block-uki, video-container)
           if (!className.includes('expand-collapse') && !className.includes('collapse') && !className.includes('content-block-uki') && !className.includes('video-container')) {
