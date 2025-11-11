@@ -212,6 +212,22 @@ function stripScriptTags(content: string): string {
 }
 
 /**
+ * Preprocesses expand-collapse sections by wrapping them in a container
+ * This makes it easier to detect and convert them to Accordion components
+ */
+function preprocessExpandCollapse(content: string): string {
+  // Match patterns like:
+  // <h4 class="expand-collapse"><a...>title</a></h4>
+  // <div...class="collapse"...>content</div>
+  // And wrap them together
+  const pattern = /(<(?:h4|div)[^>]*class="[^"]*expand-collapse[^"]*"[^>]*>[\s\S]*?<\/(?:h4|div)>)\s*(<div[^>]*class="[^"]*collapse[^"]*"[^>]*id="([^"]*)"[^>]*>[\s\S]*?<\/div>)/gi;
+
+  return content.replace(pattern, (match, header, collapseDiv, collapseId) => {
+    return `<div class="accordion-wrapper" data-collapse-id="${collapseId}">${header}${collapseDiv}</div>`;
+  });
+}
+
+/**
  * Processes article HTML content and replaces patterns with React components
  */
 export function processArticleContent(
@@ -223,6 +239,9 @@ export function processArticleContent(
   // Remove script tags for security
   let processedContent = stripScriptTags(content);
 
+  // Pre-process expand-collapse sections
+  processedContent = preprocessExpandCollapse(processedContent);
+
   // Pre-process internal links before parsing
   processedContent = preprocessInternalLinks(processedContent, region);
 
@@ -232,76 +251,45 @@ export function processArticleContent(
 
       const element = domNode as Element;
 
-      // Replace expand-collapse elements with Accordion component
-      // Can be on div, h4, or other elements
-      if (element.attribs?.class?.includes('expand-collapse')) {
-        // Find the anchor tag with the title (usually a direct child)
-        const anchor = element.children?.find(
-          (child) => child instanceof Element && (child as Element).name === 'a'
+      // Replace accordion-wrapper divs (created by preprocessing) with Accordion component
+      if (element.name === 'div' && element.attribs?.class?.includes('accordion-wrapper')) {
+        // Find the header element (h4 or div with expand-collapse class)
+        const headerElement = element.children?.find(
+          (child) =>
+            child instanceof Element &&
+            (child as Element).attribs?.class?.includes('expand-collapse')
         ) as Element | undefined;
 
-        // Find the content div (the collapsible part)
-        // First try to find it as a child
-        let contentDiv = element.children?.find(
+        // Find the collapse div
+        const contentDiv = element.children?.find(
           (child) =>
             child instanceof Element &&
             (child as Element).name === 'div' &&
             (child as Element).attribs?.class?.includes('collapse')
         ) as Element | undefined;
 
-        // If not found in children, try to find it as a sibling
-        if (!contentDiv && (domNode as any).parent) {
-          const parent = (domNode as any).parent;
-          if (parent.children) {
-            // Find the next sibling that is a collapse div
-            let foundCurrent = false;
-            for (const sibling of parent.children) {
-              if (sibling === domNode) {
-                foundCurrent = true;
-                continue;
-              }
-              if (
-                foundCurrent &&
-                sibling instanceof Element &&
-                (sibling as Element).name === 'div' &&
-                (sibling as Element).attribs?.class?.includes('collapse')
-              ) {
-                contentDiv = sibling as Element;
-                break;
-              }
-            }
-          }
-        }
-
-        if (anchor && contentDiv) {
-          // Extract title from the anchor (either from span or directly from text)
-          const titleSpan = anchor.children?.find(
-            (child) => child instanceof Element && (child as Element).name === 'span'
+        if (headerElement && contentDiv) {
+          // Find the anchor tag within the header
+          const anchor = headerElement.children?.find(
+            (child) => child instanceof Element && (child as Element).name === 'a'
           ) as Element | undefined;
 
-          // If there's a span, extract from it; otherwise extract directly from anchor
-          const title = titleSpan
-            ? extractTextContent(titleSpan)
-            : extractTextContent(anchor) || 'Show more';
+          if (anchor) {
+            // Extract title from the anchor (either from span or directly from text)
+            const titleSpan = anchor.children?.find(
+              (child) => child instanceof Element && (child as Element).name === 'span'
+            ) as Element | undefined;
 
-          const contentHTML = getInnerHTML(contentDiv);
+            // If there's a span, extract from it; otherwise extract directly from anchor
+            const title = titleSpan
+              ? extractTextContent(titleSpan)
+              : extractTextContent(anchor) || 'Show more';
 
-          // Return accordion and mark the collapse div as processed so it doesn't render separately
-          if ((domNode as any).parent) {
-            (contentDiv as any)._processed = true;
+            const contentHTML = getInnerHTML(contentDiv);
+
+            return <Accordion key={element.attribs?.['data-collapse-id'] || Math.random()} title={title} content={contentHTML} />;
           }
-
-          return <Accordion key={element.attribs?.id || Math.random()} title={title} content={contentHTML} />;
         }
-      }
-
-      // Skip rendering collapse divs that were already processed as part of an accordion
-      if (
-        element.name === 'div' &&
-        element.attribs?.class?.includes('collapse') &&
-        (element as any)._processed
-      ) {
-        return <React.Fragment key={Math.random()}></React.Fragment>;
       }
 
       // Replace content-block-uki divs with ContentCard component
@@ -442,10 +430,10 @@ export function processArticleContent(
           return <Typography.H6 className={className}>{children}</Typography.H6>;
         case 'p':
           // Filter out empty paragraphs (only containing &nbsp; or whitespace)
-          // But keep paragraphs with images or other elements
+          // But keep paragraphs with images, iframes, or other elements
           const textContent = extractTextContent(element);
           const hasImageOrElements = element.children?.some(
-            (child) => child instanceof Element && (child as Element).name === 'img'
+            (child) => child instanceof Element && ['img', 'iframe', 'video', 'audio'].includes((child as Element).name)
           );
 
           if (!hasImageOrElements && (!textContent || textContent.trim() === '' || textContent.trim() === '\u00A0')) {
