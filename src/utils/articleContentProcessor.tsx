@@ -19,6 +19,84 @@ interface ProcessorOptions {
 }
 
 /**
+ * Converts Bootstrap grid classes to Tailwind CSS equivalents
+ */
+function convertBootstrapToTailwind(className: string): string {
+  if (!className) return '';
+
+  let tailwindClasses = className;
+
+  // Bootstrap container/row classes
+  tailwindClasses = tailwindClasses.replace(/\bcontainer-fluid\b/g, 'w-full px-4');
+  tailwindClasses = tailwindClasses.replace(/\bcontainer\b/g, 'container mx-auto px-4');
+  tailwindClasses = tailwindClasses.replace(/\brow\b/g, 'flex flex-wrap -mx-2');
+
+  // Bootstrap column classes - xs (default, no prefix in Tailwind)
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-12\b/g, 'w-full px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-11\b/g, 'w-11/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-10\b/g, 'w-10/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-9\b/g, 'w-9/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-8\b/g, 'w-8/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-7\b/g, 'w-7/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-6\b/g, 'w-6/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-5\b/g, 'w-5/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-4\b/g, 'w-4/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-3\b/g, 'w-3/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-2\b/g, 'w-2/12 px-2');
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-1\b/g, 'w-1/12 px-2');
+
+  // Bootstrap column classes - sm (640px in Tailwind)
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-12\b/g, 'sm:w-full');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-11\b/g, 'sm:w-11/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-10\b/g, 'sm:w-10/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-9\b/g, 'sm:w-9/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-8\b/g, 'sm:w-8/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-7\b/g, 'sm:w-7/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-6\b/g, 'sm:w-6/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-5\b/g, 'sm:w-5/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-4\b/g, 'sm:w-4/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-3\b/g, 'sm:w-3/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-2\b/g, 'sm:w-2/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-1\b/g, 'sm:w-1/12');
+
+  // Bootstrap column classes - md (768px in Tailwind)
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-12\b/g, 'md:w-full');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-11\b/g, 'md:w-11/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-10\b/g, 'md:w-10/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-9\b/g, 'md:w-9/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-8\b/g, 'md:w-8/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-7\b/g, 'md:w-7/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-6\b/g, 'md:w-6/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-5\b/g, 'md:w-5/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-4\b/g, 'md:w-4/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-3\b/g, 'md:w-3/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-2\b/g, 'md:w-2/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-1\b/g, 'md:w-1/12');
+
+  // Bootstrap column classes - lg (1024px in Tailwind)
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-12\b/g, 'lg:w-full');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-11\b/g, 'lg:w-11/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-10\b/g, 'lg:w-10/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-9\b/g, 'lg:w-9/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-8\b/g, 'lg:w-8/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-7\b/g, 'lg:w-7/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-6\b/g, 'lg:w-6/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-5\b/g, 'lg:w-5/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-4\b/g, 'lg:w-4/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-3\b/g, 'lg:w-3/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-2\b/g, 'lg:w-2/12');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-1\b/g, 'lg:w-1/12');
+
+  // Bootstrap offset classes
+  tailwindClasses = tailwindClasses.replace(/\bcol-xs-offset-(\d+)\b/g, 'ml-auto');
+  tailwindClasses = tailwindClasses.replace(/\bcol-sm-offset-(\d+)\b/g, 'sm:ml-auto');
+  tailwindClasses = tailwindClasses.replace(/\bcol-md-offset-(\d+)\b/g, 'md:ml-auto');
+  tailwindClasses = tailwindClasses.replace(/\bcol-lg-offset-(\d+)\b/g, 'lg:ml-auto');
+
+  return tailwindClasses;
+}
+
+/**
  * Extracts text content from an element (span, anchor, etc.)
  * Removes the down arrow prefix (▼) if present
  */
@@ -492,7 +570,9 @@ export function processArticleContent(
         case 'div':
           // Only replace divs that don't have special classes (like expand-collapse, content-block-uki, video-container)
           if (!className.includes('expand-collapse') && !className.includes('collapse') && !className.includes('content-block-uki') && !className.includes('video-container')) {
-            return <Typography.Div className={className}>{children}</Typography.Div>;
+            // Convert Bootstrap grid classes to Tailwind equivalents
+            const convertedClassName = convertBootstrapToTailwind(className);
+            return <Typography.Div className={convertedClassName}>{children}</Typography.Div>;
           }
           break;
         case 'span':
