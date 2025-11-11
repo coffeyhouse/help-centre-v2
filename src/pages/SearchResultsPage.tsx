@@ -11,10 +11,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import type { SearchResult } from '../types';
 import { search } from '../utils/mockSearchAPI';
+import { getArticleUrl, shouldOpenInNewTab } from '../utils/articleAPI';
 import Breadcrumb from '../components/layout/Breadcrumb';
 
 const RESULTS_PER_PAGE = 10;
@@ -78,12 +79,6 @@ export default function SearchResultsPage() {
 
   const handleBack = () => {
     navigate(-1);
-  };
-
-  // Generate external KB URL based on region
-  const getKnowledgeBaseUrl = (solutionId: string): string => {
-    const regionPrefix = region || 'gb';
-    return `https://${regionPrefix}-kb.sagedatacloud.com/portal/app/portlets/results/viewsolution.jsp?solutionid=${solutionId}`;
   };
 
   return (
@@ -204,38 +199,50 @@ export default function SearchResultsPage() {
           ) : (
             <>
               <div className="space-y-4">
-                {results.map((result) => (
-                  <a
-                    key={result.id}
-                    href={getKnowledgeBaseUrl(result.id)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
-                  >
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600">
-                      {result.title}
-                    </h2>
-                    <p className="text-gray-600 leading-relaxed">
-                      {result.summary}
-                    </p>
-                    <div className="mt-4 flex items-center text-blue-600 text-sm font-medium">
-                      <span>View article</span>
-                      <svg
-                        className="w-4 h-4 ml-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </div>
-                  </a>
-                ))}
+                {results.map((result) => {
+                  const articleUrl = getArticleUrl(result.id, region || 'gb');
+                  const isExternal = shouldOpenInNewTab(articleUrl);
+                  const linkProps = isExternal
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {};
+
+                  const LinkComponent = isExternal ? 'a' : Link;
+                  const urlProp = isExternal ? { href: articleUrl } : { to: articleUrl };
+
+                  return (
+                    <LinkComponent
+                      key={result.id}
+                      {...urlProp}
+                      {...linkProps}
+                      className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
+                    >
+                      <h2 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600">
+                        {result.title}
+                      </h2>
+                      <p className="text-gray-600 leading-relaxed">
+                        {result.summary}
+                      </p>
+                      <div className="mt-4 flex items-center text-blue-600 text-sm font-medium">
+                        <span>View article</span>
+                        {isExternal && (
+                          <svg
+                            className="w-4 h-4 ml-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </LinkComponent>
+                  );
+                })}
               </div>
 
               {/* Pagination */}

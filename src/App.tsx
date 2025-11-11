@@ -30,6 +30,7 @@ import SearchResultsPage from './pages/SearchResultsPage';
 import ReleaseNotesPage from './pages/ReleaseNotesPage';
 import ProfilePage from './pages/ProfilePage';
 import CountrySelector from './pages/CountrySelector';
+import ArticlePage from './pages/ArticlePage';
 
 // Admin imports
 import LoginPage from './pages/admin/LoginPage';
@@ -192,6 +193,7 @@ function App() {
                         <Route element={<Layout />}>
                           <Route path="/:region" element={<HomePage />} />
                           <Route path="/:region/search" element={<SearchResultsPage />} />
+                          <Route path="/:region/article/:id" element={<ArticlePage />} />
                           <Route path="/:region/products/:productId" element={<ProductLanding />} />
                           <Route path="/:region/products/:productId/release-notes" element={<ReleaseNotesPage />} />
                           <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />

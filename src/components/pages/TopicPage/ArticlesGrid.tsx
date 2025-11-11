@@ -12,6 +12,7 @@
 
 import Card from '../../common/Card';
 import type { ArticleItem, TopicsData } from '../../../types';
+import { getArticleUrl } from '../../../utils/articleAPI';
 
 interface ArticlesGridProps {
   items: ArticleItem[];
@@ -28,12 +29,6 @@ export default function ArticlesGrid({
   region,
   productId,
 }: ArticlesGridProps) {
-  // Generate external KB URL based on region and article ID
-  const getKnowledgeBaseUrl = (solutionId: string): string => {
-    const regionPrefix = region || 'gb';
-    return `https://${regionPrefix}-kb.sagedatacloud.com/portal/app/portlets/results/viewsolution.jsp?solutionid=${solutionId}`;
-  };
-
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
@@ -73,13 +68,13 @@ export default function ArticlesGrid({
               />
             );
           } else {
-            // Regular article - link to external knowledgebase
+            // Regular article - link to article page or external knowledgebase based on config
             return (
               <Card
                 key={item.id}
                 title={item.title || ''}
                 description={item.description}
-                href={getKnowledgeBaseUrl(item.id)}
+                href={getArticleUrl(item.id, region)}
                 type="Article"
               />
             );

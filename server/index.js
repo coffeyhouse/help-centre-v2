@@ -9,6 +9,7 @@ import filesRoutes from './routes/files.js';
 import regionsRoutes from './routes/regions.js';
 import productsRoutes from './routes/products.js';
 import searchRoutes from './routes/search.js';
+import articleRoutes from './routes/article.js';
 import publicDataRoutes from './routes/publicData.js';
 import usersRoutes from './routes/users.js';
 
@@ -30,6 +31,7 @@ app.use('/api/files', filesRoutes);
 app.use('/api/regions', regionsRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/article', articleRoutes);
 app.use('/api/public/data', publicDataRoutes);
 app.use('/api/users', usersRoutes);
 
