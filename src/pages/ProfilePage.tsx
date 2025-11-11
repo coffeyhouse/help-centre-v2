@@ -31,6 +31,8 @@ export default function ProfilePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [favoriteArticles, setFavoriteArticles] = useState<ArticleResponse[]>([]);
   const [loadingFavorites, setLoadingFavorites] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -98,6 +100,11 @@ export default function ProfilePage() {
 
     loadFavoriteArticles();
   }, [user, region]);
+
+  // Reset to page 1 when favorites change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [favoriteArticles.length]);
 
   // Update form data when user changes
   useEffect(() => {
@@ -219,6 +226,21 @@ export default function ProfilePage() {
     }
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(favoriteArticles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedFavorites = favoriteArticles.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to the favorites section
+    const favoritesSection = document.getElementById('favorites-section');
+    if (favoritesSection) {
+      favoritesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const hasChanges =
     user &&
     (formData.name !== user.name ||
@@ -309,11 +331,11 @@ export default function ProfilePage() {
         </div>
 
         {/* Favorite Articles Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div id="favorites-section" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center gap-2 mb-2">
             <HeartIcon className="w-6 h-6 text-red-600" />
             <h2 className="text-xl font-semibold text-gray-900">
-              Favorite Articles
+              Favorite Articles {favoriteArticles.length > 0 && `(${favoriteArticles.length})`}
             </h2>
           </div>
           <p className="text-sm text-gray-600 mb-4">
@@ -331,8 +353,9 @@ export default function ProfilePage() {
               <p className="text-sm mt-1">Start favoriting articles to see them here</p>
             </div>
           ) : (
-            <div className="space-y-3">
-              {favoriteArticles.map((article) => (
+            <>
+              <div className="space-y-3">
+                {paginatedFavorites.map((article) => (
                 <div
                   key={article.id}
                   className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
@@ -367,6 +390,49 @@ export default function ProfilePage() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                <div className="text-sm text-gray-600">
+                  Showing {startIndex + 1}-{Math.min(endIndex, favoriteArticles.length)} of {favoriteArticles.length}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                          currentPage === page
+                            ? 'bg-primary-600 text-white'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
           )}
         </div>
 
