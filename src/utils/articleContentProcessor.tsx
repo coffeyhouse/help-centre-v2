@@ -7,9 +7,10 @@
  * - Internal article links [[text >|id]] → proper links
  */
 
-import parse, { Element, domToReact, HTMLReactParserOptions } from 'html-react-parser';
+import React from 'react';
+import parse, { Element, type HTMLReactParserOptions } from 'html-react-parser';
 import Accordion from '../components/article/Accordion';
-import AttentionBlock, { AttentionType } from '../components/article/AttentionBlock';
+import AttentionBlock, { type AttentionType } from '../components/article/AttentionBlock';
 import { getArticleUrl, shouldOpenInNewTab } from './articleAPI';
 
 interface ProcessorOptions {
@@ -66,7 +67,7 @@ function getInnerHTML(element: Element): string {
 export function processArticleContent(
   content: string,
   options: ProcessorOptions = {}
-): JSX.Element | JSX.Element[] | string {
+): React.ReactNode {
   const { region = 'gb' } = options;
 
   const parserOptions: HTMLReactParserOptions = {
