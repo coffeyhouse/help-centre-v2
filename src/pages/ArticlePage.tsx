@@ -18,6 +18,7 @@ import type { ArticleResponse } from '../types';
 import { fetchArticle } from '../utils/articleAPI';
 import { processArticleContent } from '../utils/articleContentProcessor';
 import Breadcrumb from '../components/layout/Breadcrumb';
+import FavoriteButton from '../components/common/FavoriteButton';
 import {
   ChevronLeftIcon,
   EyeIcon,
@@ -130,13 +131,13 @@ export default function ArticlePage() {
               </button>
             </div>
           ) : article ? (
-            <div className="bg-white rounded-lg shadow-sm">              
+            <div className="bg-white rounded-lg shadow-sm">
               {/* Article Metadata */}
               <div className="border-b border-gray-200 px-6 py-4">
                 <h1 className="text-3xl md:text-4xl font-bold mb-6 mt-4">
                   {article.title}
                 </h1>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
                   {article.viewCount > 0 && (
                     <div className="flex items-center">
                       <EyeIcon className="w-4 h-4 mr-1" />
@@ -154,6 +155,9 @@ export default function ArticlePage() {
                     ID: {article.id}
                   </div>
                 </div>
+
+                {/* Favorite Button */}
+                <FavoriteButton articleId={article.id} />
               </div>
 
               {/* Article Content */}

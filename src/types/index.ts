@@ -345,6 +345,9 @@ export interface User {
   email: string;
   persona: PersonaId;
   ownedProducts: string[];
+  favorites?: {
+    [region: string]: string[]; // Array of favorited article IDs per region
+  };
 }
 
 export interface UsersData {

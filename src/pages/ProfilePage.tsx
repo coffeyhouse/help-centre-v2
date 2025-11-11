@@ -9,12 +9,14 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useRegion } from '../hooks/useRegion';
 import Icon from '../components/common/Icon';
 import Button from '../components/common/Button';
-import type { Product } from '../types';
+import { HeartIcon, TrashIcon } from '@heroicons/react/24/outline';
+import type { Product, ArticleResponse } from '../types';
+import { fetchArticle } from '../utils/articleAPI';
 
 export default function ProfilePage() {
   const { user, reloadUser, logout, loading: authLoading } = useAuth();
@@ -27,6 +29,8 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  const [favoriteArticles, setFavoriteArticles] = useState<ArticleResponse[]>([]);
+  const [loadingFavorites, setLoadingFavorites] = useState(false);
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -60,6 +64,40 @@ export default function ProfilePage() {
       loadProducts();
     }
   }, [region]);
+
+  // Load favorite articles
+  useEffect(() => {
+    const loadFavoriteArticles = async () => {
+      if (!user || !region) return;
+
+      const favoriteIds = user.favorites?.[region] || [];
+      if (favoriteIds.length === 0) {
+        setFavoriteArticles([]);
+        return;
+      }
+
+      setLoadingFavorites(true);
+      try {
+        const articles = await Promise.all(
+          favoriteIds.map(async (articleId) => {
+            try {
+              return await fetchArticle(articleId, region);
+            } catch (error) {
+              console.error(`Failed to load article ${articleId}:`, error);
+              return null;
+            }
+          })
+        );
+        setFavoriteArticles(articles.filter((a): a is ArticleResponse => a !== null));
+      } catch (error) {
+        console.error('Failed to load favorite articles:', error);
+      } finally {
+        setLoadingFavorites(false);
+      }
+    };
+
+    loadFavoriteArticles();
+  }, [user, region]);
 
   // Update form data when user changes
   useEffect(() => {
@@ -151,6 +189,36 @@ export default function ProfilePage() {
     }
   };
 
+  const handleRemoveFavorite = async (articleId: string) => {
+    if (!user) return;
+
+    try {
+      const response = await fetch(`/api/users/${user.id}/favorites`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          region,
+          articleId,
+          action: 'remove',
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to remove favorite');
+      }
+
+      // Reload user data and favorite articles
+      await reloadUser();
+      setSuccessMessage('Article removed from favorites');
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove favorite');
+    }
+  };
+
   const hasChanges =
     user &&
     (formData.name !== user.name ||
@@ -238,6 +306,68 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Favorite Articles Card */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <HeartIcon className="w-6 h-6 text-red-600" />
+            <h2 className="text-xl font-semibold text-gray-900">
+              Favorite Articles
+            </h2>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            Articles you've favorited in {region?.toUpperCase()}
+          </p>
+
+          {loadingFavorites ? (
+            <div className="text-center py-8 text-gray-500">
+              Loading favorite articles...
+            </div>
+          ) : favoriteArticles.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <HeartIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <p>No favorite articles yet</p>
+              <p className="text-sm mt-1">Start favoriting articles to see them here</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {favoriteArticles.map((article) => (
+                <div
+                  key={article.id}
+                  className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex-1">
+                    <Link
+                      to={`/${region}/article/${article.id}`}
+                      className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                    >
+                      {article.title}
+                    </Link>
+                    {article.summary && (
+                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        {article.summary}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                      <span>ID: {article.id}</span>
+                      {article.viewCount > 0 && (
+                        <span>{article.viewCount.toLocaleString()} views</span>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveFavorite(article.id)}
+                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                    title="Remove from favorites"
+                    aria-label="Remove from favorites"
+                  >
+                    <TrashIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Products Card */}
