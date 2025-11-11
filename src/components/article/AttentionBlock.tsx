@@ -15,14 +15,13 @@ import {
   ExclamationCircleIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline';
-import parse from 'html-react-parser';
 
 export type AttentionType = 'caution' | 'tip' | 'info' | 'warning' | 'note';
 
 interface AttentionBlockProps {
   type: AttentionType;
   title?: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 const typeConfig = {
@@ -84,8 +83,8 @@ export default function AttentionBlock({ type, title, content }: AttentionBlockP
         <Icon className={`w-5 h-5 ${config.iconColor} mt-0.5 mr-3 flex-shrink-0`} />
         <div className="flex-1">
           <p className={`font-bold ${config.titleColor} mb-1`}>{displayTitle}</p>
-          <div className={`text-sm ${config.textColor} prose prose-sm max-w-none [&_a]:font-bold [&_a]:underline`}>
-            {parse(content)}
+          <div className={`text-sm ${config.textColor} prose prose-sm max-w-none`}>
+            {content}
           </div>
         </div>
       </div>

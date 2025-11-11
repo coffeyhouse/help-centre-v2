@@ -155,6 +155,53 @@ function stripAttentionBlockTitle(html: string): string {
 }
 
 /**
+ * Filters out attention block title-related elements from children
+ */
+function filterAttentionBlockTitleElements(children: any[]): any[] {
+  if (!children) return [];
+
+  return children.filter((child) => {
+    if (!(child instanceof Element)) return true;
+
+    const element = child as Element;
+
+    // Filter out mceNonEditable spans (contain title and image)
+    if (element.name === 'span' && element.attribs?.class?.includes('mceNonEditable')) {
+      return false;
+    }
+
+    // Filter out attention block images
+    if (element.name === 'img' && element.attribs?.class?.includes('ra-att-img')) {
+      return false;
+    }
+
+    // Filter out attention block title images
+    if (element.name === 'img' && element.attribs?.src?.includes('content_tip.gif')) {
+      return false;
+    }
+    if (element.name === 'img' && element.attribs?.src?.includes('content_caution.gif')) {
+      return false;
+    }
+    if (element.name === 'img' && element.attribs?.src?.includes('content_info.gif')) {
+      return false;
+    }
+    if (element.name === 'img' && element.attribs?.src?.includes('content_warning.gif')) {
+      return false;
+    }
+    if (element.name === 'img' && element.attribs?.src?.includes('content_note.gif')) {
+      return false;
+    }
+
+    // Filter out strong tags with ra-att-title class
+    if (element.name === 'strong' && element.attribs?.class?.includes('ra-att-title')) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+/**
  * Extracts inner HTML from an element as a string
  */
 function getInnerHTML(element: Element): string {
@@ -452,12 +499,17 @@ export function processArticleContent(
           }
 
           // Extract content - prefer descSpan, otherwise get all content from element
-          let content = descSpan ? getInnerHTML(descSpan) : getInnerHTML(element);
+          const contentElement = descSpan || element;
 
-          // Strip duplicate title markup and images from content
-          content = stripAttentionBlockTitle(content);
+          // Filter out title-related elements from children
+          const filteredChildren = filterAttentionBlockTitleElements(contentElement.children || []);
 
-          return <AttentionBlock key={Math.random()} type={type} title={title} content={content} />;
+          // Process the filtered children with parser options
+          const processedContent = filteredChildren.length > 0
+            ? domToReact(filteredChildren as DOMNode[], parserOptions)
+            : null;
+
+          return <AttentionBlock key={Math.random()} type={type} title={title} content={processedContent} />;
         }
       }
 
@@ -497,13 +549,15 @@ export function processArticleContent(
             title = extractTextContent(strongTag).replace(':', '');
           }
 
-          // Extract content from element
-          let content = getInnerHTML(element);
+          // Filter out title-related elements from children
+          const filteredChildren = filterAttentionBlockTitleElements(element.children || []);
 
-          // Strip duplicate title markup and images from content
-          content = stripAttentionBlockTitle(content);
+          // Process the filtered children with parser options
+          const processedContent = filteredChildren.length > 0
+            ? domToReact(filteredChildren as DOMNode[], parserOptions)
+            : null;
 
-          return <AttentionBlock key={Math.random()} type={type} title={title} content={content} />;
+          return <AttentionBlock key={Math.random()} type={type} title={title} content={processedContent} />;
         }
       }
 
