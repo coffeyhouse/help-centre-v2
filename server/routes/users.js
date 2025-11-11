@@ -204,4 +204,83 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/users/:id/favorites
+ * Add or remove a favorite article for a user in a specific region
+ * Body: { region, articleId, action: 'add' | 'remove' }
+ */
+router.post('/:id/favorites', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { region, articleId, action } = req.body;
+
+    // Validation
+    if (!region || !articleId || !action) {
+      return res.status(400).json({
+        error: 'Missing required fields: region, articleId, and action are required'
+      });
+    }
+
+    if (action !== 'add' && action !== 'remove') {
+      return res.status(400).json({
+        error: 'Invalid action. Must be "add" or "remove"'
+      });
+    }
+
+    // Read existing users
+    const data = await readUsers();
+
+    // Find user
+    const userIndex = data.users.findIndex(u => u.id === id);
+    if (userIndex === -1) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = data.users[userIndex];
+
+    // Initialize favorites object if it doesn't exist
+    if (!user.favorites) {
+      user.favorites = {};
+    }
+
+    // Initialize region array if it doesn't exist
+    if (!user.favorites[region]) {
+      user.favorites[region] = [];
+    }
+
+    // Add or remove the article from favorites
+    if (action === 'add') {
+      // Check if already favorited
+      if (user.favorites[region].includes(articleId)) {
+        return res.status(400).json({
+          error: 'Article is already in favorites'
+        });
+      }
+      user.favorites[region].push(articleId);
+    } else if (action === 'remove') {
+      // Check if not in favorites
+      if (!user.favorites[region].includes(articleId)) {
+        return res.status(400).json({
+          error: 'Article is not in favorites'
+        });
+      }
+      user.favorites[region] = user.favorites[region].filter(id => id !== articleId);
+    }
+
+    // Update user in data
+    data.users[userIndex] = user;
+
+    // Save to file
+    await writeUsers(data);
+
+    res.json({
+      message: `Article ${action === 'add' ? 'added to' : 'removed from'} favorites`,
+      user
+    });
+  } catch (error) {
+    console.error('Error updating favorites:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
