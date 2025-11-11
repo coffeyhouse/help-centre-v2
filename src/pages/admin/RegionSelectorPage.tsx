@@ -11,13 +11,13 @@ import {
   ChatBubbleLeftRightIcon,
   Cog6ToothIcon,
   ChevronRightIcon,
-  PencilIcon,
 } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AddRegionModal from '../../components/admin/AddRegionModal';
 import DragDropCard, { type Badge } from '../../components/admin/DragDropCard';
 import DragDropListLayout from '../../components/admin/DragDropListLayout';
 import DetailPanel from '../../components/admin/DetailPanel';
+import PageHeader from '../../components/admin/PageHeader';
 
 interface Region {
   id: string;
@@ -159,21 +159,23 @@ export default function RegionSelectorPage() {
 
   return (
     <AdminLayout showRegionSelector={false}>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Regions</h1>
-          <p className="text-gray-600">
-            Select a region to manage its content. Drag to reorder.
-          </p>
-        </div>
-        <button
-          onClick={handleAddRegion}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <PlusIcon className="w-5 h-5" />
-          Add Region
-        </button>
-      </div>
+      <PageHeader
+        icon={<GlobeAltIcon className="w-12 h-12 text-blue-600" />}
+        title="Regions"
+        description="Select a region to manage its content and settings. Drag to reorder regions."
+        badges={[
+          { label: `${regions.length} ${regions.length === 1 ? 'region' : 'regions'}`, color: 'blue' }
+        ]}
+        actions={
+          <button
+            onClick={handleAddRegion}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Add Region
+          </button>
+        }
+      />
 
       {error && (
         <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">

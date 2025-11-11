@@ -17,10 +17,18 @@ import AddTopicModal from '../../components/admin/AddTopicModal';
 import DragDropCard, { type Badge } from '../../components/admin/DragDropCard';
 import DragDropListLayout from '../../components/admin/DragDropListLayout';
 import DetailPanel from '../../components/admin/DetailPanel';
+import PageHeader, { type PageHeaderBadge } from '../../components/admin/PageHeader';
 
 interface Product {
   id: string;
   name: string;
+  description?: string;
+  type?: 'cloud' | 'desktop';
+  icon?: string;
+  personas?: string[];
+  categories?: string[];
+  countries?: string[];
+  knowledgebase_collection?: string;
 }
 
 interface Topic {
@@ -202,6 +210,52 @@ export default function ProductTopicsListPage() {
     setHasUnsavedChanges(false);
   };
 
+  const getProductBadges = (): PageHeaderBadge[] => {
+    if (!product) return [];
+
+    const badges: PageHeaderBadge[] = [];
+
+    // Type badge
+    if (product.type) {
+      badges.push({
+        label: product.type === 'cloud' ? 'Cloud Product' : 'Desktop Product',
+        color: product.type === 'cloud' ? 'blue' : 'gray',
+      });
+    }
+
+    // Personas
+    if (product.personas && product.personas.length > 0) {
+      product.personas.forEach((persona) => {
+        badges.push({ label: persona, color: 'purple' });
+      });
+    }
+
+    // Categories
+    if (product.categories && product.categories.length > 0) {
+      const categoryLabels: Record<string, string> = {
+        'accounting-software': 'Accounting software',
+        'people-payroll': 'People and Payroll',
+        'business-management': 'Business management',
+        'solutions-accountants-bookkeepers': 'Solutions for accountants and bookkeepers',
+      };
+      product.categories.forEach((category) => {
+        badges.push({
+          label: categoryLabels[category] || category,
+          color: 'indigo',
+        });
+      });
+    }
+
+    // Countries
+    if (product.countries && product.countries.length > 0) {
+      product.countries.forEach((country) => {
+        badges.push({ label: country.toUpperCase(), color: 'green' });
+      });
+    }
+
+    return badges;
+  };
+
   return (
     <AdminLayout
       breadcrumbs={[
@@ -211,31 +265,47 @@ export default function ProductTopicsListPage() {
         { label: 'Topics' },
       ]}
     >
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Topics for {product?.name}</h1>
-          <p className="text-gray-600">
-            Select a topic to manage its content and settings. Drag to reorder.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {hasUnsavedChanges && (
-            <button
-              onClick={handleSaveOrder}
-              disabled={saving}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? 'Saving...' : 'Save Order'}
-            </button>
-          )}
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <PlusIcon className="w-5 h-5" />
-            Add Topic
-          </button>
-        </div>
+      {product && (
+        <PageHeader
+          icon={product.icon}
+          iconFallback={product.name.charAt(0)}
+          title={product.name}
+          description={product.description}
+          metadata={
+            product.knowledgebase_collection
+              ? [{ label: 'KB Collection', value: product.knowledgebase_collection }]
+              : []
+          }
+          badges={getProductBadges()}
+          onEdit={() => navigate(`/admin/${region}/products/${productId}`)}
+          actions={
+            <div className="flex items-center gap-3">
+              {hasUnsavedChanges && (
+                <button
+                  onClick={handleSaveOrder}
+                  disabled={saving}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving ? 'Saving...' : 'Save Order'}
+                </button>
+              )}
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <PlusIcon className="w-5 h-5" />
+                Add Topic
+              </button>
+            </div>
+          }
+        />
+      )}
+
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">Topics</h2>
+        <p className="text-gray-600 text-sm">
+          Select a topic to manage its content and settings. Drag to reorder.
+        </p>
       </div>
 
       {successMessage && (

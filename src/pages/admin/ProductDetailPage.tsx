@@ -8,11 +8,10 @@ import {
   PhoneIcon,
   DocumentTextIcon,
   ArrowRightIcon,
-  PencilIcon,
 } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AddProductModal from '../../components/admin/AddProductModal';
-import Icon from '../../components/common/Icon';
+import PageHeader, { type PageHeaderBadge, type PageHeaderMetadata } from '../../components/admin/PageHeader';
 
 interface Product {
   id: string;
@@ -173,92 +172,59 @@ export default function ProductDetailPage() {
       ) : product ? (
         <>
           {/* Product Header */}
-          <div className="mb-8 bg-white rounded-lg shadow p-6">
-            <div className="flex items-start gap-4">
-              <div className="bg-blue-100 p-4 rounded-lg flex-shrink-0">
-                {product.icon ? (
-                  <Icon name={product.icon} className="w-12 h-12 text-blue-600" />
-                ) : (
-                  <div className="w-12 h-12 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-xl">
-                    {product.name.charAt(0)}
-                  </div>
-                )}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
-                    <p className="text-gray-600 mb-2">{product.description}</p>
-                    {product.knowledgebase_collection && (
-                      <p className="text-sm text-gray-500 mb-2">
-                        <span className="font-medium">KB Collection:</span> {product.knowledgebase_collection}
-                      </p>
-                    )}
-                    <div className="flex flex-wrap gap-2 items-center">
-                      <span className={`inline-block px-3 py-1 text-sm font-medium rounded ${
-                        product.type === 'cloud'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        {product.type === 'cloud' ? 'Cloud Product' : 'Desktop Product'}
-                      </span>
-                      {product.personas && product.personas.length > 0 && (
-                        <>
-                          {product.personas.map((persona) => (
-                            <span
-                              key={persona}
-                              className="inline-block px-3 py-1 text-sm font-medium rounded bg-purple-100 text-purple-700"
-                            >
-                              {persona}
-                            </span>
-                          ))}
-                        </>
-                      )}
-                      {product.categories && product.categories.length > 0 && (
-                        <>
-                          {product.categories.map((category) => {
-                            const categoryLabels: Record<string, string> = {
-                              'accounting-software': 'Accounting software',
-                              'people-payroll': 'People and Payroll',
-                              'business-management': 'Business management',
-                              'solutions-accountants-bookkeepers': 'Solutions for accountants and bookkeepers',
-                            };
-                            return (
-                              <span
-                                key={category}
-                                className="inline-block px-3 py-1 text-sm font-medium rounded bg-indigo-100 text-indigo-700"
-                              >
-                                {categoryLabels[category] || category}
-                              </span>
-                            );
-                          })}
-                        </>
-                      )}
-                      {product.countries && product.countries.length > 0 && (
-                        <>
-                          {product.countries.map((country) => (
-                            <span
-                              key={country}
-                              className="inline-block px-3 py-1 text-sm font-medium rounded bg-green-100 text-green-700"
-                            >
-                              {country.toUpperCase()}
-                            </span>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleEdit}
-                    className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                    Edit Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PageHeader
+            icon={product.icon}
+            iconFallback={product.name.charAt(0)}
+            title={product.name}
+            description={product.description}
+            metadata={
+              product.knowledgebase_collection
+                ? [{ label: 'KB Collection', value: product.knowledgebase_collection }]
+                : []
+            }
+            badges={(() => {
+              const badges: PageHeaderBadge[] = [];
+
+              // Type badge
+              badges.push({
+                label: product.type === 'cloud' ? 'Cloud Product' : 'Desktop Product',
+                color: product.type === 'cloud' ? 'blue' : 'gray',
+              });
+
+              // Personas
+              if (product.personas && product.personas.length > 0) {
+                product.personas.forEach((persona) => {
+                  badges.push({ label: persona, color: 'purple' });
+                });
+              }
+
+              // Categories
+              if (product.categories && product.categories.length > 0) {
+                const categoryLabels: Record<string, string> = {
+                  'accounting-software': 'Accounting software',
+                  'people-payroll': 'People and Payroll',
+                  'business-management': 'Business management',
+                  'solutions-accountants-bookkeepers': 'Solutions for accountants and bookkeepers',
+                };
+                product.categories.forEach((category) => {
+                  badges.push({
+                    label: categoryLabels[category] || category,
+                    color: 'indigo',
+                  });
+                });
+              }
+
+              // Countries
+              if (product.countries && product.countries.length > 0) {
+                product.countries.forEach((country) => {
+                  badges.push({ label: country.toUpperCase(), color: 'green' });
+                });
+              }
+
+              return badges;
+            })()}
+            onEdit={handleEdit}
+          />
 
           {/* Sub-sections */}
           <div className="mb-4">
