@@ -10,11 +10,10 @@
 
 import { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import parse from 'html-react-parser';
 
 interface AccordionProps {
   title: string;
-  content: string;
+  content: React.ReactNode;
   defaultOpen?: boolean;
 }
 
@@ -42,7 +41,7 @@ export default function Accordion({ title, content, defaultOpen = false }: Accor
         }`}
       >
         <div className="px-4 py-4 prose prose-sm max-w-none">
-          {parse(content)}
+          {content}
         </div>
       </div>
     </div>

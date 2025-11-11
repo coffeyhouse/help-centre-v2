@@ -378,9 +378,12 @@ export function processArticleContent(
               ? extractTextContent(titleSpan)
               : extractTextContent(anchor) || 'Show more';
 
-            const contentHTML = getInnerHTML(contentDiv);
+            // Process the content div's children with the same parser options
+            const processedContent = contentDiv.children
+              ? domToReact(contentDiv.children as DOMNode[], parserOptions)
+              : null;
 
-            return <Accordion key={element.attribs?.['data-collapse-id'] || Math.random()} title={title} content={contentHTML} />;
+            return <Accordion key={element.attribs?.['data-collapse-id'] || Math.random()} title={title} content={processedContent} />;
           }
         }
       }
