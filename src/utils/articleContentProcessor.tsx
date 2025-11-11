@@ -216,15 +216,108 @@ function stripScriptTags(content: string): string {
  * This makes it easier to detect and convert them to Accordion components
  */
 function preprocessExpandCollapse(content: string): string {
-  // Match patterns like:
-  // <h4 class="expand-collapse"><a...>title</a></h4>
-  // <div...class="collapse"...>content</div>
-  // And wrap them together
-  const pattern = /(<(?:h4|div)[^>]*class="[^"]*expand-collapse[^"]*"[^>]*>[\s\S]*?<\/(?:h4|div)>)\s*(<div[^>]*class="[^"]*collapse[^"]*"[^>]*id="([^"]*)"[^>]*>[\s\S]*?<\/div>)/gi;
+  // Match expand-collapse headers followed by collapse divs
+  // More flexible pattern that handles attributes in any order
+  const pattern = /(<(?:h4|div)[^>]*\bclass="[^"]*expand-collapse[^"]*"[^>]*>(?:(?!<\/(?:h4|div)>).)*<\/(?:h4|div)>)\s*(<div[^>]*\bclass="[^"]*collapse[^"]*"[^>]*>)/gi;
 
-  return content.replace(pattern, (match, header, collapseDiv, collapseId) => {
-    return `<div class="accordion-wrapper" data-collapse-id="${collapseId}">${header}${collapseDiv}</div>`;
-  });
+  let result = content;
+  let match;
+  const regex = new RegExp(pattern);
+
+  // We need to find matching pairs and wrap them
+  // This is tricky because we need to find the closing </div> for the collapse div
+  // Let's use a different approach - find all occurrences and build wrapper
+
+  const matches: Array<{ header: string; collapseStart: number; collapseEnd: number; id: string }> = [];
+
+  // Find all expand-collapse headers and their corresponding collapse divs
+  const headerRegex = /<(h4|div)[^>]*\bclass="[^"]*expand-collapse[^"]*"[^>]*>((?:(?!<\/\1>).)*)<\/\1>/gi;
+  let headerMatch;
+
+  while ((headerMatch = headerRegex.exec(content)) !== null) {
+    const headerHTML = headerMatch[0];
+    const headerEnd = headerMatch.index + headerHTML.length;
+
+    // Look for the next collapse div after this header
+    const afterHeader = content.slice(headerEnd);
+    const collapseDivRegex = /<div[^>]*\bclass="[^"]*collapse[^"]*"[^>]*>/i;
+    const collapseDivMatch = collapseDivRegex.exec(afterHeader);
+
+    if (collapseDivMatch) {
+      const collapseStart = headerEnd + collapseDivMatch.index;
+      const collapseDivTag = collapseDivMatch[0];
+
+      // Extract id from collapse div if present
+      const idMatch = /\bid="([^"]*)"/.exec(collapseDivTag);
+      const collapseId = idMatch ? idMatch[1] : '';
+
+      // Find the closing </div> for this collapse div (handle nesting)
+      const collapseEnd = findClosingTag(content, collapseStart, 'div');
+
+      if (collapseEnd > collapseStart) {
+        matches.push({
+          header: headerHTML,
+          collapseStart: headerMatch.index,
+          collapseEnd: collapseEnd,
+          id: collapseId
+        });
+      }
+    }
+  }
+
+  // Replace from end to start to maintain indices
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const m = matches[i];
+    const before = content.slice(0, m.collapseStart);
+    const section = content.slice(m.collapseStart, m.collapseEnd);
+    const after = content.slice(m.collapseEnd);
+
+    result = before + `<div class="accordion-wrapper" data-collapse-id="${m.id}">${section}</div>` + after;
+  }
+
+  return result;
+}
+
+/**
+ * Helper function to find the closing tag for an opening tag, handling nesting
+ */
+function findClosingTag(html: string, startPos: number, tagName: string): number {
+  let depth = 1;
+  let pos = startPos;
+
+  // Skip past the opening tag
+  const openTagEnd = html.indexOf('>', pos);
+  if (openTagEnd === -1) return -1;
+  pos = openTagEnd + 1;
+
+  const openRegex = new RegExp(`<${tagName}[\\s>]`, 'gi');
+  const closeRegex = new RegExp(`</${tagName}>`, 'gi');
+
+  while (depth > 0 && pos < html.length) {
+    // Find next occurrence of either opening or closing tag
+    openRegex.lastIndex = pos;
+    closeRegex.lastIndex = pos;
+
+    const openMatch = openRegex.exec(html);
+    const closeMatch = closeRegex.exec(html);
+
+    if (!closeMatch) return -1; // No closing tag found
+
+    if (openMatch && openMatch.index < closeMatch.index) {
+      // Found nested opening tag
+      depth++;
+      pos = openMatch.index + 1;
+    } else {
+      // Found closing tag
+      depth--;
+      if (depth === 0) {
+        return closeMatch.index + closeMatch[0].length;
+      }
+      pos = closeMatch.index + closeMatch[0].length;
+    }
+  }
+
+  return -1;
 }
 
 /**
