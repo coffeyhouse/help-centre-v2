@@ -15,7 +15,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import type { ArticleResponse } from '../types';
-import { fetchArticle, getArticleUrl, shouldOpenInNewTab } from '../utils/articleAPI';
+import { fetchArticle } from '../utils/articleAPI';
+import { processArticleContent } from '../utils/articleContentProcessor';
 import Breadcrumb from '../components/layout/Breadcrumb';
 import {
   ChevronLeftIcon,
@@ -63,26 +64,6 @@ export default function ArticlePage() {
 
   const handleBack = () => {
     navigate(-1);
-  };
-
-  /**
-   * Processes article HTML content to convert internal links
-   * Format: [[link text >|article_id]] or [[link text &gt;|article_id]]
-   */
-  const processArticleContent = (content: string): string => {
-    if (!content) return '';
-
-    // Replace internal article links with proper anchor tags
-    // Matches both > and &gt; formats
-    const linkRegex = /\[\[([^\]]+?)(?:>|&gt;)\|(\d{15})\]\]/g;
-
-    return content.replace(linkRegex, (match, linkText, articleId) => {
-      const url = getArticleUrl(articleId, region || 'gb');
-      const isExternal = shouldOpenInNewTab(url);
-      const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
-
-      return `<a href="${url}"${target} class="text-blue-600 hover:text-blue-700 underline">${linkText}</a>`;
-    });
   };
 
   /**
@@ -186,8 +167,6 @@ export default function ArticlePage() {
                     return null;
                   }
 
-                  const processedContent = processArticleContent(field.content);
-
                   return (
                     <div key={index} className="mb-8 last:mb-0">
                       {field.name && field.name !== 'Description' && (
@@ -206,8 +185,9 @@ export default function ArticlePage() {
                           prose-li:text-gray-700
                           prose-hr:border-gray-300
                           prose-img:rounded-lg"
-                        dangerouslySetInnerHTML={{ __html: processedContent }}
-                      />
+                      >
+                        {processArticleContent(field.content, { region: region || 'gb' })}
+                      </div>
                     </div>
                   );
                 })}
