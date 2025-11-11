@@ -234,11 +234,15 @@ export default function ProfilePage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    // Scroll to the favorites section
-    const favoritesSection = document.getElementById('favorites-section');
-    if (favoritesSection) {
-      favoritesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    // Scroll to the top of the favorites section after state update
+    setTimeout(() => {
+      const favoritesSection = document.getElementById('favorites-section');
+      if (favoritesSection) {
+        const yOffset = -20; // 20px offset from the top
+        const y = favoritesSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 0);
   };
 
   const hasChanges =
@@ -413,8 +417,8 @@ export default function ProfilePage() {
                         onClick={() => handlePageChange(page)}
                         className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
                           currentPage === page
-                            ? 'bg-primary-600 text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
+                            ? 'bg-black text-white'
+                            : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
                         }`}
                       >
                         {page}
