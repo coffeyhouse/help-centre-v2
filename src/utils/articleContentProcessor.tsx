@@ -114,23 +114,46 @@ export function processArticleContent(
 
       const element = domNode as Element;
 
-      // Replace expand-collapse divs with Accordion component
-      if (
-        element.name === 'div' &&
-        element.attribs?.class?.includes('expand-collapse')
-      ) {
-        // Find the anchor tag with the title
+      // Replace expand-collapse elements with Accordion component
+      // Can be on div, h4, or other elements
+      if (element.attribs?.class?.includes('expand-collapse')) {
+        // Find the anchor tag with the title (usually a direct child)
         const anchor = element.children?.find(
           (child) => child instanceof Element && (child as Element).name === 'a'
         ) as Element | undefined;
 
         // Find the content div (the collapsible part)
-        const contentDiv = element.children?.find(
+        // First try to find it as a child
+        let contentDiv = element.children?.find(
           (child) =>
             child instanceof Element &&
             (child as Element).name === 'div' &&
             (child as Element).attribs?.class?.includes('collapse')
         ) as Element | undefined;
+
+        // If not found in children, try to find it as a sibling
+        if (!contentDiv && (domNode as any).parent) {
+          const parent = (domNode as any).parent;
+          if (parent.children) {
+            // Find the next sibling that is a collapse div
+            let foundCurrent = false;
+            for (const sibling of parent.children) {
+              if (sibling === domNode) {
+                foundCurrent = true;
+                continue;
+              }
+              if (
+                foundCurrent &&
+                sibling instanceof Element &&
+                (sibling as Element).name === 'div' &&
+                (sibling as Element).attribs?.class?.includes('collapse')
+              ) {
+                contentDiv = sibling as Element;
+                break;
+              }
+            }
+          }
+        }
 
         if (anchor && contentDiv) {
           // Extract title from the anchor (either from span or directly from text)
@@ -145,8 +168,22 @@ export function processArticleContent(
 
           const contentHTML = getInnerHTML(contentDiv);
 
-          return <Accordion key={element.attribs?.id} title={title} content={contentHTML} />;
+          // Return accordion and mark the collapse div as processed so it doesn't render separately
+          if ((domNode as any).parent) {
+            (contentDiv as any)._processed = true;
+          }
+
+          return <Accordion key={element.attribs?.id || Math.random()} title={title} content={contentHTML} />;
         }
+      }
+
+      // Skip rendering collapse divs that were already processed as part of an accordion
+      if (
+        element.name === 'div' &&
+        element.attribs?.class?.includes('collapse') &&
+        (element as any)._processed
+      ) {
+        return <React.Fragment key={Math.random()}></React.Fragment>;
       }
 
       // Replace attention blocks (caution, tip, info, warning, note)
