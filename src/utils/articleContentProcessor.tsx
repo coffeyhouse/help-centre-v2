@@ -201,6 +201,12 @@ export function processArticleContent(
         return <React.Fragment key={Math.random()}></React.Fragment>;
       }
 
+      // Replace content-block-uki divs with ContentCard component
+      if (element.name === 'div' && element.attribs?.class?.includes('content-block-uki')) {
+        const cardChildren = element.children ? domToReact(element.children as DOMNode[], parserOptions) : null;
+        return <Typography.ContentCard key={Math.random()}>{cardChildren}</Typography.ContentCard>;
+      }
+
       // Replace attention blocks (caution, tip, info, warning, note)
       // Format 1: <span class="ra-content-*">
       if (element.name === 'span' && element.attribs?.class) {
@@ -395,8 +401,8 @@ export function processArticleContent(
         case 'td':
           return <Typography.Td className={className}>{children}</Typography.Td>;
         case 'div':
-          // Only replace divs that don't have special classes (like expand-collapse)
-          if (!className.includes('expand-collapse') && !className.includes('collapse')) {
+          // Only replace divs that don't have special classes (like expand-collapse, content-block-uki)
+          if (!className.includes('expand-collapse') && !className.includes('collapse') && !className.includes('content-block-uki')) {
             return <Typography.Div className={className}>{children}</Typography.Div>;
           }
           break;

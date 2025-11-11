@@ -210,6 +210,17 @@ const Span: React.FC<BaseProps> = ({ children, className = '' }) => (
   </span>
 );
 
+// Content Card (for content-block-uki divs)
+const ContentCard: React.FC<BaseProps> = ({ children, className = '' }) => (
+  <div className={`my-8 ${className}`}>
+    <div className="bg-white p-6 rounded-3xl shadow-lg">
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        {children}
+      </div>
+    </div>
+  </div>
+);
+
 // Export as namespace
 const Typography = {
   H1,
@@ -239,6 +250,7 @@ const Typography = {
   Td,
   Div,
   Span,
+  ContentCard,
 };
 
 export default Typography;
