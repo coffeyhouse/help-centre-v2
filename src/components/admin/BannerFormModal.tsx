@@ -127,7 +127,7 @@ export default function BannerFormModal({
   const loadTopicsForProduct = async (productId: string) => {
     try {
       setLoadingTopics(true);
-      const response = await fetch(`/api/files/${region}-${productId}-topics`, {
+      const response = await fetch(`/api/products/${region}/${productId}/topics`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -138,7 +138,7 @@ export default function BannerFormModal({
       }
 
       const result = await response.json();
-      setTopics(result.data.topics || []);
+      setTopics(result.data.supportHubs || []);
     } catch (err) {
       console.error('Error loading topics:', err);
       setTopics([]);
