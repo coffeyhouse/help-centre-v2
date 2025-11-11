@@ -84,7 +84,7 @@ export default function ReleaseNotesManagementPage() {
   return (
     <AdminLayout
       breadcrumbs={[
-        { label: regionName || '', path: `/admin/${region}/menu` },
+        { label: regionName || '' },
         { label: 'Release Notes' },
       ]}
     >

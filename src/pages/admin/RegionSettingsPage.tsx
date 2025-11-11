@@ -84,7 +84,7 @@ export default function RegionSettingsPage() {
   return (
     <AdminLayout
       breadcrumbs={[
-        { label: regionName || '', path: `/admin/${region}/menu` },
+        { label: regionName || '' },
         { label: 'Region Settings' },
       ]}
     >

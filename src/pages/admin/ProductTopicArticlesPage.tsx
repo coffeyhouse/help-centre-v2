@@ -252,11 +252,11 @@ export default function ProductTopicArticlesPage() {
   return (
     <AdminLayout
       breadcrumbs={[
-        { label: regionName || '', path: `/admin/${region}/menu` },
+        { label: regionName || '' },
         { label: 'Products', path: `/admin/${region}/products` },
-        { label: product?.name || productId || '', path: `/admin/${region}/products/${productId}` },
+        { label: product?.name || productId || '' },
         { label: 'Topics', path: `/admin/${region}/products/${productId}/topics` },
-        { label: topic?.title || topicId || '', path: `/admin/${region}/products/${productId}/topics` },
+        { label: topic?.title || topicId || '' },
         { label: 'Articles' },
       ]}
     >

@@ -84,7 +84,7 @@ export default function PopupsPage() {
   return (
     <AdminLayout
       breadcrumbs={[
-        { label: regionName || '', path: `/admin/${region}/menu` },
+        { label: regionName || '' },
         { label: 'Pop-ups' },
       ]}
     >

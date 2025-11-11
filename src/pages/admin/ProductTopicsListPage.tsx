@@ -259,9 +259,9 @@ export default function ProductTopicsListPage() {
   return (
     <AdminLayout
       breadcrumbs={[
-        { label: regionName || '', path: `/admin/${region}/menu` },
+        { label: regionName || '' },
         { label: 'Products', path: `/admin/${region}/products` },
-        { label: product?.name || productId || '', path: `/admin/${region}/products/${productId}` },
+        { label: product?.name || productId || '' },
         { label: 'Topics' },
       ]}
     >

@@ -36,14 +36,12 @@ import LoginPage from './pages/admin/LoginPage';
 import DashboardPage from './pages/admin/DashboardPage';
 import EditorPage from './pages/admin/EditorPage';
 import RegionSelectorPage from './pages/admin/RegionSelectorPage';
-import MainMenuPage from './pages/admin/MainMenuPage';
 import IncidentsPage from './pages/admin/IncidentsPage';
 import PopupsPage from './pages/admin/PopupsPage';
 import ContactOptionsPage from './pages/admin/ContactOptionsPage';
 import ReleaseNotesManagementPage from './pages/admin/ReleaseNotesManagementPage';
 import RegionSettingsPage from './pages/admin/RegionSettingsPage';
 import ProductsListPage from './pages/admin/ProductsListPage';
-import ProductDetailPage from './pages/admin/ProductDetailPage';
 import ProductTopicsListPage from './pages/admin/ProductTopicsListPage';
 import ProductTopicArticlesPage from './pages/admin/ProductTopicArticlesPage';
 import ProtectedRoute from './components/admin/ProtectedRoute';
@@ -65,14 +63,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <RegionSelectorPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/:region/menu"
-              element={
-                <ProtectedRoute>
-                  <MainMenuPage />
                 </ProtectedRoute>
               }
             />
@@ -125,14 +115,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProductsListPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/:region/products/:productId"
-              element={
-                <ProtectedRoute>
-                  <ProductDetailPage />
                 </ProtectedRoute>
               }
             />

@@ -194,7 +194,7 @@ export default function ProductsListPage() {
   return (
     <AdminLayout
       breadcrumbs={[
-        { label: regionName || '', path: `/admin/${region}/menu` },
+        { label: regionName || '' },
         { label: 'Products' },
       ]}
     >
