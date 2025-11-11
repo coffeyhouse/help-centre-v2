@@ -13,6 +13,16 @@ import DetailPanel from '../../components/admin/DetailPanel';
 import BannerFormModal, { type Banner } from '../../components/admin/BannerFormModal';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 
+interface Product {
+  id: string;
+  name: string;
+}
+
+interface Topic {
+  id: string;
+  title: string;
+}
+
 export default function IncidentsPage() {
   const { region } = useParams<{ region: string }>();
   const { token } = useAdminAuth();
@@ -28,6 +38,8 @@ export default function IncidentsPage() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [bannerToDelete, setBannerToDelete] = useState<{ index: number; title: string } | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(false);
 
   usePageTitle('Incidents', 'Admin');
 
@@ -50,6 +62,7 @@ export default function IncidentsPage() {
 
   useEffect(() => {
     loadData();
+    loadProducts();
   }, [region]);
 
   const loadData = async () => {
@@ -75,6 +88,28 @@ export default function IncidentsPage() {
       console.error('Error loading incidents:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadProducts = async () => {
+    try {
+      setProductsLoading(true);
+      const response = await fetch(`/api/files/${region}-products`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load products');
+      }
+
+      const result = await response.json();
+      setProducts(result.data.products || []);
+    } catch (err) {
+      console.error('Error loading products:', err);
+    } finally {
+      setProductsLoading(false);
     }
   };
 
@@ -193,6 +228,18 @@ export default function IncidentsPage() {
     }
   };
 
+  const getProductName = (productId: string): string => {
+    const product = products.find((p) => p.id === productId);
+    return product?.name || productId;
+  };
+
+  const getPagePatternLabel = (pattern: string): string => {
+    const patternLabels: Record<string, string> = {
+      '/:region/contact': 'Contact page',
+    };
+    return patternLabels[pattern] || pattern;
+  };
+
   const selectedBanner = selectedBannerIndex !== null ? banners[selectedBannerIndex] : null;
 
   return (
@@ -309,10 +356,6 @@ export default function IncidentsPage() {
                     <h4 className="text-sm font-semibold text-gray-900 mb-4">Banner Details</h4>
                     <div className="space-y-3 text-sm">
                       <div>
-                        <span className="font-medium text-gray-700">ID:</span>
-                        <span className="ml-2 text-gray-600">{selectedBanner.id}</span>
-                      </div>
-                      <div>
                         <span className="font-medium text-gray-700">State:</span>
                         <span className={`ml-2 px-2 py-0.5 text-xs font-medium rounded ${
                           selectedBanner.state === 'error' ? 'bg-red-100 text-red-800' :
@@ -333,8 +376,60 @@ export default function IncidentsPage() {
                       </div>
                       <div>
                         <span className="font-medium text-gray-700">Scope:</span>
-                        <span className="ml-2 text-gray-600">{selectedBanner.scope.type}</span>
+                        <span className="ml-2 text-gray-600 capitalize">{selectedBanner.scope.type}</span>
                       </div>
+
+                      {/* Product scope details */}
+                      {selectedBanner.scope.type === 'product' && selectedBanner.scope.productIds && selectedBanner.scope.productIds.length > 0 && (
+                        <div>
+                          <span className="font-medium text-gray-700">Products:</span>
+                          <div className="ml-2 mt-1 space-y-1">
+                            {selectedBanner.scope.productIds.map((productId) => (
+                              <div key={productId} className="text-sm text-gray-600">
+                                • {getProductName(productId)}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Topic scope details */}
+                      {selectedBanner.scope.type === 'topic' && (
+                        <>
+                          {selectedBanner.scope.productIds && selectedBanner.scope.productIds.length > 0 && (
+                            <div>
+                              <span className="font-medium text-gray-700">Product:</span>
+                              <span className="ml-2 text-gray-600">{getProductName(selectedBanner.scope.productIds[0])}</span>
+                            </div>
+                          )}
+                          {selectedBanner.scope.topicIds && selectedBanner.scope.topicIds.length > 0 && (
+                            <div>
+                              <span className="font-medium text-gray-700">Topics:</span>
+                              <div className="ml-2 mt-1 space-y-1">
+                                {selectedBanner.scope.topicIds.map((topicId) => (
+                                  <div key={topicId} className="text-sm text-gray-600">
+                                    • {topicId}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* Page scope details */}
+                      {selectedBanner.scope.type === 'page' && selectedBanner.scope.pagePatterns && selectedBanner.scope.pagePatterns.length > 0 && (
+                        <div>
+                          <span className="font-medium text-gray-700">Pages:</span>
+                          <div className="ml-2 mt-1 space-y-1">
+                            {selectedBanner.scope.pagePatterns.map((pattern) => (
+                              <div key={pattern} className="text-sm text-gray-600">
+                                • {getPagePatternLabel(pattern)}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {selectedBanner.link && (
                         <div>
                           <span className="font-medium text-gray-700">Link:</span>

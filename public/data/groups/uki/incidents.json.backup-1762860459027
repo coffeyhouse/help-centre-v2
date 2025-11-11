@@ -4,7 +4,7 @@
       "id": "test-error-20251111-112658",
       "state": "error",
       "title": "Test error",
-      "message": "This is a test.",
+      "message": "This is a test",
       "scope": {
         "type": "topic",
         "productIds": [
