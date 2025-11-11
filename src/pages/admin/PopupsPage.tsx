@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
+import PageHeader from '../../components/admin/PageHeader';
 import PopupsEditor from '../../components/admin/editors/PopupsEditor';
 
 export default function PopupsPage() {
@@ -81,6 +83,8 @@ export default function PopupsPage() {
     }
   };
 
+  const popupCount = data?.popups?.length || 0;
+
   return (
     <AdminLayout
       breadcrumbs={[
@@ -88,9 +92,14 @@ export default function PopupsPage() {
         { label: 'Pop-ups' },
       ]}
     >
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">Pop-up Modals</h1>
+      <PageHeader
+        icon={<ChatBubbleLeftRightIcon className="w-12 h-12 text-blue-600" />}
+        title="Pop-up Modals"
+        description={`Manage promotional and informational pop-ups for ${regionName}`}
+        badges={[
+          { label: `${popupCount} ${popupCount === 1 ? 'pop-up' : 'pop-ups'}`, color: 'blue' }
+        ]}
+        actions={
           <button
             onClick={handleSave}
             disabled={saving || loading}
@@ -98,11 +107,8 @@ export default function PopupsPage() {
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
-        </div>
-        <p className="text-gray-600">
-          Manage promotional and informational pop-ups for {regionName}
-        </p>
-      </div>
+        }
+      />
 
       {successMessage && (
         <div className="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">

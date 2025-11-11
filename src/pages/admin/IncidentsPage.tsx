@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminRegion } from '../../context/AdminRegionContext';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import AdminLayout from '../../components/admin/AdminLayout';
+import PageHeader from '../../components/admin/PageHeader';
 import IncidentsEditor from '../../components/admin/editors/IncidentsEditor';
 
 export default function IncidentsPage() {
@@ -81,6 +83,8 @@ export default function IncidentsPage() {
     }
   };
 
+  const bannerCount = data?.banners?.length || 0;
+
   return (
     <AdminLayout
       breadcrumbs={[
@@ -88,9 +92,14 @@ export default function IncidentsPage() {
         { label: 'Incidents' },
       ]}
     >
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">Incident Banners</h1>
+      <PageHeader
+        icon={<ExclamationTriangleIcon className="w-12 h-12 text-blue-600" />}
+        title="Incident Banners"
+        description={`Manage incident banners and alerts for ${regionName}`}
+        badges={[
+          { label: `${bannerCount} ${bannerCount === 1 ? 'banner' : 'banners'}`, color: 'blue' }
+        ]}
+        actions={
           <button
             onClick={handleSave}
             disabled={saving || loading}
@@ -98,11 +107,8 @@ export default function IncidentsPage() {
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
-        </div>
-        <p className="text-gray-600">
-          Manage incident banners and alerts for {regionName}
-        </p>
-      </div>
+        }
+      />
 
       {successMessage && (
         <div className="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
