@@ -126,6 +126,14 @@ function preprocessInternalLinks(content: string, region: string): string {
 }
 
 /**
+ * Removes script tags and their contents from HTML content
+ */
+function stripScriptTags(content: string): string {
+  // Remove script tags and their contents
+  return content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+}
+
+/**
  * Processes article HTML content and replaces patterns with React components
  */
 export function processArticleContent(
@@ -134,8 +142,11 @@ export function processArticleContent(
 ): React.ReactNode {
   const { region = 'gb' } = options;
 
+  // Remove script tags for security
+  let processedContent = stripScriptTags(content);
+
   // Pre-process internal links before parsing
-  const processedContent = preprocessInternalLinks(content, region);
+  processedContent = preprocessInternalLinks(processedContent, region);
 
   const parserOptions: HTMLReactParserOptions = {
     replace: (domNode) => {
