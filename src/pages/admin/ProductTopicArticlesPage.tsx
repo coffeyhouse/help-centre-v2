@@ -196,7 +196,8 @@ export default function ProductTopicArticlesPage() {
   };
 
   const handleSelectArticle = (index: number) => {
-    setSelectedArticleIndex(index);
+    // Toggle selection - if clicking the same card, unselect it
+    setSelectedArticleIndex(selectedArticleIndex === index ? null : index);
     setIsAddingNew(false);
   };
 

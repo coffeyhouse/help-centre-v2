@@ -119,7 +119,8 @@ export default function ProductsListPage() {
   };
 
   const handleSelectProduct = (index: number) => {
-    setSelectedProductIndex(index);
+    // Toggle selection - if clicking the same card, unselect it
+    setSelectedProductIndex(selectedProductIndex === index ? null : index);
   };
 
   const handleAddProduct = () => {

@@ -351,7 +351,7 @@ export default function ProductTopicsListPage() {
                 isSelected={selectedTopic?.id === topic.id}
                 isDragging={draggedIndex === index}
                 isDragOver={dragOverIndex === index}
-                onClick={() => setSelectedTopic(topic)}
+                onClick={() => setSelectedTopic(selectedTopic?.id === topic.id ? null : topic)}
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragLeave={handleDragLeave}

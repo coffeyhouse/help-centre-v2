@@ -83,9 +83,14 @@ export default function RegionSelectorPage() {
   };
 
   const handleSelectRegion = (index: number) => {
-    setSelectedRegionIndex(index);
-    const region = regions[index];
-    selectRegion(region.id);
+    // Toggle selection - if clicking the same card, unselect it
+    if (selectedRegionIndex === index) {
+      setSelectedRegionIndex(null);
+    } else {
+      setSelectedRegionIndex(index);
+      const region = regions[index];
+      selectRegion(region.id);
+    }
   };
 
   const handleAddRegion = () => {
