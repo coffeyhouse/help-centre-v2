@@ -144,7 +144,7 @@ router.get('/:id', async (req, res) => {
       appInterface: 'ss',
       imp_group: impGroup,
       doArchivedCheck: 'false',
-      loggingEnabled: 'true',
+      loggingEnabled: 'false',
       isDiagnosticResponse: 'false'
     });
 

@@ -105,7 +105,7 @@ router.post('/', async (req, res) => {
       page: page.toString(),
       searchFavoritesOnly: 'false',
       sortBy: 'relevance',
-      loggingEnabled: 'true',
+      loggingEnabled: 'false',
       verboseResult: 'false',
       translateFacets: 'false'
     });

@@ -62,13 +62,13 @@ const P: React.FC<BaseProps> = ({ children, className = '' }) => (
 
 // Lists
 const UL: React.FC<BaseProps> = ({ children, className = '' }) => (
-  <ul className={`text-gray-700 mb-4 list-disc pl-6 space-y-1 ${className}`}>
+  <ul className={`text-gray-700 mb-4 list-disc pl-10 space-y-1 ${className}`}>
     {children}
   </ul>
 );
 
 const OL: React.FC<BaseProps> = ({ children, className = '' }) => (
-  <ol className={`text-gray-700 mb-4 list-decimal pl-6 space-y-1 ${className}`}>
+  <ol className={`text-gray-700 mb-4 list-decimal pl-10 space-y-1 ${className}`}>
     {children}
   </ol>
 );
@@ -237,7 +237,7 @@ const Span: React.FC<BaseProps> = ({ children, className = '' }) => (
 
 // Content Card (for content-block-uki divs)
 const ContentCard: React.FC<BaseProps> = ({ children, className = '' }) => (
-  <div className={`my-8 ${className}`}>
+  <div className={`my-8 hidden ${className}`}>
     <div className="bg-white p-6 rounded-3xl shadow-lg">
       <div className="flex flex-col md:flex-row gap-6 items-center">
         {children}
