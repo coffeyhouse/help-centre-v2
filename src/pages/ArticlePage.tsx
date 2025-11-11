@@ -174,20 +174,7 @@ export default function ArticlePage() {
                           {field.name}
                         </h2>
                       )}
-                      <div
-                        className="prose prose-lg max-w-none
-                          prose-headings:text-gray-900
-                          prose-p:text-gray-700
-                          prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-                          prose-strong:text-gray-900
-                          prose-ul:text-gray-700
-                          prose-ol:text-gray-700
-                          prose-li:text-gray-700
-                          prose-hr:border-gray-300
-                          prose-img:rounded-lg"
-                      >
-                        {processArticleContent(field.content, { region: region || 'gb' })}
-                      </div>
+                      <div>{processArticleContent(field.content, { region: region || 'gb' })}</div>
                     </div>
                   );
                 })}

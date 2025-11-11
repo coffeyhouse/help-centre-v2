@@ -8,9 +8,10 @@
  */
 
 import React from 'react';
-import parse, { Element, type HTMLReactParserOptions } from 'html-react-parser';
+import parse, { Element, domToReact, type HTMLReactParserOptions, type DOMNode } from 'html-react-parser';
 import Accordion from '../components/article/Accordion';
 import AttentionBlock, { type AttentionType } from '../components/article/AttentionBlock';
+import Typography from '../components/article/Typography';
 import { getArticleUrl, shouldOpenInNewTab } from './articleAPI';
 
 interface ProcessorOptions {
@@ -165,16 +166,99 @@ export function processArticleContent(
           const isExternal = shouldOpenInNewTab(url);
 
           return (
-            <a
+            <Typography.A
               href={url}
               target={isExternal ? '_blank' : undefined}
               rel={isExternal ? 'noopener noreferrer' : undefined}
-              className="text-blue-600 hover:text-blue-700 underline"
             >
               {linkText}
-            </a>
+            </Typography.A>
           );
         }
+      }
+
+      // Replace standard HTML elements with Typography components
+      const children = element.children ? domToReact(element.children as DOMNode[], parserOptions) : null;
+      const className = element.attribs?.class || '';
+
+      switch (element.name) {
+        case 'h1':
+          return <Typography.H1 className={className}>{children}</Typography.H1>;
+        case 'h2':
+          return <Typography.H2 className={className}>{children}</Typography.H2>;
+        case 'h3':
+          return <Typography.H3 className={className}>{children}</Typography.H3>;
+        case 'h4':
+          return <Typography.H4 className={className}>{children}</Typography.H4>;
+        case 'h5':
+          return <Typography.H5 className={className}>{children}</Typography.H5>;
+        case 'h6':
+          return <Typography.H6 className={className}>{children}</Typography.H6>;
+        case 'p':
+          return <Typography.P className={className}>{children}</Typography.P>;
+        case 'ul':
+          return <Typography.UL className={className}>{children}</Typography.UL>;
+        case 'ol':
+          return <Typography.OL className={className}>{children}</Typography.OL>;
+        case 'li':
+          return <Typography.LI className={className}>{children}</Typography.LI>;
+        case 'strong':
+        case 'b':
+          return <Typography.Strong className={className}>{children}</Typography.Strong>;
+        case 'em':
+        case 'i':
+          return <Typography.Em className={className}>{children}</Typography.Em>;
+        case 'a':
+          return (
+            <Typography.A
+              href={element.attribs?.href}
+              target={element.attribs?.target}
+              rel={element.attribs?.rel}
+              className={className}
+            >
+              {children}
+            </Typography.A>
+          );
+        case 'code':
+          return <Typography.Code className={className}>{children}</Typography.Code>;
+        case 'pre':
+          return <Typography.Pre className={className}>{children}</Typography.Pre>;
+        case 'blockquote':
+          return <Typography.Blockquote className={className}>{children}</Typography.Blockquote>;
+        case 'hr':
+          return <Typography.HR className={className} />;
+        case 'img':
+          return (
+            <Typography.Img
+              src={element.attribs?.src}
+              alt={element.attribs?.alt}
+              className={className}
+            />
+          );
+        case 'table':
+          return <Typography.Table className={className}>{children}</Typography.Table>;
+        case 'thead':
+          return <Typography.Thead className={className}>{children}</Typography.Thead>;
+        case 'tbody':
+          return <Typography.Tbody className={className}>{children}</Typography.Tbody>;
+        case 'tr':
+          return <Typography.Tr className={className}>{children}</Typography.Tr>;
+        case 'th':
+          return <Typography.Th className={className}>{children}</Typography.Th>;
+        case 'td':
+          return <Typography.Td className={className}>{children}</Typography.Td>;
+        case 'div':
+          // Only replace divs that don't have special classes (like expand-collapse)
+          if (!className.includes('expand-collapse') && !className.includes('collapse')) {
+            return <Typography.Div className={className}>{children}</Typography.Div>;
+          }
+          break;
+        case 'span':
+          // Only replace spans that aren't attention blocks
+          if (!className.includes('ra-content-')) {
+            return <Typography.Span className={className}>{children}</Typography.Span>;
+          }
+          break;
       }
 
       // Return undefined to let html-react-parser handle normally
