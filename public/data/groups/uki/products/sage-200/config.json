@@ -1,0 +1,20 @@
+{
+  "id": "sage-200",
+  "name": "Sage 200",
+  "description": "Streamline finances, sales and accounting with a scalable end-to-end management solution for small and medium businesses. ",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "business-management"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "book",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

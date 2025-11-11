@@ -1,0 +1,32 @@
+{
+  "id": "sage-50-accounts",
+  "name": "Sage 50 Accounts",
+  "description": "Manage your accounting, inventory, and payments. Ideal for small and medium businesses.",
+  "type": "desktop",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "accounting-software"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "icon-a",
+  "knowledgebase_collection": "custom_gb_en_fifty_accounts",
+  "topicIds": [
+    "install-your-software",
+    "download-older-versions",
+    "manage-vat",
+    "banking",
+    "bank-reconciliation",
+    "bank-feeds",
+    "run-your-accounts-remotely",
+    "financial-year-end",
+    "foreign-trader",
+    "business-dashboards",
+    "set-up-your-company"
+  ]
+}

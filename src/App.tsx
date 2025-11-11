@@ -28,6 +28,7 @@ import TopicPage from './pages/TopicPage';
 import ContactPage from './pages/ContactPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ReleaseNotesPage from './pages/ReleaseNotesPage';
+import ProfilePage from './pages/ProfilePage';
 import CountrySelector from './pages/CountrySelector';
 
 // Admin imports
@@ -214,6 +215,7 @@ function App() {
                           <Route path="/:region/products/:productId/topics/:topicId" element={<TopicPage />} />
                           <Route path="/:region/products/:productId/topics/:topicId/:subtopicId" element={<TopicPage />} />
                           <Route path="/:region/contact" element={<ContactPage />} />
+                          <Route path="/:region/profile" element={<ProfilePage />} />
                         </Route>
 
                         {/* 404 - Redirect to default region */}

@@ -1,38 +1,38 @@
 [
   {
-    "id": "whats-new",
+    "id": "231221103432627",
+    "title": "What's new in Sage 50 Accounts?",
+    "description": "Find out more about the latest improvements and features.",
     "type": "article",
-    "title": "What's new?",
-    "description": "Find out more about the latest improvements and features."
+    "countries": [
+      "gb",
+      "ie"
+    ]
   },
   {
-    "id": "first-time",
-    "type": "article",
-    "title": "New to this product?",
-    "description": "Installing for the first time? Don't worry it's a quick and easy process."
-  },
-  {
-    "id": "install-guide",
-    "type": "article",
+    "id": "231221103548697",
     "title": "Install your software",
-    "description": "Install software on a new computer."
+    "description": "Install Sage 50 Accounts on a new computer.",
+    "type": "article",
+    "countries": [
+      "gb"
+    ]
   },
   {
-    "id": "upgrade",
+    "id": "231221103548697",
+    "title": "Install your software (in Ireland)",
+    "description": "This is showcasing the regional targeting of articles.",
     "type": "article",
-    "title": "Upgrade your installed software",
-    "description": "Upgrade to the latest version and get the most from your software."
+    "countries": [
+      "ie"
+    ]
   },
   {
-    "id": "older-versions",
-    "type": "article",
-    "title": "Download older versions",
-    "description": "You can download older versions here."
-  },
-  {
-    "id": "troubleshooting",
-    "type": "article",
-    "title": "Common queries and troubleshooting",
-    "description": "Not going as expected? Check these common queries."
+    "id": "download-older-versions",
+    "type": "subtopic",
+    "countries": [
+      "gb",
+      "ie"
+    ]
   }
 ]

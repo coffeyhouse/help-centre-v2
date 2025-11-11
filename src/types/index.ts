@@ -143,6 +143,31 @@ export interface ArticlesData {
   };
 }
 
+// ==================== Video Types ====================
+
+export interface Video {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  duration?: string;
+  thumbnail?: string;
+  countries?: string[];
+}
+
+// ==================== Training Types ====================
+
+export interface Training {
+  id: string;
+  title: string;
+  description: string;
+  type: 'course' | 'guide' | 'webinar' | 'certification';
+  url: string;
+  duration?: string;
+  level?: 'beginner' | 'intermediate' | 'advanced';
+  countries?: string[];
+}
+
 // ==================== Contact Types ====================
 
 export interface ContactMethod {
@@ -307,6 +332,8 @@ export interface AuthContextValue {
   user: User | null;
   login: (userId: string) => void;
   logout: () => void;
+  reloadUser: () => Promise<void>;
+  reloadAllUsers: () => Promise<void>;
   loading: boolean;
 }
 

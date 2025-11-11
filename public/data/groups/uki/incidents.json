@@ -19,14 +19,14 @@
       "id": "product-a-issue",
       "state": "error",
       "title": "Service Disruption",
-      "message": "We're currently experiencing issues with Product A. Our team is working to resolve this as quickly as possible.",
+      "message": "We're currently experiencing issues with Sage 50 Accounts. Our team is working to resolve this as quickly as possible.",
       "link": {
         "text": "Check status updates",
         "url": "https://status.example.com"
       },
       "scope": {
         "type": "product",
-        "productIds": ["product-a"]
+        "productIds": ["sage-50-accounts"]
       },
       "active": true
     },

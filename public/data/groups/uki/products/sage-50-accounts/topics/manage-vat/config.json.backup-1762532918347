@@ -1,0 +1,7 @@
+{
+  "id": "manage-vat",
+  "title": "Manage your VAT test",
+  "description": "Record VAT transactions and produce VAT Returns.",
+  "icon": "document",
+  "showOnProductLanding": true
+}

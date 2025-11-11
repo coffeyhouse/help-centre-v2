@@ -1,0 +1,20 @@
+{
+  "id": "sage-x3",
+  "name": "Sage X3",
+  "description": "Take control of your entire business, from supply chain to sales.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "business-management"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "home",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

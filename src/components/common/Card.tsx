@@ -81,8 +81,24 @@ export default function Card({ title, description, type, icon, onClick, href }: 
     </div>
   );
 
-  // If href is provided, render as Link
+  // If href is provided, render as Link (internal) or anchor (external)
   if (href) {
+    // Check if href is external (starts with http:// or https://)
+    const isExternal = href.startsWith('http://') || href.startsWith('https://');
+
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={baseClasses}
+        >
+          {content}
+        </a>
+      );
+    }
+
     return (
       <Link to={href} className={baseClasses}>
         {content}

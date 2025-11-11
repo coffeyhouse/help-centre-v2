@@ -2,38 +2,13 @@
   "users": [
     {
       "id": "user-1",
-      "name": "Sarah Johnson",
-      "email": "sarah.johnson@example.com",
+      "name": "Warren Coffey",
+      "email": "warren@email.com",
       "persona": "customer",
-      "ownedProducts": ["product-a", "product-b"]
-    },
-    {
-      "id": "user-2",
-      "name": "Michael Chen",
-      "email": "michael.chen@example.com",
-      "persona": "accountant",
-      "ownedProducts": ["product-b", "product-d", "product-e"]
-    },
-    {
-      "id": "user-3",
-      "name": "Emma Williams",
-      "email": "emma.williams@example.com",
-      "persona": "customer",
-      "ownedProducts": ["product-c", "product-f"]
-    },
-    {
-      "id": "user-4",
-      "name": "James O'Connor",
-      "email": "james.oconnor@example.com",
-      "persona": "accountant",
-      "ownedProducts": ["product-a", "product-b", "product-d"]
-    },
-    {
-      "id": "user-5",
-      "name": "Lisa Anderson",
-      "email": "lisa.anderson@example.com",
-      "persona": "customer",
-      "ownedProducts": ["product-b"]
+      "ownedProducts": [
+        "sage-50-payroll",
+        "sage-accounting"
+      ]
     }
   ]
 }

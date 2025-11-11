@@ -1,0 +1,8 @@
+{
+  "id": "bank-reconciliation",
+  "title": "Bank reconciliation",
+  "description": "Match your bank transactions with your accounts.",
+  "icon": "check",
+  "parentTopicId": "banking",
+  "showOnProductLanding": false
+}

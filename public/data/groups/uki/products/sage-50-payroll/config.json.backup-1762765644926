@@ -1,0 +1,20 @@
+{
+  "id": "sage-50-payroll",
+  "name": "Sage 50 Payroll",
+  "description": "Payroll product",
+  "type": "desktop",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "people-payroll"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "",
+  "knowledgebase_collection": "custom_gb_en_fiftycloud_payroll",
+  "topicIds": []
+}

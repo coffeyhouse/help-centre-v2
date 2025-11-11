@@ -49,8 +49,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem('loggedInUserId');
   };
 
+  const reloadUser = async () => {
+    if (!user) return;
+
+    try {
+      const response = await fetch('/data/users.json');
+      const data: UsersData = await response.json();
+      const updatedUser = data.users.find((u) => u.id === user.id);
+      if (updatedUser) {
+        setUser(updatedUser);
+        setAllUsers(data.users);
+      }
+    } catch (error) {
+      console.error('Failed to reload user data:', error);
+    }
+  };
+
+  const reloadAllUsers = async () => {
+    try {
+      const response = await fetch('/data/users.json');
+      const data: UsersData = await response.json();
+      setAllUsers(data.users);
+    } catch (error) {
+      console.error('Failed to reload users list:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, reloadUser, reloadAllUsers, loading }}>
       {children}
     </AuthContext.Provider>
   );

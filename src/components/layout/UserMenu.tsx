@@ -10,13 +10,18 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useRegion } from '../../hooks/useRegion';
 import Icon from '../common/Icon';
+import Button from '../common/Button';
+import RegistrationForm from '../auth/RegistrationForm';
 import type { UsersData } from '../../types';
 
 export default function UserMenu() {
-  const { user, login, logout } = useAuth();
+  const { user, login, logout, reloadAllUsers } = useAuth();
+  const { region } = useRegion();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
   const [users, setUsers] = useState<UsersData['users']>([]);
 
   // Load users for the login modal
@@ -36,11 +41,31 @@ export default function UserMenu() {
   const handleLogin = (userId: string) => {
     login(userId);
     setShowLoginModal(false);
+    setShowRegistration(false);
   };
 
   const handleLogout = () => {
     logout();
     setShowDropdown(false);
+  };
+
+  const handleRegistrationSuccess = async (userId: string) => {
+    // Reload users to include the newly created one
+    try {
+      const response = await fetch('/data/users.json');
+      const data: UsersData = await response.json();
+      setUsers(data.users);
+
+      // Reload users in AuthContext before logging in
+      await reloadAllUsers();
+
+      // Auto-login the new user
+      login(userId);
+      setShowLoginModal(false);
+      setShowRegistration(false);
+    } catch (error) {
+      console.error('Failed to reload users:', error);
+    }
   };
 
   if (!user) {
@@ -54,45 +79,74 @@ export default function UserMenu() {
           <span className="hidden sm:inline">Log in</span>
         </button>
 
-        {/* Login Modal */}
+        {/* Login/Registration Modal */}
         {showLoginModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-gray-900">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Select a user to log in</h2>
+                <h2 className="text-xl font-semibold">
+                  {showRegistration ? 'Create an Account' : 'Select a user to log in'}
+                </h2>
                 <button
-                  onClick={() => setShowLoginModal(false)}
+                  onClick={() => {
+                    setShowLoginModal(false);
+                    setShowRegistration(false);
+                  }}
                   className="p-1 hover:bg-gray-100 rounded transition-colors"
                   aria-label="Close"
                 >
                   <Icon name="x" className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-sm text-gray-600 mb-4">
-                This is a mock authentication system for demonstration purposes.
-              </p>
-              <div className="space-y-2">
-                {users.map((u) => (
-                  <button
-                    key={u.id}
-                    onClick={() => handleLogin(u.id)}
-                    className="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                        <Icon name="user" className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <div className="font-medium">{u.name}</div>
-                        <div className="text-sm text-gray-500">{u.email}</div>
-                        <div className="text-xs text-gray-400 mt-1">
-                          {u.ownedProducts.length} product{u.ownedProducts.length !== 1 ? 's' : ''}
+
+              {!showRegistration ? (
+                <>
+                  <p className="text-sm text-gray-600 mb-4">
+                    This is a mock authentication system for demonstration purposes.
+                  </p>
+                  <div className="space-y-2 mb-4">
+                    {users.map((u) => (
+                      <button
+                        key={u.id}
+                        onClick={() => handleLogin(u.id)}
+                        className="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                            <Icon name="user" className="w-5 h-5 text-gray-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">{u.name}</div>
+                            <div className="text-sm text-gray-500">{u.email}</div>
+                            <div className="text-xs text-gray-400 mt-1">
+                              {u.ownedProducts.length} product{u.ownedProducts.length !== 1 ? 's' : ''}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="pt-4 border-t border-gray-200">
+                    <Button
+                      variant="primary"
+                      onClick={() => setShowRegistration(true)}
+                      className="w-full"
+                    >
+                      Create New Account
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Create a new user account to get started.
+                  </p>
+                  <RegistrationForm
+                    onSuccess={handleRegistrationSuccess}
+                    onCancel={() => setShowRegistration(false)}
+                  />
+                </>
+              )}
             </div>
           </div>
         )}
@@ -130,6 +184,14 @@ export default function UserMenu() {
                 {user.ownedProducts.length} product{user.ownedProducts.length !== 1 ? 's' : ''}
               </div>
             </div>
+            <a
+              href={`/${region}/profile`}
+              className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2 block"
+              onClick={() => setShowDropdown(false)}
+            >
+              <Icon name="user" className="w-4 h-4" />
+              My Profile
+            </a>
             <button
               onClick={handleLogout}
               className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2"

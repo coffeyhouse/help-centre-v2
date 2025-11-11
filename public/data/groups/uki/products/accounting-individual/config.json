@@ -1,0 +1,20 @@
+{
+  "id": "accounting-individual",
+  "name": "Accounting Individual",
+  "description": "Sort Self Assessment today and get ahead of Making Tax Digital without the stress.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "accounting-software"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "icon-b",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

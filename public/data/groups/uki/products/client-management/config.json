@@ -1,0 +1,20 @@
+{
+  "id": "client-management",
+  "name": "Client management",
+  "description": "Organise all your clients in one list, access their work in a click, and never miss a VAT deadline.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "solutions-accountants-bookkeepers"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "document",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}
