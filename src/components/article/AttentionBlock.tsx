@@ -79,7 +79,7 @@ export default function AttentionBlock({ type, title, content }: AttentionBlockP
   const displayTitle = title || config.defaultTitle;
 
   return (
-    <div className={`${config.bgColor} ${config.borderColor} border-l-4 p-4 mb-4 rounded`}>
+    <div className={`${config.bgColor} ${config.borderColor} border-l-4 p-4 my-4 rounded`}>
       <div className="flex items-start">
         <Icon className={`w-5 h-5 ${config.iconColor} mt-0.5 mr-3 flex-shrink-0`} />
         <div className="flex-1">

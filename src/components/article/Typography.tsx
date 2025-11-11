@@ -102,7 +102,7 @@ const A: React.FC<LinkProps> = ({ children, href, target, rel, className = '' })
     href={href}
     target={target}
     rel={rel}
-    className={`text-blue-600 hover:underline font-medium ${className}`}
+    className={`text-green-700 underline hover:text-green-900 font-medium ${className}`}
   >
     {children}
   </a>

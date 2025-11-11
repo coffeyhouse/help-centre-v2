@@ -92,14 +92,7 @@ export default function ArticlePage() {
 
           {!isLoading && !error && article && (
             <>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">
-                {article.title}
-              </h1>
-              {article.summary && (
-                <p className="text-lg text-gray-300 mt-4">
-                  {article.summary}
-                </p>
-              )}
+
             </>
           )}
         </div>
@@ -136,9 +129,12 @@ export default function ArticlePage() {
               </button>
             </div>
           ) : article ? (
-            <div className="bg-white rounded-lg shadow-sm">
+            <div className="bg-white rounded-lg shadow-sm">              
               {/* Article Metadata */}
               <div className="border-b border-gray-200 px-6 py-4">
+                <h1 className="text-3xl md:text-4xl font-bold mb-6 mt-4">
+                  {article.title}
+                </h1>
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                   {article.viewCount > 0 && (
                     <div className="flex items-center">
@@ -160,7 +156,16 @@ export default function ArticlePage() {
               </div>
 
               {/* Article Content */}
-              <div className="px-6 py-8">
+              <div className="px-6 py-8">                
+                {article.summary && (
+                  <>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                      {article.summary}
+                    </p>
+                  </>
+                )}
+
                 {article.fields.map((field, index) => {
                   // Only show fields with content
                   if (!field.content || field.content.trim() === '') {
@@ -169,7 +174,7 @@ export default function ArticlePage() {
 
                   return (
                     <div key={index} className="mb-8 last:mb-0">
-                      {field.name && field.name !== 'Description' && (
+                      {field.name && (
                         <h2 className="text-2xl font-bold text-gray-900 mb-4">
                           {field.name}
                         </h2>
