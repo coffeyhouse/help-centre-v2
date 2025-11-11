@@ -63,6 +63,23 @@ function getInnerHTML(element: Element): string {
 }
 
 /**
+ * Pre-processes content to convert internal article link patterns to HTML anchors
+ * Converts [[link text >|article_id]] to <a href="...">link text</a>
+ */
+function preprocessInternalLinks(content: string, region: string): string {
+  // Match [[text >|15-digit-id]] or [[text &gt;|15-digit-id]]
+  const linkRegex = /\[\[([^\]]+?)(?:>|&gt;)\|(\d{15})\]\]/g;
+
+  return content.replace(linkRegex, (match, linkText, articleId) => {
+    const url = getArticleUrl(articleId, region);
+    const isExternal = shouldOpenInNewTab(url);
+
+    const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `<a href="${url}"${targetAttr} data-internal-link="true">${linkText}</a>`;
+  });
+}
+
+/**
  * Processes article HTML content and replaces patterns with React components
  */
 export function processArticleContent(
@@ -70,6 +87,9 @@ export function processArticleContent(
   options: ProcessorOptions = {}
 ): React.ReactNode {
   const { region = 'gb' } = options;
+
+  // Pre-process internal links before parsing
+  const processedContent = preprocessInternalLinks(content, region);
 
   const parserOptions: HTMLReactParserOptions = {
     replace: (domNode) => {
@@ -148,32 +168,6 @@ export function processArticleContent(
           const content = descSpan ? getInnerHTML(descSpan) : getInnerHTML(element);
 
           return <AttentionBlock key={Math.random()} type={type} title={title} content={content} />;
-        }
-      }
-
-      // Process internal article links [[text >|article_id]]
-      if (element.name === 'a' && element.children) {
-        const textContent = element.children
-          .map((child: any) => (child.type === 'text' ? child.data : ''))
-          .join('');
-
-        // Match pattern: [[link text >|article_id]]
-        const linkMatch = textContent.match(/\[\[([^\]]+?)(?:>|&gt;)\|(\d{15})\]\]/);
-
-        if (linkMatch) {
-          const [, linkText, articleId] = linkMatch;
-          const url = getArticleUrl(articleId, region);
-          const isExternal = shouldOpenInNewTab(url);
-
-          return (
-            <Typography.A
-              href={url}
-              target={isExternal ? '_blank' : undefined}
-              rel={isExternal ? 'noopener noreferrer' : undefined}
-            >
-              {linkText}
-            </Typography.A>
-          );
         }
       }
 
@@ -266,5 +260,5 @@ export function processArticleContent(
     },
   };
 
-  return parse(content, parserOptions);
+  return parse(processedContent, parserOptions);
 }
