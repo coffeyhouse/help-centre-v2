@@ -79,11 +79,13 @@ function getInnerHTML(element: Element): string {
 
 /**
  * Pre-processes content to convert internal article link patterns to HTML anchors
- * Converts [[link text >|article_id]] to <a href="...">link text</a>
+ * Converts [[link text >|article_id]] or [[link text|article_id]] to <a href="...">link text</a>
  */
 function preprocessInternalLinks(content: string, region: string): string {
-  // Match [[text >|15-digit-id]] or [[text &gt;|15-digit-id]]
-  const linkRegex = /\[\[([^\]]+?)(?:>|&gt;)\|(\d{15})\]\]/g;
+  // Match both formats:
+  // - [[text >|15-digit-id]] or [[text &gt;|15-digit-id]] (with >)
+  // - [[text|15-digit-id]] (without >)
+  const linkRegex = /\[\[([^\]]+?)(?:(?:>|&gt;)\||\|)(\d{15})\]\]/g;
 
   return content.replace(linkRegex, (match, linkText, articleId) => {
     const url = getArticleUrl(articleId, region);
@@ -236,6 +238,22 @@ export function processArticleContent(
         case 'i':
           return <Typography.Em className={className}>{children}</Typography.Em>;
         case 'a':
+          // Check if this is a button link (has 'btn' class or button styling)
+          const isButton = className.includes('btn') || className.includes('button');
+
+          if (isButton) {
+            return (
+              <Typography.Button
+                href={element.attribs?.href}
+                target={element.attribs?.target}
+                rel={element.attribs?.rel}
+                className={className}
+              >
+                {children}
+              </Typography.Button>
+            );
+          }
+
           return (
             <Typography.A
               href={element.attribs?.href}

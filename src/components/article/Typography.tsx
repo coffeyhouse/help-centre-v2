@@ -108,6 +108,18 @@ const A: React.FC<LinkProps> = ({ children, href, target, rel, className = '' })
   </a>
 );
 
+// Button styled as a link (for download buttons, action buttons, etc.)
+const Button: React.FC<LinkProps> = ({ children, href, target, rel, className = '' }) => (
+  <a
+    href={href}
+    target={target}
+    rel={rel}
+    className={`inline-block px-6 py-3 bg-black text-white font-medium rounded hover:bg-gray-800 transition-colors text-center ${className}`}
+  >
+    {children}
+  </a>
+);
+
 const Code: React.FC<BaseProps> = ({ children, className = '' }) => (
   <code className={`text-sm bg-gray-100 px-1.5 py-0.5 rounded text-gray-800 font-mono ${className}`}>
     {children}
@@ -213,6 +225,7 @@ const Typography = {
   Strong,
   Em,
   A,
+  Button,
   Code,
   Blockquote,
   Pre,
