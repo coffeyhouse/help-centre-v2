@@ -23,7 +23,8 @@ import {
   EyeIcon,
   CalendarIcon,
   HashtagIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  HandThumbUpIcon
 } from '@heroicons/react/24/outline';
 
 export default function ArticlePage() {
@@ -186,21 +187,29 @@ export default function ArticlePage() {
               </div>
 
               {/* Article Footer - Helpful section */}
-              {(article.solvedCount > 0 || article.unsolvedCount > 0) && (
-                <div className="border-t border-gray-200 px-6 py-6">
-                  <div className="text-sm text-gray-600">
-                    <p className="mb-2 font-medium">Was this article helpful?</p>
-                    <div className="flex gap-4">
-                      <span>
-                        👍 {article.solvedCount} found this helpful
-                      </span>
-                      <span>
-                        👎 {article.unsolvedCount} did not find this helpful
-                      </span>
+              <div className="border-t border-gray-200 px-6 py-6">
+                <div className="text-sm">
+                  <p className="mb-3 font-medium text-gray-900">Was this article helpful?</p>
+
+                  {/* Feedback count */}
+                  {article.solvedCount > 0 && (
+                    <div className="flex items-center text-gray-600 mb-4">
+                      <HandThumbUpIcon className="w-5 h-5 mr-2" />
+                      <span>{article.solvedCount} found this helpful</span>
                     </div>
+                  )}
+
+                  {/* Yes/No buttons */}
+                  <div className="flex gap-3">
+                    <button className="px-6 py-2 bg-green-600 text-white font-medium rounded hover:bg-green-700 transition-colors">
+                      Yes
+                    </button>
+                    <button className="px-6 py-2 bg-gray-200 text-gray-800 font-medium rounded hover:bg-gray-300 transition-colors">
+                      No
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           ) : null}
         </div>
