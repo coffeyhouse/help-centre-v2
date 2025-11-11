@@ -19,20 +19,35 @@ interface ProcessorOptions {
 }
 
 /**
- * Extracts text content from a span element that contains article links
+ * Extracts text content from an element (span, anchor, etc.)
+ * Removes the down arrow prefix (▼) if present
  */
-function extractTextFromSpan(element: Element): string {
+function extractTextContent(element: Element): string {
   if (!element.children) return '';
 
-  return element.children
+  const text = element.children
     .map((child) => {
       if (child.type === 'text') {
         return (child as any).data || '';
       }
+      if (child instanceof Element) {
+        return extractTextContent(child);
+      }
       return '';
     })
     .join('')
-    .replace(/^▼\s*/, ''); // Remove the down arrow prefix
+    .trim();
+
+  // Remove the down arrow prefix and extra whitespace
+  return text.replace(/^[▼▽]\s*/, '').trim();
+}
+
+/**
+ * Extracts text content from a span element that contains article links
+ * @deprecated Use extractTextContent instead
+ */
+function extractTextFromSpan(element: Element): string {
+  return extractTextContent(element);
 }
 
 /**
@@ -116,19 +131,23 @@ export function processArticleContent(
         ) as Element | undefined;
 
         if (anchor && contentDiv) {
-          // Extract title from the span inside the anchor
+          // Extract title from the anchor (either from span or directly from text)
           const titleSpan = anchor.children?.find(
             (child) => child instanceof Element && (child as Element).name === 'span'
           ) as Element | undefined;
 
-          const title = titleSpan ? extractTextFromSpan(titleSpan) : 'Show more';
+          // If there's a span, extract from it; otherwise extract directly from anchor
+          const title = titleSpan
+            ? extractTextContent(titleSpan)
+            : extractTextContent(anchor) || 'Show more';
+
           const contentHTML = getInnerHTML(contentDiv);
 
           return <Accordion key={element.attribs?.id} title={title} content={contentHTML} />;
         }
       }
 
-      // Replace attention blocks (caution, tip, info, warning)
+      // Replace attention blocks (caution, tip, info, warning, note)
       if (element.name === 'span' && element.attribs?.class) {
         const className = element.attribs.class;
         let type: AttentionType | null = null;
@@ -146,10 +165,13 @@ export function processArticleContent(
         } else if (className.includes('ra-content-warning')) {
           type = 'warning';
           defaultTitle = 'WARNING';
+        } else if (className.includes('ra-content-note')) {
+          type = 'note';
+          defaultTitle = 'NOTE';
         }
 
         if (type) {
-          // Find the title and description spans
+          // Find the title and description spans (for older format)
           const titleSpan = element.children?.find(
             (child) =>
               child instanceof Element &&
@@ -162,9 +184,20 @@ export function processArticleContent(
               (child as Element).attribs?.class?.includes('ra-att-desc')
           ) as Element | undefined;
 
-          const title = titleSpan
-            ? extractTextFromSpan(titleSpan).replace(':', '')
-            : defaultTitle;
+          // Also check for <strong> tag (used in NOTE format)
+          const strongTag = element.children?.find(
+            (child) => child instanceof Element && (child as Element).name === 'strong'
+          ) as Element | undefined;
+
+          // Extract title - prefer titleSpan, then strongTag, then default
+          let title = defaultTitle;
+          if (titleSpan) {
+            title = extractTextContent(titleSpan).replace(':', '');
+          } else if (strongTag) {
+            title = extractTextContent(strongTag).replace(':', '');
+          }
+
+          // Extract content - prefer descSpan, otherwise get all content from element
           const content = descSpan ? getInnerHTML(descSpan) : getInnerHTML(element);
 
           return <AttentionBlock key={Math.random()} type={type} title={title} content={content} />;

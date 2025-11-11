@@ -2,7 +2,7 @@
  * AttentionBlock - Alert/notification component for articles
  *
  * Features:
- * - Different types: caution, tip, info, warning
+ * - Different types: caution, tip, info, warning, note
  * - Color-coded styling
  * - Icon for each type
  * - Accepts HTML content
@@ -13,10 +13,11 @@ import {
   LightBulbIcon,
   InformationCircleIcon,
   ExclamationCircleIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import parse from 'html-react-parser';
 
-export type AttentionType = 'caution' | 'tip' | 'info' | 'warning';
+export type AttentionType = 'caution' | 'tip' | 'info' | 'warning' | 'note';
 
 interface AttentionBlockProps {
   type: AttentionType;
@@ -60,6 +61,15 @@ const typeConfig = {
     titleColor: 'text-yellow-900',
     textColor: 'text-yellow-800',
     defaultTitle: 'WARNING',
+  },
+  note: {
+    icon: DocumentTextIcon,
+    bgColor: 'bg-green-50',
+    borderColor: 'border-green-200',
+    iconColor: 'text-green-600',
+    titleColor: 'text-green-900',
+    textColor: 'text-green-800',
+    defaultTitle: 'NOTE',
   },
 };
 
