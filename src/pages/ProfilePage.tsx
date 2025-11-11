@@ -238,7 +238,7 @@ export default function ProfilePage() {
     setTimeout(() => {
       const favoritesSection = document.getElementById('favorites-section');
       if (favoritesSection) {
-        const yOffset = -20; // 20px offset from the top
+        const yOffset = -80; // 80px offset from the top
         const y = favoritesSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
