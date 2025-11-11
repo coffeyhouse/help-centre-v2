@@ -218,6 +218,12 @@ export function processArticleContent(
         return <Typography.ContentCard key={Math.random()}>{cardChildren}</Typography.ContentCard>;
       }
 
+      // Replace video-container divs with VideoEmbed component
+      if (element.name === 'div' && element.attribs?.class?.includes('video-container')) {
+        const videoChildren = element.children ? domToReact(element.children as DOMNode[], parserOptions) : null;
+        return <Typography.VideoEmbed key={Math.random()}>{videoChildren}</Typography.VideoEmbed>;
+      }
+
       // Replace attention blocks (caution, tip, info, warning, note)
       // Format 1: <span class="ra-content-*">
       if (element.name === 'span' && element.attribs?.class) {
@@ -421,9 +427,21 @@ export function processArticleContent(
           return <Typography.Th className={className}>{children}</Typography.Th>;
         case 'td':
           return <Typography.Td className={className}>{children}</Typography.Td>;
+        case 'iframe':
+          // Handle iframes (especially for video embeds)
+          return (
+            <iframe
+              src={element.attribs?.src}
+              width={element.attribs?.width}
+              height={element.attribs?.height}
+              frameBorder={element.attribs?.frameborder || '0'}
+              allowFullScreen={element.attribs?.allowfullscreen === 'allowfullscreen'}
+              className="absolute top-0 left-0 w-full h-full"
+            />
+          );
         case 'div':
-          // Only replace divs that don't have special classes (like expand-collapse, content-block-uki)
-          if (!className.includes('expand-collapse') && !className.includes('collapse') && !className.includes('content-block-uki')) {
+          // Only replace divs that don't have special classes (like expand-collapse, content-block-uki, video-container)
+          if (!className.includes('expand-collapse') && !className.includes('collapse') && !className.includes('content-block-uki') && !className.includes('video-container')) {
             return <Typography.Div className={className}>{children}</Typography.Div>;
           }
           break;

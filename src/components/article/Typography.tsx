@@ -221,6 +221,15 @@ const ContentCard: React.FC<BaseProps> = ({ children, className = '' }) => (
   </div>
 );
 
+// Video Embed (for YouTube/video embeds)
+const VideoEmbed: React.FC<BaseProps> = ({ children, className = '' }) => (
+  <div className={`my-6 ${className}`}>
+    <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+      {children}
+    </div>
+  </div>
+);
+
 // Export as namespace
 const Typography = {
   H1,
@@ -251,6 +260,7 @@ const Typography = {
   Div,
   Span,
   ContentCard,
+  VideoEmbed,
 };
 
 export default Typography;
