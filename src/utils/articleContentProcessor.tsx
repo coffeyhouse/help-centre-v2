@@ -332,6 +332,11 @@ export function processArticleContent(
         case 'h6':
           return <Typography.H6 className={className}>{children}</Typography.H6>;
         case 'p':
+          // Filter out empty paragraphs (only containing &nbsp; or whitespace)
+          const textContent = extractTextContent(element);
+          if (!textContent || textContent.trim() === '' || textContent.trim() === '\u00A0') {
+            return <React.Fragment key={Math.random()}></React.Fragment>;
+          }
           return <Typography.P className={className}>{children}</Typography.P>;
         case 'ul':
           return <Typography.UL className={className}>{children}</Typography.UL>;
