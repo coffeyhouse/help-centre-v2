@@ -80,12 +80,13 @@ export default function BannerFormModal({
     }
   }, [isOpen, region]);
 
-  // Load topics when products are selected for topic scope
+  // Load topics when product is selected for topic scope
   useEffect(() => {
     if (formData?.scope.type === 'topic' && formData.scope.productIds && formData.scope.productIds.length > 0) {
-      loadTopicsForProducts(formData.scope.productIds);
+      // For topic scope, only use the first product (should only be one)
+      loadTopicsForProduct(formData.scope.productIds[0]);
     } else if (formData?.scope.type === 'topic') {
-      // Clear topics if no products selected
+      // Clear topics if no product selected
       setTopics([]);
     }
   }, [formData?.scope.productIds, formData?.scope.type]);
@@ -126,41 +127,21 @@ export default function BannerFormModal({
     }
   };
 
-  const loadTopicsForProducts = async (productIds: string[]) => {
+  const loadTopicsForProduct = async (productId: string) => {
     try {
       setLoadingTopics(true);
-
-      // Load topics from all selected products
-      const allTopicsPromises = productIds.map(async (productId) => {
-        try {
-          const response = await fetch(`/api/products/${region}/${productId}/topics`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (!response.ok) {
-            console.error(`Failed to load topics for ${productId}`);
-            return [];
-          }
-
-          const result = await response.json();
-          return result.data.supportHubs || [];
-        } catch (err) {
-          console.error(`Error loading topics for ${productId}:`, err);
-          return [];
-        }
+      const response = await fetch(`/api/products/${region}/${productId}/topics`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      const topicsArrays = await Promise.all(allTopicsPromises);
+      if (!response.ok) {
+        throw new Error('Failed to load topics');
+      }
 
-      // Flatten and deduplicate topics by id
-      const allTopics = topicsArrays.flat();
-      const uniqueTopics = allTopics.filter((topic, index, self) =>
-        index === self.findIndex((t) => t.id === topic.id)
-      );
-
-      setTopics(uniqueTopics);
+      const result = await response.json();
+      setTopics(result.data.supportHubs || []);
     } catch (err) {
       console.error('Error loading topics:', err);
       setTopics([]);
@@ -229,6 +210,17 @@ export default function BannerFormModal({
     });
   };
 
+  const handleProductSelect = (productId: string) => {
+    if (!formData) return;
+    // For topic scope, only allow single product selection
+    const newProductIds = productId ? [productId] : [];
+
+    setFormData({
+      ...formData,
+      scope: { ...formData.scope, productIds: newProductIds, topicIds: [] },
+    });
+  };
+
   const handleTopicToggle = (topicId: string) => {
     if (!formData) return;
     const currentTopicIds = formData.scope.topicIds || [];
@@ -263,7 +255,7 @@ export default function BannerFormModal({
 
     if (formData.scope.type === 'topic') {
       if (!formData.scope.productIds || formData.scope.productIds.length === 0) {
-        alert('Please select at least one product for topic scope');
+        alert('Please select a product for topic scope');
         return;
       }
       if (!formData.scope.topicIds || formData.scope.topicIds.length === 0) {
@@ -538,34 +530,29 @@ export default function BannerFormModal({
                       </div>
                     )}
 
-                    {/* Topic Scope - Product selection then Topic multi-select */}
+                    {/* Topic Scope - Single product selection then Topic multi-select */}
                     {formData.scope.type === 'topic' && (
                       <>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Products <span className="text-red-500">*</span>
+                          <label htmlFor="productSelect" className="block text-sm font-medium text-gray-700 mb-1">
+                            Product <span className="text-red-500">*</span>
                           </label>
-                          <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-gray-50 max-h-60 overflow-y-auto">
-                            {loadingProducts ? (
-                              <p className="text-sm text-gray-500">Loading products...</p>
-                            ) : products.length > 0 ? (
-                              products.map((product) => (
-                                <label key={product.id} className="flex items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={formData.scope.productIds?.includes(product.id) || false}
-                                    onChange={() => handleProductToggle(product.id)}
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                  />
-                                  <span className="ml-2 text-sm text-gray-700">{product.name}</span>
-                                </label>
-                              ))
-                            ) : (
-                              <p className="text-sm text-gray-500">No products available</p>
-                            )}
-                          </div>
+                          <select
+                            id="productSelect"
+                            value={formData.scope.productIds?.[0] || ''}
+                            onChange={(e) => handleProductSelect(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          >
+                            <option value="">Select a product...</option>
+                            {products.map((product) => (
+                              <option key={product.id} value={product.id}>
+                                {product.name}
+                              </option>
+                            ))}
+                          </select>
                           <p className="text-xs text-gray-500 mt-1">
-                            Select products (topics will load automatically)
+                            Select a product (topics will load automatically)
                           </p>
                         </div>
 
@@ -590,7 +577,7 @@ export default function BannerFormModal({
                                   </label>
                                 ))
                               ) : (
-                                <p className="text-sm text-gray-500">No topics available for selected products</p>
+                                <p className="text-sm text-gray-500">No topics available for this product</p>
                               )}
                             </div>
                             <p className="text-xs text-gray-500 mt-1">
