@@ -5,16 +5,21 @@
  * Useful for enabling/disabling save buttons and showing unsaved changes warnings.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export function useFormChangeTracking<T>(initialData: T | null) {
   const [formData, setFormData] = useState<T | null>(initialData);
   const [originalData, setOriginalData] = useState<T | null>(initialData);
+  const initialDataRef = useRef<string>(JSON.stringify(initialData));
 
-  // Update both when initial data changes
+  // Update both when initial data changes (compare by value, not reference)
   useEffect(() => {
-    setFormData(initialData);
-    setOriginalData(initialData);
+    const newDataString = JSON.stringify(initialData);
+    if (newDataString !== initialDataRef.current) {
+      initialDataRef.current = newDataString;
+      setFormData(initialData);
+      setOriginalData(initialData);
+    }
   }, [initialData]);
 
   // Check if there are changes
