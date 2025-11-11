@@ -153,7 +153,7 @@ const Img: React.FC<ImgProps> = ({ src, alt, className = '' }) => (
   <img
     src={src}
     alt={alt}
-    className={`rounded-lg shadow-md my-6 max-w-full h-auto ${className}`}
+    className={`inline max-w-full h-auto ${className}`}
   />
 );
 
