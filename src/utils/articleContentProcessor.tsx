@@ -465,6 +465,12 @@ export function processArticleContent(
         case 'i':
           return <Typography.Em className={className}>{children}</Typography.Em>;
         case 'a':
+          // Remove empty links (no text content)
+          const linkTextContent = extractTextContent(element);
+          if (!linkTextContent || linkTextContent.trim() === '') {
+            return <React.Fragment key={Math.random()}></React.Fragment>;
+          }
+
           // Check if this is a button link (has 'btn' class or button styling)
           const isButton = className.includes('btn') || className.includes('button');
 
