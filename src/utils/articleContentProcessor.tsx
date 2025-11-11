@@ -108,12 +108,15 @@ function getInnerHTML(element: Element): string {
  * Converts [[link text >|article_id]] or [[link text|article_id]] to <a href="...">link text</a>
  */
 function preprocessInternalLinks(content: string, region: string): string {
+  // First, remove broken internal links with empty text like [[|article_id]]
+  let processed = content.replace(/\[\[(?:(?:>|&gt;)\||\|)(\d{15})\]\]/g, '');
+
   // Match both formats:
   // - [[text >|15-digit-id]] or [[text &gt;|15-digit-id]] (with >)
   // - [[text|15-digit-id]] (without >)
   const linkRegex = /\[\[([^\]]+?)(?:(?:>|&gt;)\||\|)(\d{15})\]\]/g;
 
-  return content.replace(linkRegex, (match, linkText, articleId) => {
+  return processed.replace(linkRegex, (match, linkText, articleId) => {
     const url = getArticleUrl(articleId, region);
     const isExternal = shouldOpenInNewTab(url);
 
