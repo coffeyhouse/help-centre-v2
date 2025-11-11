@@ -394,6 +394,50 @@ export interface SearchResponse {
   executionTime: number;
 }
 
+// ==================== Article API Types ====================
+
+export interface ArticleField {
+  name: string;
+  content: string;
+}
+
+export interface ArticleResponse {
+  author: string;
+  approver: string;
+  attributeSetName: string | null;
+  attributes: any[];
+  categoryCode: string;
+  collections: string[];
+  createDate: number;
+  diagnosticResponses: any[];
+  fields: ArticleField[];
+  id: string;
+  language: string;
+  lastModifiedDate: number;
+  minorModifiedDate: number;
+  keywords: string;
+  question: string | null;
+  renewDate: number;
+  solutionBoost: number;
+  status: string;
+  type: string;
+  taxonomy: string[];
+  templateName: string;
+  title: string;
+  translations: any[];
+  viewCount: number;
+  solvedCount: number;
+  unsolvedCount: number;
+  summary: string;
+  revisionID: string | null;
+  templateSolutionID: string;
+  _metadata?: {
+    fetchedAt: string;
+    executionTime: number;
+    country: string;
+  };
+}
+
 // ==================== Hook Return Types ====================
 
 export interface UseDataResult<T> {
