@@ -55,11 +55,22 @@ function extractTextFromSpan(element: Element): string {
  * Strips out <img>, <strong>TITLE:</strong> patterns
  */
 function stripAttentionBlockTitle(html: string): string {
-  // Remove attention block images
-  let cleaned = html.replace(/<img[^>]*?content_(tip|caution|info|warning|note)\.gif[^>]*?>/gi, '');
+  // Remove entire mceNonEditable span wrapper with image and title
+  let cleaned = html.replace(
+    /<span[^>]*?class="[^"]*mceNonEditable[^"]*"[^>]*?>.*?<\/span>\s*/gi,
+    ''
+  );
 
-  // Remove title markup like <strong>TIP:</strong> or <strong>NOTE:</strong>
+  // Remove attention block images (ra-att-img class or content_*.gif)
+  cleaned = cleaned.replace(/<img[^>]*?class="[^"]*ra-att-img[^"]*"[^>]*?>/gi, '');
+  cleaned = cleaned.replace(/<img[^>]*?content_(tip|caution|info|warning|note)\.gif[^>]*?>/gi, '');
+
+  // Remove title markup with ra-att-title class or plain strong tags
+  cleaned = cleaned.replace(/<strong[^>]*?class="[^"]*ra-att-title[^"]*"[^>]*?>.*?<\/strong>\s*/gi, '');
   cleaned = cleaned.replace(/<strong>\s*(TIP|CAUTION|INFO|WARNING|NOTE)\s*:?\s*<\/strong>\s*/gi, '');
+
+  // Remove leading &nbsp; entities
+  cleaned = cleaned.replace(/^(&nbsp;|\s)+/, '');
 
   // Trim any leading/trailing whitespace
   return cleaned.trim();
