@@ -333,8 +333,13 @@ export function processArticleContent(
           return <Typography.H6 className={className}>{children}</Typography.H6>;
         case 'p':
           // Filter out empty paragraphs (only containing &nbsp; or whitespace)
+          // But keep paragraphs with images or other elements
           const textContent = extractTextContent(element);
-          if (!textContent || textContent.trim() === '' || textContent.trim() === '\u00A0') {
+          const hasImageOrElements = element.children?.some(
+            (child) => child instanceof Element && (child as Element).name === 'img'
+          );
+
+          if (!hasImageOrElements && (!textContent || textContent.trim() === '' || textContent.trim() === '\u00A0')) {
             return <React.Fragment key={Math.random()}></React.Fragment>;
           }
           return <Typography.P className={className}>{children}</Typography.P>;
