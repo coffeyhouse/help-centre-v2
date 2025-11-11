@@ -51,6 +51,21 @@ function extractTextFromSpan(element: Element): string {
 }
 
 /**
+ * Removes attention block title markup from HTML content
+ * Strips out <img>, <strong>TITLE:</strong> patterns
+ */
+function stripAttentionBlockTitle(html: string): string {
+  // Remove attention block images
+  let cleaned = html.replace(/<img[^>]*?content_(tip|caution|info|warning|note)\.gif[^>]*?>/gi, '');
+
+  // Remove title markup like <strong>TIP:</strong> or <strong>NOTE:</strong>
+  cleaned = cleaned.replace(/<strong>\s*(TIP|CAUTION|INFO|WARNING|NOTE)\s*:?\s*<\/strong>\s*/gi, '');
+
+  // Trim any leading/trailing whitespace
+  return cleaned.trim();
+}
+
+/**
  * Extracts inner HTML from an element as a string
  */
 function getInnerHTML(element: Element): string {
@@ -187,6 +202,7 @@ export function processArticleContent(
       }
 
       // Replace attention blocks (caution, tip, info, warning, note)
+      // Format 1: <span class="ra-content-*">
       if (element.name === 'span' && element.attribs?.class) {
         const className = element.attribs.class;
         let type: AttentionType | null = null;
@@ -237,7 +253,56 @@ export function processArticleContent(
           }
 
           // Extract content - prefer descSpan, otherwise get all content from element
-          const content = descSpan ? getInnerHTML(descSpan) : getInnerHTML(element);
+          let content = descSpan ? getInnerHTML(descSpan) : getInnerHTML(element);
+
+          // Strip duplicate title markup and images from content
+          content = stripAttentionBlockTitle(content);
+
+          return <AttentionBlock key={Math.random()} type={type} title={title} content={content} />;
+        }
+      }
+
+      // Format 2: <p style="color: #..."> with content images
+      if (element.name === 'p' && element.attribs?.style) {
+        const style = element.attribs.style;
+        let type: AttentionType | null = null;
+        let defaultTitle = '';
+
+        // Detect type by color code
+        if (style.includes('#b94a48') || style.includes('rgb(185, 74, 72)')) {
+          type = 'caution';
+          defaultTitle = 'CAUTION';
+        } else if (style.includes('#3a87ad') || style.includes('rgb(58, 135, 173)')) {
+          type = 'tip';
+          defaultTitle = 'TIP';
+        } else if (style.includes('#2d6987') || style.includes('rgb(45, 105, 135)')) {
+          type = 'info';
+          defaultTitle = 'INFO';
+        } else if (style.includes('#c09853') || style.includes('rgb(192, 152, 83)')) {
+          type = 'warning';
+          defaultTitle = 'WARNING';
+        } else if (style.includes('#468847') || style.includes('rgb(70, 136, 71)')) {
+          type = 'note';
+          defaultTitle = 'NOTE';
+        }
+
+        if (type) {
+          // Check for <strong> tag with title
+          const strongTag = element.children?.find(
+            (child) => child instanceof Element && (child as Element).name === 'strong'
+          ) as Element | undefined;
+
+          // Extract title - prefer strongTag, then default
+          let title = defaultTitle;
+          if (strongTag) {
+            title = extractTextContent(strongTag).replace(':', '');
+          }
+
+          // Extract content from element
+          let content = getInnerHTML(element);
+
+          // Strip duplicate title markup and images from content
+          content = stripAttentionBlockTitle(content);
 
           return <AttentionBlock key={Math.random()} type={type} title={title} content={content} />;
         }
