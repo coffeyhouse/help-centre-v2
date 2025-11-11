@@ -1,0 +1,21 @@
+{
+  "id": "autoentry",
+  "name": "​AutoEntry",
+  "description": "Capture, categorise, and publish data from invoices, receipts, and bank or card statements through to accounts software.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "business-management",
+    "solutions-accountants-bookkeepers"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "star",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

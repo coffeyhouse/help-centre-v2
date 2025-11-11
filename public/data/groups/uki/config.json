@@ -4,7 +4,19 @@
   "productIds": [
     "sage-50-accounts",
     "sage-50-payroll",
-    "sage-accounting"
+    "sage-accounting",
+    "accounting-individual",
+    "sage-intacct",
+    "sage-payroll",
+    "sage-hr",
+    "sage-people",
+    "sage-50-p11d",
+    "sage-x3",
+    "sage-200",
+    "sage-crm",
+    "sage-for-accountants",
+    "client-management",
+    "autoentry"
   ],
   "countries": [
     {

@@ -1,0 +1,20 @@
+{
+  "id": "sage-for-accountants",
+  "name": "Sage for Accountants",
+  "description": "Manage clients, automate capture to tax, and get all the support and services your practice needs.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "solutions-accountants-bookkeepers"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "checklist",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

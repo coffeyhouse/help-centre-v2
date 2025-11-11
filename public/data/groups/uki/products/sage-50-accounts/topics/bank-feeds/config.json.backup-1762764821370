@@ -1,0 +1,8 @@
+{
+  "id": "bank-feeds",
+  "title": "Bank feeds",
+  "description": "Automatically import transactions from your bank.",
+  "icon": "sync",
+  "parentTopicId": "banking",
+  "showOnProductLanding": false
+}

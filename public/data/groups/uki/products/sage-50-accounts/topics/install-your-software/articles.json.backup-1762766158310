@@ -1,0 +1,22 @@
+[
+  {
+    "id": "231221103432627",
+    "title": "What's new in Sage 50 Accounts?",
+    "description": "Find out more about the latest improvements and features.",
+    "type": "article",
+    "countries": [
+      "gb",
+      "ie"
+    ]
+  },
+  {
+    "id": "231221103548697",
+    "title": "Install your software",
+    "description": "Install Sage 50 Accounts on a new computer.",
+    "type": "article",
+    "countries": [
+      "ie",
+      "gb"
+    ]
+  }
+]

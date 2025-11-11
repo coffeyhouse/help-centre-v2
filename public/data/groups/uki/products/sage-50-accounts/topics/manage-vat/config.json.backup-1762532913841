@@ -1,0 +1,8 @@
+{
+  "id": "manage-vat",
+  "title": "Manage your VAT",
+  "description": "Record VAT transactions and produce VAT Returns.",
+  "icon": "document",
+  "parentTopicId": null,
+  "showOnProductLanding": true
+}

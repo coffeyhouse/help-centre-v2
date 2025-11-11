@@ -1,0 +1,82 @@
+{
+  "id": "uki",
+  "name": "United Kingdom & Ireland",
+  "productIds": [
+    "sage-50-accounts",
+    "sage-50-payroll",
+    "sage-accounting",
+    "accounting-individual",
+    "sage-intacct",
+    "sage-payroll",
+    "sage-hr",
+    "sage-people",
+    "sage-50-p11d",
+    "sage-x3",
+    "sage-200"
+  ],
+  "countries": [
+    {
+      "code": "gb",
+      "name": "United Kingdom",
+      "language": "en-GB",
+      "currency": "GBP",
+      "currencySymbol": "£",
+      "dateFormat": "DD/MM/YYYY",
+      "default": true
+    },
+    {
+      "code": "ie",
+      "name": "Ireland",
+      "language": "en-IE",
+      "currency": "EUR",
+      "currencySymbol": "€",
+      "dateFormat": "DD/MM/YYYY",
+      "default": false
+    }
+  ],
+  "personas": [
+    {
+      "id": "customer",
+      "label": "I'm a Customer",
+      "default": true
+    },
+    {
+      "id": "accountant",
+      "label": "I'm an Accountant or Bookkeeper",
+      "default": false
+    }
+  ],
+  "navigation": {
+    "main": [
+      {
+        "label": "Home",
+        "path": "/:country",
+        "icon": "home"
+      },
+      {
+        "label": "Contact us",
+        "path": "/:country/contact"
+      }
+    ]
+  },
+  "quickAccessCards": [
+    {
+      "id": "account-mgmt",
+      "title": "Account management and services",
+      "description": "Register your software, access your invoices, and download software updates to stay up to date.",
+      "icon": "checklist"
+    },
+    {
+      "id": "community",
+      "title": "Visit Community Hub",
+      "description": "Community Hub is the place to ask questions, share tips and ideas, get practical advice and all the breaking news.",
+      "icon": "community"
+    },
+    {
+      "id": "training",
+      "title": "Free training",
+      "description": "100% free courses available across all products.",
+      "icon": "graduation"
+    }
+  ]
+}

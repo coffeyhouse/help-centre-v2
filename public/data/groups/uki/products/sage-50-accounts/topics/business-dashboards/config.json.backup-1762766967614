@@ -1,0 +1,7 @@
+{
+  "id": "business-dashboards",
+  "title": "Business dashboards",
+  "description": "See your business at a glance with business dashboards.",
+  "icon": "community",
+  "showOnProductLanding": true
+}

@@ -1,0 +1,20 @@
+{
+  "id": "sage-50-p11d",
+  "name": "Sage 50 P11D",
+  "description": "Manage your employees’ taxable benefits all in one place. Includes online submissions to HMRC.",
+  "type": "desktop",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "people-payroll"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "calendar",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

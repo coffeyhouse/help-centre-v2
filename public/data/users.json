@@ -6,7 +6,8 @@
       "email": "warren@email.com",
       "persona": "customer",
       "ownedProducts": [
-        "sage-50-accounts"
+        "sage-50-payroll",
+        "sage-accounting"
       ]
     }
   ]

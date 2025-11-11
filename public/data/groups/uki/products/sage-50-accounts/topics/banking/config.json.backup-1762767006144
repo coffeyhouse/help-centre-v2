@@ -1,0 +1,8 @@
+{
+  "id": "banking",
+  "title": "Working with the bank",
+  "description": "Record and keep track of money paid and received.",
+  "icon": "bank",
+  "parentTopicId": null,
+  "showOnProductLanding": true
+}

@@ -1,0 +1,7 @@
+{
+  "id": "financial-year-end",
+  "title": "Financial year end",
+  "description": "Complete your year end, then get ready for the new year.",
+  "icon": "calendar",
+  "showOnProductLanding": true
+}

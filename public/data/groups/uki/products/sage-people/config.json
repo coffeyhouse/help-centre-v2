@@ -1,0 +1,20 @@
+{
+  "id": "sage-people",
+  "name": "Sage People",
+  "description": "Attract, manage and retain top talent. Ideal for businesses with 200 - 5000 employees.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "people-payroll"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "email",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "sage-accounting",
+  "name": "Sage Accounting",
+  "description": "AI-powered software for small businesses to manage invoicing, cash flow, tax, and more, from anywhere.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "accounting-software"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "icon-b",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

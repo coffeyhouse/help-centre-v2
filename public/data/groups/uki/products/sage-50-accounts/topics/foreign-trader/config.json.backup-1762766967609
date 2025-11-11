@@ -1,0 +1,7 @@
+{
+  "id": "foreign-trader",
+  "title": "Foreign Trader",
+  "description": "Easily set up and process transactions in different currencies.",
+  "icon": "graduation",
+  "showOnProductLanding": true
+}

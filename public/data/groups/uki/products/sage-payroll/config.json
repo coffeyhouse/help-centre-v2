@@ -1,0 +1,21 @@
+{
+  "id": "sage-payroll",
+  "name": "Sage Payroll",
+  "description": "Effortless cloud-based payroll solution for start-ups and small businesses.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "people-payroll",
+    "solutions-accountants-bookkeepers"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "community",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

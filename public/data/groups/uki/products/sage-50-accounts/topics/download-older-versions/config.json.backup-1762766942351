@@ -1,0 +1,8 @@
+{
+  "id": "download-older-versions",
+  "title": "Download older versions",
+  "description": "v32.1 is the latest version. You can download older versions here.",
+  "icon": "download",
+  "parentTopicId": "install-your-software",
+  "showOnProductLanding": false
+}

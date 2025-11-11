@@ -1,0 +1,19 @@
+{
+  "id": "sage-hr",
+  "name": "Sage HR",
+  "description": "Easy to use HR software that connects you and your people.",
+  "type": "cloud",
+  "personas": [
+    "customer",
+    "accountant"
+  ],
+  "categories": [
+    "people-payroll"
+  ],
+  "countries": [
+    "gb"
+  ],
+  "icon": "play",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

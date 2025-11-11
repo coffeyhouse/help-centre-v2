@@ -1,0 +1,19 @@
+{
+  "id": "sage-intacct",
+  "name": "Sage Intacct",
+  "description": "The leader in cloud accounting and financial management software for mid-sized and growing businesses.",
+  "type": "cloud",
+  "personas": [
+    "customer"
+  ],
+  "categories": [
+    "accounting-software"
+  ],
+  "countries": [
+    "gb",
+    "ie"
+  ],
+  "icon": "remote",
+  "knowledgebase_collection": "",
+  "topicIds": []
+}

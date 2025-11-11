@@ -1,0 +1,7 @@
+{
+  "id": "install-your-software",
+  "title": "Install your software",
+  "description": "Everything you need to install your software.",
+  "icon": "download",
+  "showOnProductLanding": true
+}
