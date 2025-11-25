@@ -174,7 +174,7 @@ export default function Footer() {
         {/* Legal footer */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <div>
-            © {new Date().getFullYear()} Help Centre. All rights reserved.
+            © {new Date().getFullYear()} Support Centre. All rights reserved.
           </div>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-white transition-colors">

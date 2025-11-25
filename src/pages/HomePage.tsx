@@ -1,5 +1,5 @@
 /**
- * HomePage - Main landing page for the Help Centre
+ * HomePage - Main landing page for the Support Centre
  *
  * Features:
  * - Hero section with personalized welcome message
@@ -67,7 +67,7 @@ export default function HomePage() {
   // Personalized greeting for logged-in users
   const heroTitle = user
     ? `Hi, ${user.name.split(' ')[0]}, how can we help you?`
-    : 'Welcome to the Help Centre';
+    : 'Welcome to Support';
 
   const heroSubtitle = user
     ? `Find help and support for your products`

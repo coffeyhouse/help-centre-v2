@@ -34,9 +34,10 @@ export default function Header() {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link to={`/${region}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <Icon name="book" className="w-8 h-8" />
-            <span className="text-xl font-semibold hidden sm:inline">
-              Help Centre
+            {/* <Icon name="book" className="w-8 h-8" /> */}
+            <img src="/logo-white.png" alt="Support Centre" className="h-8" />
+            <span className="text-xl hidden sm:inline border-l border-white/40 pl-4">
+              Support Centre
             </span>
           </Link>
 

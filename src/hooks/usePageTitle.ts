@@ -2,13 +2,13 @@
  * usePageTitle - Custom hook for managing page titles
  *
  * Usage:
- * usePageTitle('Contact Us'); // Sets title to "Contact Us | Help Centre"
- * usePageTitle('Products', 'Sage 50'); // Sets title to "Products - Sage 50 | Help Centre"
+ * usePageTitle('Contact Us'); // Sets title to "Contact Us | Support Centre"
+ * usePageTitle('Products', 'Sage 50'); // Sets title to "Products - Sage 50 | Support Centre"
  */
 
 import { useEffect } from 'react';
 
-const BASE_TITLE = 'Help Centre';
+const BASE_TITLE = 'Support Centre';
 
 export function usePageTitle(title?: string, subtitle?: string) {
   useEffect(() => {

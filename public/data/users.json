@@ -9,7 +9,11 @@
         "sage-50-payroll",
         "sage-accounting"
       ],
-      "favorites": {}
+      "favorites": {
+        "gb": [
+          "231221103432627"
+        ]
+      }
     }
   ]
 }
